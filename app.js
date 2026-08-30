@@ -85,7 +85,12 @@ async function fetchSleeperLive(leagueId) {
   const matchups_by_week = {};
   const projections_by_week = {};
   let emptyStreak = 0;
-  for (let week = 1; week <= 18; week++) {
+  // Most fantasy leagues (including this one) play a 17-week season even
+  // though the NFL itself now has 18 weeks -- Week 18 lineups are unreliable
+  // (teams resting starters), so Sleeper leagues are typically configured
+  // to finish by Week 17. If this league ever changes to an 18-week season,
+  // bump this back up.
+  for (let week = 1; week <= 17; week++) {
     let wk = [];
     try { wk = await getJson(`${base}/league/${leagueId}/matchups/${week}`); } catch (e) { wk = []; }
     if (!wk || wk.length === 0) {
@@ -178,6 +183,7 @@ async function handleForceUpdate() {
     writeCache(data);
     renderHeader();
     renderCurrent();
+    renderArchive();
     renderBestInShow();
     renderAwards();
     setUpdateMsg(`Updated from Sleeper at ${data.fetched_at}.`, 'ok');
@@ -241,6 +247,34 @@ function ownerTeamLabel(owner) {
   if (!reg) return owner;
   const fn = firstName(reg.real_name);
   return `${reg.team}${fn ? ` (${fn})` : ''}`;
+}
+
+/* Live-season (Sleeper) usernames mapped to the same canonical owner keys
+   used everywhere else, since Sleeper team names change every year and
+   don't otherwise tie back to a real person. Confirmed against the league's
+   actual 2026 rosters -- update this if anyone's Sleeper username changes
+   or a new owner joins. */
+const SLEEPER_USERNAME_TO_OWNER = {
+  jminner: 'Jason',
+  Lskywalker77: 'Luke',
+  asutin56: 'Austin',
+  '20Alex': 'Alex',
+  Cronk45: 'Cronk',
+  Rand01TJ: 'Randy',
+  tizzzzod: 'Todd',
+  GrizzlyGregoire: 'Josh',
+  rabidstitch: 'Moss',
+  MicahGentry: 'Micah',
+};
+
+function liveTeamOwner(team) {
+  return SLEEPER_USERNAME_TO_OWNER[team.owner_display_name] || null;
+}
+
+function liveTeamLabel(team) {
+  const owner = liveTeamOwner(team);
+  const fn = owner ? ownerFirstName(owner) : null;
+  return fn ? `${team.team_name} (${fn})` : team.team_name;
 }
 
 /* ---------------- Sortable tables ----------------
@@ -311,7 +345,7 @@ function renderCurrent() {
   const rows = state.current.teams.map((t, i) => `
     <tr class="${i === 0 ? 'rank-1' : ''}">
       <td data-sort-value="${i + 1}">${i + 1}</td>
-      <td class="name-cell">${t.team_name}</td>
+      <td class="name-cell">${liveTeamLabel(t)}</td>
       <td data-sort-value="${t.wins ?? 0}">${t.wins ?? 0}-${t.losses ?? 0}${t.ties ? `-${t.ties}` : ''}</td>
       <td data-sort-value="${t.fpts ?? 0}">${(t.fpts ?? 0).toFixed(1)}</td>
       <td data-sort-value="${t.fpts_against ?? 0}">${(t.fpts_against ?? 0).toFixed(1)}</td>
@@ -336,7 +370,7 @@ function renderCurrent() {
       byMatchupId[m.matchup_id].push(m);
     });
     const teamByRoster = {};
-    state.current.teams.forEach(t => { teamByRoster[t.roster_id] = t.team_name; });
+    state.current.teams.forEach(t => { teamByRoster[t.roster_id] = liveTeamLabel(t); });
 
     const cards = Object.values(byMatchupId).map(pair => {
       if (pair.length < 2) return '';
@@ -406,7 +440,7 @@ function computeMatchupPreviews(week) {
   if (!wk || !wk.length) return [];
   const proj = (c.projections_by_week || {})[String(week)] || {};
   const teamByRoster = {};
-  c.teams.forEach(t => { teamByRoster[t.roster_id] = t.team_name; });
+  c.teams.forEach(t => { teamByRoster[t.roster_id] = liveTeamLabel(t); });
 
   const byMatchup = {};
   wk.forEach(m => { (byMatchup[m.matchup_id] = byMatchup[m.matchup_id] || []).push(m); });
@@ -488,16 +522,19 @@ function renderPreviewSection() {
 
 function renderArchive() {
   const el = document.getElementById('panel-archive');
-  if (!state.history || !state.history.seasons.length) {
+  const histYears = (state.history?.seasons || []).map(s => s.year).filter(Boolean);
+  const liveYear = state.current ? Number(state.current.season) : null;
+  const years = Array.from(new Set([...histYears, ...(liveYear ? [liveYear] : [])])).sort((a, b) => a - b);
+
+  if (!years.length) {
     el.innerHTML = `<div class="empty-state"><div class="display">No archive data</div></div>`;
     return;
   }
-  const years = state.history.seasons.map(s => s.year).filter(Boolean);
-  if (!selectedYear) selectedYear = Math.max(...years);
+  if (!selectedYear) selectedYear = liveYear || Math.max(...years);
 
   el.innerHTML = `
     <div class="year-select">
-      ${years.map(y => `<button data-year="${y}" class="${y === selectedYear ? 'active' : ''}">${y}</button>`).join('')}
+      ${years.map(y => `<button data-year="${y}" class="${y === selectedYear ? 'active' : ''}">${y}${y === liveYear ? ' (live)' : ''}</button>`).join('')}
     </div>
     <div class="two-col">
       <div id="archive-body"></div>
@@ -508,16 +545,22 @@ function renderArchive() {
   el.querySelectorAll('.year-select button').forEach(btn => {
     btn.addEventListener('click', () => {
       selectedYear = Number(btn.dataset.year);
-      renderArchiveBody();
+      renderArchiveBody(liveYear);
     });
   });
 
-  renderArchiveBody();
+  renderArchiveBody(liveYear);
   renderRecordsBody();
 }
 
-function renderArchiveBody() {
+function renderArchiveBody(liveYear) {
   const body = document.getElementById('archive-body');
+
+  if (liveYear && selectedYear === liveYear) {
+    renderLiveArchiveBody(body);
+    return;
+  }
+
   const season = state.history.seasons.find(s => s.year === selectedYear);
   if (!season) { body.innerHTML = ''; return; }
 
@@ -554,12 +597,42 @@ function renderArchiveBody() {
   body.innerHTML = `
     ${warn}
     <h2 class="section-title">${selectedYear} Win-Loss Records</h2>
-    <p class="card-note" style="margin-bottom:12px;">Sorted by regular-season record by default — click any column header to re-sort. This league's actual final standings/champion aren't tracked reliably in the source data (see "Update Data" tab), so no winner is crowned here.</p>
+    <p class="card-note" style="margin-bottom:12px;">Sorted by regular-season record by default — click any column header to re-sort. This league's actual final standings/champion aren't tracked reliably in the source data (see "Administration" tab), so no winner is crowned here.</p>
     <table class="sortable">
       <thead><tr>
         <th data-sort-key="team">Team</th>
         <th data-sort-key="record" data-sort-type="num">Record</th>
         <th data-sort-key="playoff" data-sort-type="num">Playoff W</th>
+        <th data-sort-key="pf" data-sort-type="num">PF</th>
+        <th data-sort-key="pa" data-sort-type="num">PA</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+  bindSortables(body);
+}
+
+function renderLiveArchiveBody(body) {
+  const teams = [...state.current.teams].sort((a, b) => {
+    const wDiff = (b.wins ?? 0) - (a.wins ?? 0);
+    if (wDiff !== 0) return wDiff;
+    return (a.losses ?? 0) - (b.losses ?? 0);
+  });
+
+  const rows = teams.map(t => `<tr>
+    <td class="name-cell">${liveTeamLabel(t)}</td>
+    <td data-sort-value="${t.wins ?? 0}">${t.wins ?? 0}-${t.losses ?? 0}${t.ties ? `-${t.ties}` : ''}</td>
+    <td data-sort-value="${t.fpts ?? 0}">${(t.fpts ?? 0).toFixed(1)}</td>
+    <td data-sort-value="${t.fpts_against ?? 0}">${(t.fpts_against ?? 0).toFixed(1)}</td>
+  </tr>`).join('');
+
+  body.innerHTML = `
+    <h2 class="section-title">${state.current.season} Win-Loss Records (live)</h2>
+    <p class="card-note" style="margin-bottom:12px;">Pulled straight from Sleeper — updates every time you run Force Update. Team names shown are this year's Sleeper names, with each owner's real first name alongside them.</p>
+    <table class="sortable">
+      <thead><tr>
+        <th data-sort-key="team">Team</th>
+        <th data-sort-key="record" data-sort-type="num">Record</th>
         <th data-sort-key="pf" data-sort-type="num">PF</th>
         <th data-sort-key="pa" data-sort-type="num">PA</th>
       </tr></thead>
@@ -582,10 +655,27 @@ function renderRecordsBody() {
       <td data-sort-value="${r.year ?? 0}">${r.year}, wk ${r.week}</td>
     </tr>`).join('');
 
-  // Career totals (win-loss + PF/PA) come pre-computed from parse_history.py,
-  // which already skips the flagged-stale 2024 standings tab so it doesn't
-  // distort the all-time PF/PA total.
-  const career = state.history.career_totals || {};
+  // Career totals (win-loss + PF/PA) come pre-computed from parse_history.py
+  // for the archived (2022-2025) seasons, which already skips the flagged-
+  // stale 2024 standings tab. The live season is merged in on top of that
+  // using the Sleeper-username-to-owner mapping, so this stays accurate
+  // as the current season progresses.
+  const career = {};
+  Object.entries(state.history.career_totals || {}).forEach(([owner, c]) => {
+    career[owner] = { ...c };
+  });
+  if (state.current) {
+    state.current.teams.forEach(t => {
+      const owner = liveTeamOwner(t);
+      if (!owner) return;
+      const c = career[owner] = career[owner] || { wins: 0, losses: 0, ties: 0, playoff_wins: 0, pf: 0, pa: 0 };
+      c.wins += t.wins || 0;
+      c.losses += t.losses || 0;
+      c.ties += t.ties || 0;
+      c.pf += t.fpts || 0;
+      c.pa += t.fpts_against || 0;
+    });
+  }
   const careerRows = Object.entries(career)
     .sort((a, b) => b[1].wins - a[1].wins)
     .map(([owner, c]) => {
@@ -602,7 +692,7 @@ function renderRecordsBody() {
 
   body.innerHTML = `
     <h2 class="section-title">All-Time (Career)</h2>
-    <p class="card-note" style="margin-bottom:12px;">Running totals across every archived season. No championship count — see the note on the left about why.</p>
+    <p class="card-note" style="margin-bottom:12px;">Running totals across every archived season plus the live season in progress. No championship count — see the note on the left about why.</p>
     <table class="sortable">
       <thead><tr>
         <th data-sort-key="owner">Owner</th>
@@ -672,7 +762,7 @@ function computeLiveWeeklyAwards(week) {
 
   const proj = (c.projections_by_week || {})[String(week)] || {};
   const teamByRoster = {};
-  c.teams.forEach(t => { teamByRoster[t.roster_id] = t.team_name; });
+  c.teams.forEach(t => { teamByRoster[t.roster_id] = liveTeamLabel(t); });
 
   let kbz = null, instagib = null, gameover = null, pine = null, horseshoe = null, eberflus = null;
   const byMatchup = {};
@@ -846,7 +936,9 @@ function renderAwardsBodyWeekly(body, seasonsInScope, week, liveYear) {
       const manual = getManualAward(liveYear, week, 'Rocky');
       if (manual) {
         const yearPrefix = selectedAwardsYear === 'All-Time' ? `${liveYear}: ` : '';
-        items.push(`<li>${yearPrefix}${manual.winner}<span class="n">${manual.probability}% win prob</span></li>`);
+        const manualTeam = (state.current?.teams || []).find(t => t.team_name === manual.winner);
+        const manualLabel = manualTeam ? liveTeamLabel(manualTeam) : manual.winner;
+        items.push(`<li>${yearPrefix}${manualLabel}<span class="n">${manual.probability}% win prob</span></li>`);
       } else if (selectedAwardsYear === liveYear) {
         items.push(`<li class="card-note">Not entered yet — set it on the Admin tab</li>`);
       }
@@ -947,7 +1039,7 @@ function renderBestInShow() {
       : `<div class="bis-row"><span class="label">Best Scorer</span><span class="val">—</span></div>`;
 
     return `<div class="bis-card card">
-      <h3>${t.team_name}</h3>
+      <h3>${liveTeamLabel(t)}</h3>
       ${pickRow}
       ${bestRow}
     </div>`;
@@ -1022,7 +1114,7 @@ function renderSetup() {
 function renderRockyAdmin(year, weeks) {
   const body = document.getElementById('rocky-admin-body');
   if (!body) return;
-  const teams = (state.current?.teams || []).map(t => t.team_name).sort();
+  const teams = (state.current?.teams || []).map(t => ({ value: t.team_name, label: liveTeamLabel(t) })).sort((a, b) => a.label.localeCompare(b.label));
   const existing = getManualAward(year, selectedAdminWeek, 'Rocky');
 
   body.innerHTML = `
@@ -1032,7 +1124,7 @@ function renderRockyAdmin(year, weeks) {
     <form id="rocky-form" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
       <select name="winner" style="flex:1; min-width:160px; background:var(--felt); border:1px solid var(--felt-line); color:var(--chalk); border-radius:6px; padding:6px 10px; font-family:'IBM Plex Mono',monospace;">
         <option value="">Select team…</option>
-        ${teams.map(t => `<option value="${t}" ${existing?.winner === t ? 'selected' : ''}>${t}</option>`).join('')}
+        ${teams.map(t => `<option value="${t.value}" ${existing?.winner === t.value ? 'selected' : ''}>${t.label}</option>`).join('')}
       </select>
       <input name="probability" type="number" step="0.1" min="0" max="100" placeholder="Win % at the time"
         value="${existing?.probability ?? ''}"
