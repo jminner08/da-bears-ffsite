@@ -318,7 +318,14 @@ function renderCurrent() {
     </tr>`).join('');
 
   const weeks = Object.keys(state.current.matchups_by_week || {}).map(Number).sort((a, b) => a - b);
-  const lastWeek = weeks[weeks.length - 1];
+  // Sleeper often pre-generates the whole season's matchup pairings up front
+  // (with 0 points) before any games are played, so "last week we have data
+  // for" isn't the same as "last week that's actually happened." Use the
+  // last week where someone actually scored points instead.
+  const playedWeeks = weeks.filter(w =>
+    (state.current.matchups_by_week[String(w)] || []).some(m => (m.points || 0) > 0)
+  );
+  const lastWeek = playedWeeks.length ? playedWeeks[playedWeeks.length - 1] : null;
 
   let matchupsHtml = '';
   if (lastWeek) {
@@ -359,8 +366,122 @@ function renderCurrent() {
       <tbody>${rows}</tbody>
     </table>
     ${matchupsHtml}
+    <div id="preview-section"></div>
   `;
   bindSortables(el);
+  renderPreviewSection();
+}
+
+/* ---------------- Matchup Previews ----------------
+   Projected scores + win probability for a chosen week, computed from each
+   team's starters' Sleeper projections. Defaults to the next week that
+   hasn't been played yet (nobody's scored any points). Win probability is a
+   principled estimate, not a real one: Sleeper doesn't publish a variance/
+   confidence figure per player, so we assume each starter's actual score
+   varies from their projection by roughly 40% of that projection (floor of
+   4 points, so low-projection players like kickers/DEF still carry some
+   uncertainty), combine those in quadrature per team, and use a normal
+   approximation for the win probability. Treat the percentages as a
+   reasonable estimate, not gospel. */
+
+let selectedPreviewWeek = null;
+
+function erf(x) {
+  // Abramowitz-Stegun approximation.
+  const sign = x < 0 ? -1 : 1;
+  x = Math.abs(x);
+  const a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
+  const t = 1 / (1 + p * x);
+  const y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+  return sign * y;
+}
+
+function normCdf(z) {
+  return 0.5 * (1 + erf(z / Math.SQRT2));
+}
+
+function computeMatchupPreviews(week) {
+  const c = state.current;
+  const wk = c && (c.matchups_by_week || {})[String(week)];
+  if (!wk || !wk.length) return [];
+  const proj = (c.projections_by_week || {})[String(week)] || {};
+  const teamByRoster = {};
+  c.teams.forEach(t => { teamByRoster[t.roster_id] = t.team_name; });
+
+  const byMatchup = {};
+  wk.forEach(m => { (byMatchup[m.matchup_id] = byMatchup[m.matchup_id] || []).push(m); });
+
+  const teamProjection = (m) => {
+    let total = 0, variance = 0;
+    (m.starters || []).forEach(pid => {
+      const p = proj[String(pid)] || 0;
+      const sd = Math.max(4, p * 0.4);
+      total += p;
+      variance += sd * sd;
+    });
+    return { total, variance };
+  };
+
+  return Object.values(byMatchup)
+    .filter(pair => pair.length >= 2)
+    .map(([a, b]) => {
+      const pa = teamProjection(a);
+      const pb = teamProjection(b);
+      const diff = pa.total - pb.total;
+      const sd = Math.sqrt(pa.variance + pb.variance) || 1;
+      const probA = normCdf(diff / sd);
+      return {
+        teamA: teamByRoster[a.roster_id] || a.roster_id,
+        teamB: teamByRoster[b.roster_id] || b.roster_id,
+        projA: pa.total,
+        projB: pb.total,
+        probA: probA * 100,
+        probB: (1 - probA) * 100,
+        margin: Math.abs(diff),
+      };
+    });
+}
+
+function renderPreviewSection() {
+  const el = document.getElementById('preview-section');
+  if (!el || !state.current) { if (el) el.innerHTML = ''; return; }
+
+  const weeks = Object.keys(state.current.matchups_by_week || {}).map(Number).sort((a, b) => a - b);
+  if (!weeks.length) { el.innerHTML = ''; return; }
+
+  if (!selectedPreviewWeek || !weeks.includes(selectedPreviewWeek)) {
+    const unplayed = weeks.find(w => {
+      const wk = state.current.matchups_by_week[String(w)];
+      return wk.every(m => !m.points);
+    });
+    selectedPreviewWeek = unplayed ?? weeks[weeks.length - 1];
+  }
+
+  const previews = computeMatchupPreviews(selectedPreviewWeek);
+  const cards = previews.map(p => {
+    const aFav = p.probA >= p.probB;
+    return `<div class="card">
+      <div class="bis-row"><span class="label">${p.teamA}</span><span class="val">${p.projA.toFixed(1)} proj${aFav ? ` — <strong>${p.probA.toFixed(0)}%</strong>` : ` — ${p.probA.toFixed(0)}%`}</span></div>
+      <div class="bis-row"><span class="label">${p.teamB}</span><span class="val">${p.projB.toFixed(1)} proj${!aFav ? ` — <strong>${p.probB.toFixed(0)}%</strong>` : ` — ${p.probB.toFixed(0)}%`}</span></div>
+      <p class="card-note" style="margin-top:6px;">Projected margin: ${p.margin.toFixed(1)} pts</p>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <h2 class="section-title">Matchup Previews</h2>
+    <div class="year-select">
+      ${weeks.map(w => `<button data-week="${w}" class="${w === selectedPreviewWeek ? 'active' : ''}">Wk ${w}</button>`).join('')}
+    </div>
+    <p class="card-note" style="margin:8px 0 16px;">Win % and margins are estimates from Sleeper's player projections, not guarantees — treat close ones as coin flips.</p>
+    <div class="award-grid">${cards || '<p class="card-note">No matchup data for this week yet.</p>'}</div>
+  `;
+
+  el.querySelectorAll('.year-select button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedPreviewWeek = Number(btn.dataset.week);
+      renderPreviewSection();
+    });
+  });
 }
 
 /* ---------------- Season Archive & Records (merged, side by side) ---------------- */
@@ -877,7 +998,12 @@ function renderSetup() {
   document.getElementById('force-update-btn').addEventListener('click', handleForceUpdate);
 
   if (liveYear && weeks.length) {
-    if (!selectedAdminWeek || !weeks.includes(selectedAdminWeek)) selectedAdminWeek = weeks[weeks.length - 1];
+    if (!selectedAdminWeek || !weeks.includes(selectedAdminWeek)) {
+      const playedWeeks = weeks.filter(w =>
+        (state.current.matchups_by_week[String(w)] || []).some(m => (m.points || 0) > 0)
+      );
+      selectedAdminWeek = playedWeeks.length ? playedWeeks[playedWeeks.length - 1] : weeks[0];
+    }
     renderRockyAdmin(liveYear, weeks);
   }
 
