@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA B.E.A.R.S.</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="ticker">
+  <div class="ticker-inner">
+    <div>
+      <h1 class="league-name display" id="league-name">DA B.E.A.R.S.</h1>
+      <div class="league-sub mono" id="league-sub">loading league data&hellip;</div>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="status-pill" id="status-pill">--</div>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-tab="current" class="active">Current Season</button>
+    <button data-tab="archive">Season Archive &amp; Records</button>
+    <button data-tab="awards">Awards</button>
+    <button data-tab="bestinshow">Best In Show</button>
+    <button data-tab="setup">Administration</button>
+  </nav>
+</header>
+
+<main>
+  <section class="panel active" id="panel-current"></section>
+  <section class="panel" id="panel-archive"></section>
+  <section class="panel" id="panel-awards"></section>
+  <section class="panel" id="panel-bestinshow"></section>
+  <section class="panel" id="panel-setup"></section>
+</main>
+
+<footer>Built for the league, not for scale. Data pulled from Sleeper and the commissioner's own spreadsheets.</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
