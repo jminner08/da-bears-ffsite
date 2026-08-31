@@ -1,0 +1,5176 @@
+{
+  "owner_registry": {
+    "Moss": {
+      "team": "MossEisley Troopers",
+      "real_name": "Bobby Moss"
+    },
+    "Luke": {
+      "team": "Led Tasso",
+      "real_name": "Luke Blanchette"
+    },
+    "Josh": {
+      "team": "Grizzly Gregoire",
+      "real_name": "Josh Gregoire"
+    },
+    "Randy": {
+      "team": "Sir Mixon Lot",
+      "real_name": "Randy Blanchette"
+    },
+    "Micah": {
+      "team": "The Purge",
+      "real_name": "Micah Gentry"
+    },
+    "Alex": {
+      "team": "Bench Points",
+      "real_name": "Alex Schodrof"
+    },
+    "Todd": {
+      "team": "Boba Feta Cheese",
+      "real_name": "Todd Hoffman"
+    },
+    "Cronk": {
+      "team": "Baba Yaga",
+      "real_name": "Dave Cronk"
+    },
+    "Austin": {
+      "team": "I Don't Know What I'm Doing",
+      "real_name": "Austin Smith"
+    },
+    "Jason": {
+      "team": "K-Aaron Rodgers",
+      "real_name": "Jason Minner"
+    }
+  },
+  "seasons": [
+    {
+      "year": 2022,
+      "source_file": "FF_Info_2022.xlsx",
+      "win_loss_records": [
+        {
+          "owner": "Moss",
+          "weekly": [
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Win"
+          ],
+          "wins": 12,
+          "losses": 5,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 3,
+          "total_games": 17,
+          "final_standing": 1
+        },
+        {
+          "owner": "Cronk",
+          "weekly": [
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss"
+          ],
+          "wins": 7,
+          "losses": 10,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 1,
+          "total_games": 17,
+          "final_standing": 8
+        },
+        {
+          "owner": "Randy",
+          "weekly": [
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 8,
+          "losses": 9,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 1,
+          "total_games": 17,
+          "final_standing": 4
+        },
+        {
+          "owner": "Alex",
+          "weekly": [
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 7,
+          "losses": 10,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 0,
+          "total_games": 17,
+          "final_standing": 6
+        },
+        {
+          "owner": "Jason",
+          "weekly": [
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 4,
+          "losses": 13,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 0,
+          "total_games": 17,
+          "final_standing": 10
+        },
+        {
+          "owner": "Todd",
+          "weekly": [
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "TIE",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Win"
+          ],
+          "wins": 9,
+          "losses": 7,
+          "ties": 1,
+          "byes": 0,
+          "playoff_wins": 3,
+          "total_games": 17,
+          "final_standing": 7
+        },
+        {
+          "owner": "Luke",
+          "weekly": [
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "BYE",
+            "Win",
+            "Loss"
+          ],
+          "wins": 12,
+          "losses": 4,
+          "ties": 0,
+          "byes": 1,
+          "playoff_wins": 1,
+          "total_games": 17,
+          "final_standing": 2
+        },
+        {
+          "owner": "Micah",
+          "weekly": [
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Win"
+          ],
+          "wins": 10,
+          "losses": 7,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 2,
+          "total_games": 17,
+          "final_standing": 5
+        },
+        {
+          "owner": "Josh",
+          "weekly": [
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "TIE",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "BYE",
+            "Loss",
+            "Win"
+          ],
+          "wins": 9,
+          "losses": 6,
+          "ties": 1,
+          "byes": 1,
+          "playoff_wins": 1,
+          "total_games": 17,
+          "final_standing": 3
+        },
+        {
+          "owner": "Austin",
+          "weekly": [
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win"
+          ],
+          "wins": 4,
+          "losses": 13,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 1,
+          "total_games": 17,
+          "final_standing": 9
+        }
+      ],
+      "achievements": [
+        {
+          "award": "KBZ",
+          "counts": {
+            "Cronk": 1,
+            "Austin": 1,
+            "Jason": 1,
+            "Moss": 2,
+            "Luke": 5,
+            "Alex": 2,
+            "Josh": 2,
+            "Randy": 0,
+            "Micah": 3,
+            "Todd": 0
+          }
+        },
+        {
+          "award": "Instagib",
+          "counts": {
+            "Cronk": 1,
+            "Austin": 0,
+            "Jason": 0,
+            "Moss": 3,
+            "Luke": 5,
+            "Alex": 0,
+            "Josh": 2,
+            "Randy": 2,
+            "Micah": 3,
+            "Todd": 1
+          }
+        },
+        {
+          "award": "GameOver",
+          "counts": {
+            "Cronk": 2,
+            "Austin": 0,
+            "Jason": 1,
+            "Moss": 1,
+            "Luke": 1,
+            "Alex": 2,
+            "Josh": 2,
+            "Randy": 2,
+            "Micah": 1,
+            "Todd": 5
+          }
+        },
+        {
+          "award": "Riding the Pine",
+          "counts": {
+            "Cronk": 0,
+            "Austin": 5,
+            "Jason": 3,
+            "Moss": 2,
+            "Luke": 0,
+            "Alex": 2,
+            "Josh": 0,
+            "Randy": 1,
+            "Micah": 0,
+            "Todd": 4
+          }
+        },
+        {
+          "award": "Horseshoe",
+          "counts": {
+            "Cronk": 1,
+            "Austin": 2,
+            "Jason": 3,
+            "Moss": 0,
+            "Luke": 2,
+            "Alex": 1,
+            "Josh": 1.5,
+            "Randy": 1,
+            "Micah": 1,
+            "Todd": 0.5
+          }
+        },
+        {
+          "award": "Rocky",
+          "counts": {
+            "Cronk": 1,
+            "Austin": 0,
+            "Jason": 0,
+            "Moss": 1,
+            "Luke": 1,
+            "Alex": 0,
+            "Josh": 0,
+            "Randy": 0,
+            "Micah": 0,
+            "Todd": 2
+          }
+        }
+      ],
+      "standings": [
+        {
+          "rank": 1,
+          "team": "MossEisley Troopers",
+          "real_name": "Bobby Moss",
+          "pf": 1588.5,
+          "pa": 1458
+        },
+        {
+          "rank": 2,
+          "team": "Led Tasso",
+          "real_name": "Luke Blanchette",
+          "pf": 1616.5,
+          "pa": 1356
+        },
+        {
+          "rank": 3,
+          "team": "Grizzly Gregoire",
+          "real_name": "Josh Gregoire",
+          "pf": 1448.5,
+          "pa": 1417
+        },
+        {
+          "rank": 4,
+          "team": "Sir Mixon Lot",
+          "real_name": "Randy Blanchette",
+          "pf": 1445,
+          "pa": 1477.5
+        },
+        {
+          "rank": 5,
+          "team": "The Purge",
+          "real_name": "Micah Gentry",
+          "pf": 1574.5,
+          "pa": 1414.5
+        },
+        {
+          "rank": 6,
+          "team": "Bench Points",
+          "real_name": "Alex Schodrof",
+          "pf": 1433.5,
+          "pa": 1487.5
+        },
+        {
+          "rank": 7,
+          "team": "Boba Feta Cheese",
+          "real_name": "Todd Hoffman",
+          "pf": 1284.5,
+          "pa": 1357.5
+        },
+        {
+          "rank": 8,
+          "team": "Baba Yaga",
+          "real_name": "Dave Cronk",
+          "pf": 1326.5,
+          "pa": 1481.5
+        },
+        {
+          "rank": 9,
+          "team": "I Don't Know What I'm Doing",
+          "real_name": "Austin Smith",
+          "pf": 1417,
+          "pa": 1524.5
+        },
+        {
+          "rank": 10,
+          "team": "K-Aaron Rodgers",
+          "real_name": "Jason Minner",
+          "pf": 1396,
+          "pa": 1556.5
+        }
+      ],
+      "weekly_awards": {
+        "1": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Moss"
+            ],
+            "points": 52.5
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Moss"
+            ],
+            "points": 143
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Todd"
+            ],
+            "points": 80.5
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Randy"
+            ],
+            "points": 85
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "2": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Jason"
+            ],
+            "points": 49
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Moss"
+            ],
+            "points": 135.5
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "David"
+            ],
+            "points": 69
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Alex"
+            ],
+            "points": 104
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "3": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Luke"
+            ],
+            "points": 35.5
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Luke"
+            ],
+            "points": 124
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Todd"
+            ],
+            "points": 50.5
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Jason"
+            ],
+            "points": 94
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Moss"
+            ],
+            "points": null
+          }
+        ],
+        "4": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Luke"
+            ],
+            "points": 63.5
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Luke"
+            ],
+            "points": 149.5
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Todd"
+            ],
+            "points": 48.5
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Austin"
+            ],
+            "points": 77
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Jason"
+            ],
+            "points": 0.5
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "5": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Moss"
+            ],
+            "points": 58
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Moss"
+            ],
+            "points": 189
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Randy"
+            ],
+            "points": 68
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Todd"
+            ],
+            "points": 71.5
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Alex"
+            ],
+            "points": 2
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Todd"
+            ],
+            "points": null
+          }
+        ],
+        "6": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Luke"
+            ],
+            "points": 59
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Luke"
+            ],
+            "points": 124.5
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Alex"
+            ],
+            "points": 65.5
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Austin"
+            ],
+            "points": 66.5
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Tie"
+            ],
+            "points": 0
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Cronk"
+            ],
+            "points": null
+          }
+        ],
+        "7": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Alex"
+            ],
+            "points": 41
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Luke"
+            ],
+            "points": 137.5
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Moss"
+            ],
+            "points": 71
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Austin"
+            ],
+            "points": 71
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Austin"
+            ],
+            "points": 5.5
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "8": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Alex"
+            ],
+            "points": 40
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Josh"
+            ],
+            "points": 152.5
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Micah"
+            ],
+            "points": 81
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Jason"
+            ],
+            "points": 76
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Luke"
+            ],
+            "points": 1
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Todd"
+            ],
+            "points": null
+          }
+        ],
+        "9": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Josh"
+            ],
+            "points": 51.5
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Randy"
+            ],
+            "points": 128
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 53
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Todd"
+            ],
+            "points": 69
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Luke"
+            ],
+            "points": 20.5
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "10": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 40.5
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 125
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Todd"
+            ],
+            "points": 70.5
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Jason"
+            ],
+            "points": 62.5
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Josh"
+            ],
+            "points": 1.5
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Luke"
+            ],
+            "points": null
+          }
+        ],
+        "11": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Micah"
+            ],
+            "points": 49
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Micah"
+            ],
+            "points": 141
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Randy"
+            ],
+            "points": 84
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Moss"
+            ],
+            "points": 75
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Randy"
+            ],
+            "points": 4
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "12": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Micah"
+            ],
+            "points": 75.5
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Micah"
+            ],
+            "points": 177.5
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Todd"
+            ],
+            "points": 78
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Austin"
+            ],
+            "points": 98
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Austin"
+            ],
+            "points": 6.5
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "13": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Luke"
+            ],
+            "points": 34.5
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Micah"
+            ],
+            "points": 126
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Josh"
+            ],
+            "points": 91
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Moss"
+            ],
+            "points": 91
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Jason"
+            ],
+            "points": 1
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "14": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Micah"
+            ],
+            "points": 54
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Randy"
+            ],
+            "points": 114
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Josh"
+            ],
+            "points": 57.5
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Alex"
+            ],
+            "points": 69
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Austin"
+            ],
+            "points": 3
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "15": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Austin"
+            ],
+            "points": 73
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Todd"
+            ],
+            "points": 150.5
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Jason"
+            ],
+            "points": 69.5
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Todd"
+            ],
+            "points": 84.5
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Micah"
+            ],
+            "points": 9
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "16": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "luke"
+            ],
+            "points": 70
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "luke"
+            ],
+            "points": 138.5
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Alex"
+            ],
+            "points": 63
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Todd"
+            ],
+            "points": 98.5
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Jason"
+            ],
+            "points": 10.5
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "17": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Josh"
+            ],
+            "points": 98
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Josh"
+            ],
+            "points": 159.5
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Luke"
+            ],
+            "points": 51
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Austin"
+            ],
+            "points": 98
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 14.5
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ]
+      }
+    },
+    {
+      "year": 2023,
+      "source_file": "FF_info_2023_.xlsx",
+      "win_loss_records": [
+        {
+          "owner": "Moss",
+          "weekly": [
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss"
+          ],
+          "wins": 9,
+          "losses": 8,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 1,
+          "total_games": 17,
+          "final_standing": 1
+        },
+        {
+          "owner": "Cronk",
+          "weekly": [
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 9,
+          "losses": 8,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 0,
+          "total_games": 17,
+          "final_standing": 8
+        },
+        {
+          "owner": "Randy",
+          "weekly": [
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Win"
+          ],
+          "wins": 9,
+          "losses": 8,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 2,
+          "total_games": 17,
+          "final_standing": 4
+        },
+        {
+          "owner": "Alex",
+          "weekly": [
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss"
+          ],
+          "wins": 8,
+          "losses": 9,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 2,
+          "total_games": 17,
+          "final_standing": 6
+        },
+        {
+          "owner": "Jason",
+          "weekly": [
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss"
+          ],
+          "wins": 5,
+          "losses": 12,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 1,
+          "total_games": 17,
+          "final_standing": 10
+        },
+        {
+          "owner": "Todd",
+          "weekly": [
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 6,
+          "losses": 11,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 0,
+          "total_games": 17,
+          "final_standing": 7
+        },
+        {
+          "owner": "Luke",
+          "weekly": [
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Win"
+          ],
+          "wins": 10,
+          "losses": 7,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 3,
+          "total_games": 17,
+          "final_standing": 2
+        },
+        {
+          "owner": "Micah",
+          "weekly": [
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss"
+          ],
+          "wins": 12,
+          "losses": 5,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 2,
+          "total_games": 17,
+          "final_standing": 5
+        },
+        {
+          "owner": "Josh",
+          "weekly": [
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 6,
+          "losses": 11,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 1,
+          "total_games": 17,
+          "final_standing": 3
+        },
+        {
+          "owner": "Austin",
+          "weekly": [
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 8,
+          "losses": 9,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 0,
+          "total_games": 17,
+          "final_standing": 9
+        }
+      ],
+      "achievements": [
+        {
+          "award": "KBZ",
+          "counts": {
+            "Cronk": 1,
+            "Austin": 3,
+            "Jason": 1,
+            "Moss": 1,
+            "Luke": 0,
+            "Alex": 6,
+            "Josh": 0,
+            "Randy": 4,
+            "Micah": 0,
+            "Todd": 1
+          }
+        },
+        {
+          "award": "Instagib",
+          "counts": {
+            "Cronk": 1,
+            "Austin": 3,
+            "Jason": 1,
+            "Moss": 0,
+            "Luke": 1,
+            "Alex": 5,
+            "Josh": 0,
+            "Randy": 4,
+            "Micah": 1,
+            "Todd": 1
+          }
+        },
+        {
+          "award": "GameOver",
+          "counts": {
+            "Cronk": 2,
+            "Austin": 2,
+            "Jason": 3,
+            "Moss": 3,
+            "Luke": 1,
+            "Alex": 0,
+            "Josh": 4,
+            "Randy": 0,
+            "Micah": 1,
+            "Todd": 1
+          }
+        },
+        {
+          "award": "Riding the Pine",
+          "counts": {
+            "Cronk": 2,
+            "Austin": 0,
+            "Jason": 2,
+            "Moss": 2,
+            "Luke": 2,
+            "Alex": 3,
+            "Josh": 1,
+            "Randy": 4,
+            "Micah": 1,
+            "Todd": 0
+          }
+        },
+        {
+          "award": "Horseshoe",
+          "counts": {
+            "Cronk": 1,
+            "Austin": 0,
+            "Jason": 4,
+            "Moss": 1,
+            "Luke": 2,
+            "Alex": 0,
+            "Josh": 2,
+            "Randy": 3,
+            "Micah": 2,
+            "Todd": 2
+          }
+        },
+        {
+          "award": "Rocky",
+          "counts": {
+            "Cronk": 1,
+            "Austin": 2,
+            "Jason": 2,
+            "Moss": 2,
+            "Luke": 0,
+            "Alex": 0,
+            "Josh": 0,
+            "Randy": 0,
+            "Micah": 1,
+            "Todd": 0
+          }
+        }
+      ],
+      "standings": [
+        {
+          "owner": "Luke",
+          "reg_season_div": 4,
+          "final_standing": 1,
+          "pf": 1697.87,
+          "pa": 1704.84,
+          "waiver_start": 1000,
+          "waiver_remaining": 200,
+          "waiver_spent": 800
+        },
+        {
+          "owner": "Micah",
+          "reg_season_div": 1,
+          "final_standing": 2,
+          "pf": 1780.81,
+          "pa": 1670.45,
+          "waiver_start": 1000,
+          "waiver_remaining": 575,
+          "waiver_spent": 425
+        },
+        {
+          "owner": "Randy",
+          "reg_season_div": 3,
+          "final_standing": 3,
+          "pf": 1774.71,
+          "pa": 1661.99,
+          "waiver_start": 1000,
+          "waiver_remaining": 52,
+          "waiver_spent": 948
+        },
+        {
+          "owner": "Cronk",
+          "reg_season_div": 1,
+          "final_standing": 4,
+          "pf": 1711.99,
+          "pa": 1605.2,
+          "waiver_start": 1000,
+          "waiver_remaining": 525,
+          "waiver_spent": 475
+        },
+        {
+          "owner": "Moss",
+          "reg_season_div": 2,
+          "final_standing": 5,
+          "pf": 1641.36,
+          "pa": 1628.05,
+          "waiver_start": 1000,
+          "waiver_remaining": 424,
+          "waiver_spent": 576
+        },
+        {
+          "owner": "Austin",
+          "reg_season_div": 2,
+          "final_standing": 6,
+          "pf": 1810.94,
+          "pa": 1693.26,
+          "waiver_start": 1000,
+          "waiver_remaining": 162,
+          "waiver_spent": 838
+        },
+        {
+          "owner": "Alex",
+          "reg_season_div": 3,
+          "final_standing": 7,
+          "pf": 1780.57,
+          "pa": 1667.63,
+          "waiver_start": 1000,
+          "waiver_remaining": 998,
+          "waiver_spent": 2
+        },
+        {
+          "owner": "Josh",
+          "reg_season_div": 5,
+          "final_standing": 8,
+          "pf": 1498.87,
+          "pa": 1822.28,
+          "waiver_start": 1000,
+          "waiver_remaining": 985,
+          "waiver_spent": 15
+        },
+        {
+          "owner": "Jason",
+          "reg_season_div": 5,
+          "final_standing": 9,
+          "pf": 1423.3,
+          "pa": 1632.18,
+          "waiver_start": 1000,
+          "waiver_remaining": 614,
+          "waiver_spent": 386
+        },
+        {
+          "owner": "Todd",
+          "reg_season_div": 4,
+          "final_standing": 10,
+          "pf": 1697.57,
+          "pa": 1731.27,
+          "waiver_start": 1000,
+          "waiver_remaining": 645,
+          "waiver_spent": 355
+        }
+      ],
+      "weekly_awards": {
+        "1": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Alex"
+            ],
+            "points": 61.66
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Alex"
+            ],
+            "points": 141.29
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Luke"
+            ],
+            "points": 79.63
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Jason"
+            ],
+            "points": 88.48
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Jason"
+            ],
+            "points": 7.689999999999998
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "2": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Alex"
+            ],
+            "points": 18.760000000000005
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Alex"
+            ],
+            "points": 138.21
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Austin"
+            ],
+            "points": 104.8
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Alex"
+            ],
+            "points": 128.92
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Luke"
+            ],
+            "points": 6.010000000000005
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Luke",
+              "Randy",
+              "todd"
+            ],
+            "points": "Empty"
+          }
+        ],
+        "3": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Jason"
+            ],
+            "points": 68.17999999999999
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Jason"
+            ],
+            "points": 178.19
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Moss"
+            ],
+            "points": 103.21
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Micah"
+            ],
+            "points": 119.9
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Randy"
+            ],
+            "points": 3.4299999999999926
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Randy",
+              "Moss",
+              "Alex"
+            ],
+            "points": "Empty"
+          }
+        ],
+        "4": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Alex"
+            ],
+            "points": 77.87
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Alex"
+            ],
+            "points": 161.15
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Josh"
+            ],
+            "points": 75.65
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 137
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Josh"
+            ],
+            "points": 23.00999999999999
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Luke",
+              "Josh",
+              ""
+            ],
+            "points": null
+          }
+        ],
+        "5": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Austin"
+            ],
+            "points": 75.45
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Austin"
+            ],
+            "points": 174.66
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Josh"
+            ],
+            "points": 86.58
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Randy"
+            ],
+            "points": 80.22
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Jason"
+            ],
+            "points": 11.27000000000001
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Micah"
+            ],
+            "points": null
+          }
+        ],
+        "6": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Austin"
+            ],
+            "points": 72.11
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Austin"
+            ],
+            "points": 151.78
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Moss"
+            ],
+            "points": 79.67
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Randy"
+            ],
+            "points": 89.78
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Randy"
+            ],
+            "points": 1.3900000000000006
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Jason"
+            ],
+            "points": null
+          }
+        ],
+        "7": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 78.50000000000001
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 184.46
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Todd"
+            ],
+            "points": 91.36
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Jason"
+            ],
+            "points": 83.8
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Jason"
+            ],
+            "points": 3.5600000000000023
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Moss"
+            ],
+            "points": null
+          }
+        ],
+        "8": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Austin"
+            ],
+            "points": 84.21000000000001
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Austin"
+            ],
+            "points": 172.27
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Jason"
+            ],
+            "points": 72.33
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Randy"
+            ],
+            "points": 124.26
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Luke"
+            ],
+            "points": 16.920000000000016
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Cronk"
+            ],
+            "points": null
+          }
+        ],
+        "9": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Randy"
+            ],
+            "points": 95.61
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Randy"
+            ],
+            "points": 157.16
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 61.55
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 79.51
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Jason"
+            ],
+            "points": 26.620000000000005
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "10": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Todd"
+            ],
+            "points": 28.549999999999983
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Todd"
+            ],
+            "points": 156.67
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Josh"
+            ],
+            "points": 98.44
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Randy"
+            ],
+            "points": 85.87
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 4.149999999999977
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Austin"
+            ],
+            "points": null
+          }
+        ],
+        "11": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Moss"
+            ],
+            "points": 49.959999999999994
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Micah"
+            ],
+            "points": 169.48
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Austin"
+            ],
+            "points": 81.05
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Moss"
+            ],
+            "points": 90.36
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Todd"
+            ],
+            "points": 8.22999999999999
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Jason"
+            ],
+            "points": null
+          }
+        ],
+        "12": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Alex"
+            ],
+            "points": 77.53000000000002
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Alex"
+            ],
+            "points": 172.11
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Jason"
+            ],
+            "points": 69.57
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Alex"
+            ],
+            "points": 94.26
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Josh"
+            ],
+            "points": 1
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Moss"
+            ],
+            "points": null
+          }
+        ],
+        "13": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Randy"
+            ],
+            "points": 68.2
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Randy"
+            ],
+            "points": 167.96
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Moss"
+            ],
+            "points": 84.08
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Josh"
+            ],
+            "points": 110.79
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Todd"
+            ],
+            "points": 5.530000000000001
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Austin"
+            ],
+            "points": 34.74
+          }
+        ],
+        "14": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Randy"
+            ],
+            "points": 58.80000000000001
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Randy"
+            ],
+            "points": 150.99
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Jason"
+            ],
+            "points": 70.75
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Alex"
+            ],
+            "points": 99.11
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Micah"
+            ],
+            "points": 26.5
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "15": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Alex"
+            ],
+            "points": 25.22
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Luke"
+            ],
+            "points": 159.44
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Moss"
+            ],
+            "points": 62.79
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Moss"
+            ],
+            "points": 118.58
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Moss"
+            ],
+            "points": 6.169999999999995
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "16": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Alex"
+            ],
+            "points": 104.72000000000001
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Alex"
+            ],
+            "points": 178.33
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Josh"
+            ],
+            "points": 73.61
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Luke"
+            ],
+            "points": 93.25
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Randy"
+            ],
+            "points": 20.17
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "17": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Randy"
+            ],
+            "points": 36.79999999999998
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Randy"
+            ],
+            "points": 142.45
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 105.65
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Luke"
+            ],
+            "points": 100.73
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Micah"
+            ],
+            "points": 0.060000000000002274
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "source_file": "FF_info_2024.xlsx",
+      "win_loss_records": [
+        {
+          "owner": "Moss",
+          "weekly": [
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 10,
+          "losses": 7,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 0,
+          "total_games": 17,
+          "final_standing": 1
+        },
+        {
+          "owner": "Cronk",
+          "weekly": [
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win"
+          ],
+          "wins": 10,
+          "losses": 7,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 1,
+          "total_games": 17,
+          "final_standing": 8
+        },
+        {
+          "owner": "Randy",
+          "weekly": [
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Loss"
+          ],
+          "wins": 7,
+          "losses": 10,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 2,
+          "total_games": 17,
+          "final_standing": 4
+        },
+        {
+          "owner": "Alex",
+          "weekly": [
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss"
+          ],
+          "wins": 8,
+          "losses": 9,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 1,
+          "total_games": 17,
+          "final_standing": 6
+        },
+        {
+          "owner": "Jason",
+          "weekly": [
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss"
+          ],
+          "wins": 8,
+          "losses": 9,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 1,
+          "total_games": 17,
+          "final_standing": 10
+        },
+        {
+          "owner": "Todd",
+          "weekly": [
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 3,
+          "losses": 14,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 1,
+          "total_games": 17,
+          "final_standing": 7
+        },
+        {
+          "owner": "Luke",
+          "weekly": [
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Win"
+          ],
+          "wins": 11,
+          "losses": 6,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 3,
+          "total_games": 17,
+          "final_standing": 2
+        },
+        {
+          "owner": "Micah",
+          "weekly": [
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 8,
+          "losses": 9,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 0,
+          "total_games": 17,
+          "final_standing": 5
+        },
+        {
+          "owner": "Josh",
+          "weekly": [
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss"
+          ],
+          "wins": 10,
+          "losses": 7,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 2,
+          "total_games": 17,
+          "final_standing": 3
+        },
+        {
+          "owner": "Austin",
+          "weekly": [
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 6,
+          "losses": 11,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 0,
+          "total_games": 17,
+          "final_standing": 9
+        }
+      ],
+      "achievements": [
+        {
+          "award": "KBZ",
+          "counts": {
+            "Cronk": 3,
+            "Austin": 0,
+            "Jason": 2,
+            "Moss": 2,
+            "Luke": 1,
+            "Alex": 2,
+            "Josh": 1,
+            "Randy": 1,
+            "Micah": 5,
+            "Todd": 0
+          }
+        },
+        {
+          "award": "Instagib",
+          "counts": {
+            "Cronk": 2,
+            "Austin": 1,
+            "Jason": 2,
+            "Moss": 4,
+            "Luke": 2,
+            "Alex": 2,
+            "Josh": 2,
+            "Randy": 1,
+            "Micah": 1,
+            "Todd": 0
+          }
+        },
+        {
+          "award": "GameOver",
+          "counts": {
+            "Cronk": 0,
+            "Austin": 4,
+            "Jason": 1,
+            "Moss": 2,
+            "Luke": 0,
+            "Alex": 0,
+            "Josh": 2,
+            "Randy": 0,
+            "Micah": 3,
+            "Todd": 5
+          }
+        },
+        {
+          "award": "Riding the Pine",
+          "counts": {
+            "Cronk": 0,
+            "Austin": 3,
+            "Jason": 1,
+            "Moss": 1,
+            "Luke": 5,
+            "Alex": 3,
+            "Josh": 1,
+            "Randy": 1,
+            "Micah": 0,
+            "Todd": 2
+          }
+        },
+        {
+          "award": "Horseshoe",
+          "counts": {
+            "Cronk": 4,
+            "Austin": 2,
+            "Jason": 2,
+            "Moss": 2,
+            "Luke": 1,
+            "Alex": 2,
+            "Josh": 1,
+            "Randy": 3,
+            "Micah": 0,
+            "Todd": 0
+          }
+        },
+        {
+          "award": "Rocky",
+          "counts": {
+            "Cronk": 0,
+            "Austin": 1,
+            "Jason": 0,
+            "Moss": 1,
+            "Luke": 0,
+            "Alex": 0,
+            "Josh": 0,
+            "Randy": 0,
+            "Micah": 0,
+            "Todd": 1
+          }
+        }
+      ],
+      "standings": [
+        {
+          "owner": "Todd",
+          "reg_season_div": 4,
+          "final_standing": 10,
+          "pf": 1697.57,
+          "pa": 1731.27,
+          "waiver_start": 1000,
+          "waiver_remaining": 645,
+          "waiver_spent": 355
+        },
+        {
+          "owner": "Jason",
+          "reg_season_div": 5,
+          "final_standing": 9,
+          "pf": 1423.3,
+          "pa": 1632.18,
+          "waiver_start": 1000,
+          "waiver_remaining": 614,
+          "waiver_spent": 386
+        },
+        {
+          "owner": "Josh",
+          "reg_season_div": 5,
+          "final_standing": 8,
+          "pf": 1498.87,
+          "pa": 1822.28,
+          "waiver_start": 1000,
+          "waiver_remaining": 985,
+          "waiver_spent": 15
+        },
+        {
+          "owner": "Alex",
+          "reg_season_div": 3,
+          "final_standing": 7,
+          "pf": 1780.57,
+          "pa": 1667.63,
+          "waiver_start": 1000,
+          "waiver_remaining": 998,
+          "waiver_spent": 2
+        },
+        {
+          "owner": "Austin",
+          "reg_season_div": 2,
+          "final_standing": 6,
+          "pf": 1810.94,
+          "pa": 1693.26,
+          "waiver_start": 1000,
+          "waiver_remaining": 162,
+          "waiver_spent": 838
+        },
+        {
+          "owner": "Moss",
+          "reg_season_div": 2,
+          "final_standing": 5,
+          "pf": 1641.36,
+          "pa": 1628.05,
+          "waiver_start": 1000,
+          "waiver_remaining": 424,
+          "waiver_spent": 576
+        },
+        {
+          "owner": "Cronk",
+          "reg_season_div": 1,
+          "final_standing": 4,
+          "pf": 1711.99,
+          "pa": 1605.2,
+          "waiver_start": 1000,
+          "waiver_remaining": 525,
+          "waiver_spent": 475
+        },
+        {
+          "owner": "Randy",
+          "reg_season_div": 3,
+          "final_standing": 3,
+          "pf": 1774.71,
+          "pa": 1661.99,
+          "waiver_start": 1000,
+          "waiver_remaining": 52,
+          "waiver_spent": 948
+        },
+        {
+          "owner": "Micah",
+          "reg_season_div": 1,
+          "final_standing": 2,
+          "pf": 1780.81,
+          "pa": 1670.45,
+          "waiver_start": 1000,
+          "waiver_remaining": 575,
+          "waiver_spent": 425
+        },
+        {
+          "owner": "Luke",
+          "reg_season_div": 4,
+          "final_standing": 1,
+          "pf": 1697.87,
+          "pa": 1704.84,
+          "waiver_start": 1000,
+          "waiver_remaining": 200,
+          "waiver_spent": 800
+        }
+      ],
+      "weekly_awards": {
+        "1": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Micah"
+            ],
+            "points": 50.400000000000006
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 181
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Moss"
+            ],
+            "points": 118.4
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Austin"
+            ],
+            "points": 142.7
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Austin"
+            ],
+            "points": 5.25
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Austin",
+              "Moss",
+              "Luke"
+            ],
+            "points": null
+          }
+        ],
+        "2": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Jason"
+            ],
+            "points": 84.85
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Jason"
+            ],
+            "points": 199.2
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Todd"
+            ],
+            "points": 107.95
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Austin"
+            ],
+            "points": 109.6
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Moss"
+            ],
+            "points": 2.25
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Micah 1% 3 to go",
+              "Cronk 12 % 3 to go",
+              "Randy 28% 1 to go",
+              "Moss 17% 1 to go"
+            ],
+            "points": "Empty"
+          }
+        ],
+        "3": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Micah"
+            ],
+            "points": 108.80000000000001
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Luke"
+            ],
+            "points": 195.7
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Josh"
+            ],
+            "points": 68.35
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Todd"
+            ],
+            "points": 161.55
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 8.5
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Moss"
+            ],
+            "points": null
+          }
+        ],
+        "4": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Luke"
+            ],
+            "points": 104.60000000000001
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Luke"
+            ],
+            "points": 197.3
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Micah"
+            ],
+            "points": 92.7
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Jason"
+            ],
+            "points": 153.65
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Randy"
+            ],
+            "points": 1.0999999999999943
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Moss 28% 2 tg"
+            ],
+            "points": null
+          }
+        ],
+        "5": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 57.05000000000001
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Alex"
+            ],
+            "points": 202
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Austin"
+            ],
+            "points": 122.1
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Luke"
+            ],
+            "points": 100.9
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Randy"
+            ],
+            "points": 4.5
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "6": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Micah"
+            ],
+            "points": 123.85
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Micah"
+            ],
+            "points": 211.25
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Austin"
+            ],
+            "points": 87.4
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Luke"
+            ],
+            "points": 101.9
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Alex"
+            ],
+            "points": 15.150000000000006
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "7": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Randy"
+            ],
+            "points": 36.599999999999994
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Austin"
+            ],
+            "points": 170.65
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Todd"
+            ],
+            "points": 85.7
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Alex"
+            ],
+            "points": 145.4
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Moss"
+            ],
+            "points": 5.650000000000006
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": 0
+          }
+        ],
+        "8": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Moss"
+            ],
+            "points": 62.94999999999999
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Moss"
+            ],
+            "points": 188.1
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Todd"
+            ],
+            "points": 125.15
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Alex"
+            ],
+            "points": 147.35
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Jason"
+            ],
+            "points": 4.799999999999983
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "9": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Alex"
+            ],
+            "points": 62.44999999999999
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Alex"
+            ],
+            "points": 237
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Austin"
+            ],
+            "points": 111.15
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Todd"
+            ],
+            "points": 146.4
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Jason"
+            ],
+            "points": 1.75
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "10": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Moss"
+            ],
+            "points": 54.599999999999994
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Moss"
+            ],
+            "points": 225.4
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Jason"
+            ],
+            "points": 120.2
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Randy"
+            ],
+            "points": 129.05
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Alex"
+            ],
+            "points": 4.199999999999989
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Todd"
+            ],
+            "points": null
+          }
+        ],
+        "11": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Jason"
+            ],
+            "points": 84.85
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Jason"
+            ],
+            "points": 204.85
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Micah"
+            ],
+            "points": 120
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Luke"
+            ],
+            "points": 144.45
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Randy"
+            ],
+            "points": 15
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "12": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Micah"
+            ],
+            "points": 28.80000000000001
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Moss"
+            ],
+            "points": 180.05
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Josh"
+            ],
+            "points": 120
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Josh"
+            ],
+            "points": 110.15
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 9.850000000000023
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "13": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Micah"
+            ],
+            "points": 12.449999999999989
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Randy"
+            ],
+            "points": 189.45
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Todd"
+            ],
+            "points": 113.2
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Luke"
+            ],
+            "points": 158.5
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 2.5999999999999943
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Austin 4% 1tg"
+            ],
+            "points": 34.74
+          }
+        ],
+        "14": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 63.14999999999999
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Moss"
+            ],
+            "points": 217.3
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Todd"
+            ],
+            "points": 104.8
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Austin"
+            ],
+            "points": 120.1
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Luke"
+            ],
+            "points": 7.700000000000017
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "15": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Josh"
+            ],
+            "points": 36.19999999999999
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Josh"
+            ],
+            "points": 197.1
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Austin"
+            ],
+            "points": 114.6
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Alex"
+            ],
+            "points": 122.9
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Austin"
+            ],
+            "points": 8.25
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "16": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Alex"
+            ],
+            "points": 49.75
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Josh"
+            ],
+            "points": 209.95
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Micah"
+            ],
+            "points": 113.5
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Moss"
+            ],
+            "points": 132.6
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 0.45000000000001705
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "17": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 102.89999999999999
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 227.85
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Moss"
+            ],
+            "points": 124.95
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Luke"
+            ],
+            "points": 162.5
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Josh"
+            ],
+            "points": 19.350000000000023
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ]
+      },
+      "standings_suspect_stale": true
+    },
+    {
+      "year": 2025,
+      "source_file": "FF_info_2025.xlsx",
+      "win_loss_records": [
+        {
+          "owner": "Moss",
+          "weekly": [
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 5,
+          "losses": 12,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 0,
+          "total_games": 17,
+          "final_standing": 1
+        },
+        {
+          "owner": "Cronk",
+          "weekly": [
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 8,
+          "losses": 9,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 0,
+          "total_games": 17,
+          "final_standing": 8
+        },
+        {
+          "owner": "Randy",
+          "weekly": [
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 7,
+          "losses": 10,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 0,
+          "total_games": 17,
+          "final_standing": 4
+        },
+        {
+          "owner": "Alex",
+          "weekly": [
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 6,
+          "losses": 11,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 0,
+          "total_games": 17,
+          "final_standing": 6
+        },
+        {
+          "owner": "Jason",
+          "weekly": [
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 2,
+          "losses": 15,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 0,
+          "total_games": 17,
+          "final_standing": 10
+        },
+        {
+          "owner": "Todd",
+          "weekly": [
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 5,
+          "losses": 12,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 0,
+          "total_games": 17,
+          "final_standing": 7
+        },
+        {
+          "owner": "Luke",
+          "weekly": [
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 6,
+          "losses": 11,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 0,
+          "total_games": 17,
+          "final_standing": 2
+        },
+        {
+          "owner": "Micah",
+          "weekly": [
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 7,
+          "losses": 10,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 0,
+          "total_games": 17,
+          "final_standing": 5
+        },
+        {
+          "owner": "Josh",
+          "weekly": [
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 3,
+          "losses": 14,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 0,
+          "total_games": 17,
+          "final_standing": 3
+        },
+        {
+          "owner": "Austin",
+          "weekly": [
+            "Win",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Win",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss",
+            "Loss"
+          ],
+          "wins": 6,
+          "losses": 11,
+          "ties": 0,
+          "byes": 0,
+          "playoff_wins": 0,
+          "total_games": 17,
+          "final_standing": 9
+        }
+      ],
+      "achievements": [
+        {
+          "award": "KBZ",
+          "counts": {
+            "Cronk": 1,
+            "Austin": 0,
+            "Jason": 1,
+            "Moss": 2,
+            "Luke": 3,
+            "Alex": 0,
+            "Josh": 0,
+            "Randy": 1,
+            "Micah": 3,
+            "Todd": 0
+          }
+        },
+        {
+          "award": "Instagib",
+          "counts": {
+            "Cronk": 2,
+            "Austin": 1,
+            "Jason": 1,
+            "Moss": 1,
+            "Luke": 1,
+            "Alex": 1,
+            "Josh": 0,
+            "Randy": 1,
+            "Micah": 3,
+            "Todd": 0
+          }
+        },
+        {
+          "award": "GameOver",
+          "counts": {
+            "Cronk": 1,
+            "Austin": 0,
+            "Jason": 2,
+            "Moss": 1,
+            "Luke": 1,
+            "Alex": 1,
+            "Josh": 0,
+            "Randy": 1,
+            "Micah": 1,
+            "Todd": 3
+          }
+        },
+        {
+          "award": "Riding the Pine",
+          "counts": {
+            "Cronk": 2,
+            "Austin": 0,
+            "Jason": 0,
+            "Moss": 1,
+            "Luke": 1,
+            "Alex": 1,
+            "Josh": 2,
+            "Randy": 2,
+            "Micah": 1,
+            "Todd": 1
+          }
+        },
+        {
+          "award": "Horseshoe",
+          "counts": {
+            "Cronk": 1,
+            "Austin": 1,
+            "Jason": 1,
+            "Moss": 0,
+            "Luke": 1,
+            "Alex": 2,
+            "Josh": 1,
+            "Randy": 2,
+            "Micah": 0,
+            "Todd": 2
+          }
+        },
+        {
+          "award": "Eberbluis",
+          "counts": {
+            "Cronk": 1,
+            "Austin": 1,
+            "Jason": 2,
+            "Moss": 0,
+            "Luke": 0,
+            "Alex": 0,
+            "Josh": 0,
+            "Randy": 1,
+            "Micah": 0,
+            "Todd": 0
+          }
+        },
+        {
+          "award": "Rocky",
+          "counts": {
+            "Cronk": 1,
+            "Austin": 0,
+            "Jason": 1,
+            "Moss": 1,
+            "Luke": 0,
+            "Alex": 0,
+            "Josh": 0,
+            "Randy": 1,
+            "Micah": 0,
+            "Todd": 2
+          }
+        }
+      ],
+      "standings": [
+        {
+          "owner": "Austin",
+          "reg_season_div": null,
+          "final_standing": null,
+          "pf": null,
+          "pa": null,
+          "waiver_start": 1000,
+          "waiver_remaining": 408,
+          "waiver_spent": 592
+        },
+        {
+          "owner": "Alex",
+          "reg_season_div": null,
+          "final_standing": null,
+          "pf": null,
+          "pa": null,
+          "waiver_start": 1000,
+          "waiver_remaining": 458,
+          "waiver_spent": 542
+        },
+        {
+          "owner": "Cronk",
+          "reg_season_div": null,
+          "final_standing": null,
+          "pf": null,
+          "pa": null,
+          "waiver_start": 1000,
+          "waiver_remaining": 520,
+          "waiver_spent": 480
+        },
+        {
+          "owner": "Jason",
+          "reg_season_div": null,
+          "final_standing": null,
+          "pf": null,
+          "pa": null,
+          "waiver_start": 1000,
+          "waiver_remaining": 633,
+          "waiver_spent": 367
+        },
+        {
+          "owner": "Moss",
+          "reg_season_div": null,
+          "final_standing": null,
+          "pf": null,
+          "pa": null,
+          "waiver_start": 1000,
+          "waiver_remaining": 667,
+          "waiver_spent": 333
+        },
+        {
+          "owner": "Randy",
+          "reg_season_div": null,
+          "final_standing": null,
+          "pf": null,
+          "pa": null,
+          "waiver_start": 1000,
+          "waiver_remaining": 815,
+          "waiver_spent": 185
+        },
+        {
+          "owner": "Luke",
+          "reg_season_div": null,
+          "final_standing": null,
+          "pf": null,
+          "pa": null,
+          "waiver_start": 1000,
+          "waiver_remaining": 851,
+          "waiver_spent": 149
+        },
+        {
+          "owner": "Micah",
+          "reg_season_div": null,
+          "final_standing": null,
+          "pf": null,
+          "pa": null,
+          "waiver_start": 1000,
+          "waiver_remaining": 868,
+          "waiver_spent": 132
+        },
+        {
+          "owner": "Todd",
+          "reg_season_div": null,
+          "final_standing": null,
+          "pf": null,
+          "pa": null,
+          "waiver_start": 1000,
+          "waiver_remaining": 930,
+          "waiver_spent": 70
+        },
+        {
+          "owner": "Josh",
+          "reg_season_div": null,
+          "final_standing": null,
+          "pf": null,
+          "pa": null,
+          "waiver_start": 1000,
+          "waiver_remaining": 937,
+          "waiver_spent": 63
+        }
+      ],
+      "weekly_awards": {
+        "1": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Micah"
+            ],
+            "points": 44.20000000000002
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Micah"
+            ],
+            "points": 189.8
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Luke"
+            ],
+            "points": 109.95
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Todd"
+            ],
+            "points": 136.4
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Alex"
+            ],
+            "points": 0.6000000000000085
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Todd"
+            ],
+            "points": null
+          }
+        ],
+        "2": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Micah"
+            ],
+            "points": 42.5
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Micah"
+            ],
+            "points": 194.05
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Jason"
+            ],
+            "points": 125.05
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Josh"
+            ],
+            "points": 158.8
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 0.8000000000000114
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Randy"
+            ],
+            "points": null
+          }
+        ],
+        "3": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 78.7
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 181.9
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Jason"
+            ],
+            "points": 103.2
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Alex"
+            ],
+            "points": 138.2
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Josh"
+            ],
+            "points": 1.1500000000000057
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Todd"
+            ],
+            "points": null
+          }
+        ],
+        "4": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Luke"
+            ],
+            "points": 63.099999999999994
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Luke"
+            ],
+            "points": 191.25
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Todd"
+            ],
+            "points": 128.15
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Luke"
+            ],
+            "points": 119.8
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Jason"
+            ],
+            "points": 3.5500000000000114
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Moss"
+            ],
+            "points": null
+          }
+        ],
+        "5": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Luke"
+            ],
+            "points": 64.65
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 204.4
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Todd"
+            ],
+            "points": 112.9
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Micah"
+            ],
+            "points": 175.2
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Randy"
+            ],
+            "points": 8.700000000000017
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": null
+          }
+        ],
+        "6": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Randy"
+            ],
+            "points": 98.24999999999999
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Micah"
+            ],
+            "points": 210.35
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 103.15
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 125
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Luke"
+            ],
+            "points": 23
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Jason"
+            ],
+            "points": null
+          }
+        ],
+        "7": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Moss"
+            ],
+            "points": 74.04999999999998
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Austin"
+            ],
+            "points": 191.5
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Todd"
+            ],
+            "points": 101.4
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Randy"
+            ],
+            "points": 146
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Alex"
+            ],
+            "points": 0.39999999999997726
+          },
+          {
+            "award": "Eberbluis",
+            "winners": [
+              "Jason"
+            ],
+            "points": 18.69999999999999
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Cronk"
+            ],
+            "points": null
+          }
+        ],
+        "8": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Jason"
+            ],
+            "points": 78.6
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Jason"
+            ],
+            "points": 195.45
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Alex"
+            ],
+            "points": 113
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Randy"
+            ],
+            "points": 147.85
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Randy"
+            ],
+            "points": 1.8499999999999943
+          },
+          {
+            "award": "Eberbluis",
+            "winners": [
+              "Austin"
+            ],
+            "points": 14.199999999999989
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": 0
+          }
+        ],
+        "9": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Moss"
+            ],
+            "points": 51.599999999999994
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Moss"
+            ],
+            "points": 194.85
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Micah"
+            ],
+            "points": 104.7
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Moss"
+            ],
+            "points": 129.2
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Todd"
+            ],
+            "points": 23.149999999999977
+          },
+          {
+            "award": "Eberbluis",
+            "winners": [
+              "Jason"
+            ],
+            "points": 0
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": 0
+          }
+        ],
+        "10": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Luke"
+            ],
+            "points": 59.89999999999998
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Randy"
+            ],
+            "points": 218.4
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Moss"
+            ],
+            "points": 111.1
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 131.1
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Austin"
+            ],
+            "points": 3.5999999999999943
+          },
+          {
+            "award": "Eberbluis",
+            "winners": [
+              "Cronk"
+            ],
+            "points": 38.75
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": 0
+          }
+        ],
+        "11": [
+          {
+            "award": "KBZ",
+            "winners": [
+              "Micah"
+            ],
+            "points": 34.14999999999998
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "Alex"
+            ],
+            "points": 181.25
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "Randy"
+            ],
+            "points": 103.45
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "Josh"
+            ],
+            "points": 133.65
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [
+              "Todd"
+            ],
+            "points": 0.5999999999999943
+          },
+          {
+            "award": "Eberbluis",
+            "winners": [
+              "Randy"
+            ],
+            "points": 14.549999999999997
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": 0
+          }
+        ],
+        "12": [
+          {
+            "award": "KBZ",
+            "winners": [],
+            "points": 0
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "#N/A"
+            ],
+            "points": 0
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "#N/A"
+            ],
+            "points": 0
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "#N/A"
+            ],
+            "points": 0
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [],
+            "points": 0
+          },
+          {
+            "award": "Eberbluis",
+            "winners": [],
+            "points": 0
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": 0
+          }
+        ],
+        "13": [
+          {
+            "award": "KBZ",
+            "winners": [],
+            "points": 0
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "#N/A"
+            ],
+            "points": 0
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "#N/A"
+            ],
+            "points": 0
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "#N/A"
+            ],
+            "points": 0
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [],
+            "points": 0
+          },
+          {
+            "award": "Eberbluis",
+            "winners": [],
+            "points": 0
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": 0
+          }
+        ],
+        "14": [
+          {
+            "award": "KBZ",
+            "winners": [],
+            "points": 0
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "#N/A"
+            ],
+            "points": 0
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "#N/A"
+            ],
+            "points": 0
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "#N/A"
+            ],
+            "points": 0
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [],
+            "points": 0
+          },
+          {
+            "award": "Eberbluis",
+            "winners": [],
+            "points": 0
+          },
+          {
+            "award": "Rocky",
+            "winners": [
+              "Cronk"
+            ],
+            "points": null
+          }
+        ],
+        "15": [
+          {
+            "award": "KBZ",
+            "winners": [],
+            "points": 0
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "#N/A"
+            ],
+            "points": 0
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "#N/A"
+            ],
+            "points": 0
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "#N/A"
+            ],
+            "points": 0
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [],
+            "points": 0
+          },
+          {
+            "award": "Eberbluis",
+            "winners": [],
+            "points": 0
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": 0
+          }
+        ],
+        "16": [
+          {
+            "award": "KBZ",
+            "winners": [],
+            "points": 0
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "#N/A"
+            ],
+            "points": 0
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "#N/A"
+            ],
+            "points": 0
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "#N/A"
+            ],
+            "points": 0
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [],
+            "points": 0
+          },
+          {
+            "award": "Eberbluis",
+            "winners": [],
+            "points": 0
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": 0
+          }
+        ],
+        "17": [
+          {
+            "award": "KBZ",
+            "winners": [],
+            "points": 0
+          },
+          {
+            "award": "Instagib",
+            "winners": [
+              "#N/A"
+            ],
+            "points": 0
+          },
+          {
+            "award": "GameOver",
+            "winners": [
+              "#N/A"
+            ],
+            "points": 0
+          },
+          {
+            "award": "Riding the Pine",
+            "winners": [
+              "#N/A"
+            ],
+            "points": 0
+          },
+          {
+            "award": "Horseshoe",
+            "winners": [],
+            "points": 0
+          },
+          {
+            "award": "Eberbluis",
+            "winners": [],
+            "points": 0
+          },
+          {
+            "award": "Rocky",
+            "winners": [],
+            "points": 0
+          }
+        ]
+      }
+    }
+  ],
+  "all_time_top_scores": [
+    {
+      "year": 2024,
+      "owner": "Alex",
+      "week": "Week 9",
+      "points": 237,
+      "note": "Against Josh"
+    },
+    {
+      "year": 2024,
+      "owner": "Cronk",
+      "week": "Week 17",
+      "points": 227.85,
+      "note": "Against Moss"
+    },
+    {
+      "year": 2025,
+      "owner": "Randy",
+      "week": "Week 10",
+      "points": 218.4,
+      "note": "Against Cronk"
+    },
+    {
+      "year": 2024,
+      "owner": "Moss",
+      "week": "Week 14",
+      "points": 217.3,
+      "note": "Against Josh"
+    },
+    {
+      "year": 2024,
+      "owner": "Micah",
+      "week": "Week 6",
+      "points": 211.25,
+      "note": "Against Austin"
+    },
+    {
+      "year": 2025,
+      "owner": "Micah",
+      "week": "Week 6",
+      "points": 210.35,
+      "note": "Against Todd"
+    },
+    {
+      "year": 2024,
+      "owner": "Josh",
+      "week": "Week 16",
+      "points": 209.95,
+      "note": "Against Moss"
+    },
+    {
+      "year": 2024,
+      "owner": "Luke",
+      "week": "Week 6",
+      "points": 207.3,
+      "note": "Against Todd"
+    },
+    {
+      "year": 2024,
+      "owner": "Jason",
+      "week": "Week 11",
+      "points": 204.85,
+      "note": "Against Micah"
+    },
+    {
+      "year": 2024,
+      "owner": "Alex",
+      "week": "Week 5",
+      "points": 202,
+      "note": "Against Luke"
+    },
+    {
+      "year": 2024,
+      "owner": "Luke",
+      "week": "Week 17",
+      "points": 201.8,
+      "note": "Against Josh"
+    },
+    {
+      "year": 2024,
+      "owner": "Moss",
+      "week": "Week 16",
+      "points": 201.55,
+      "note": "Against Josh (L)"
+    },
+    {
+      "year": 2022,
+      "owner": "Moss",
+      "week": "Week 5",
+      "points": 189,
+      "note": "Against Jason"
+    },
+    {
+      "year": 2023,
+      "owner": "Cronk",
+      "week": "Week 7",
+      "points": 184.46,
+      "note": "Against Josh"
+    },
+    {
+      "year": 2020,
+      "owner": "Alex",
+      "week": "Week 4",
+      "points": 179.5,
+      "note": "Against Todd"
+    },
+    {
+      "year": 2023,
+      "owner": "Jason",
+      "week": "Week 3",
+      "points": 178.19,
+      "note": "Against Micah"
+    },
+    {
+      "year": 2019,
+      "owner": "Josh",
+      "week": "Week 15 round 2 ",
+      "points": 178,
+      "note": "Against Cronk"
+    },
+    {
+      "year": 2022,
+      "owner": "Micah",
+      "week": "Week 12",
+      "points": 177.5,
+      "note": "Against Cronk"
+    },
+    {
+      "year": 2018,
+      "owner": "Moss",
+      "week": "Week 6",
+      "points": 175.5,
+      "note": "Against Josh"
+    },
+    {
+      "year": 2013,
+      "owner": "Moss",
+      "week": "Week 13",
+      "points": 175.5,
+      "note": "Against Alex"
+    },
+    {
+      "year": 2018,
+      "owner": "Randy",
+      "week": "Week 11",
+      "points": 175,
+      "note": "Against Jason"
+    }
+  ],
+  "career_totals": {
+    "Moss": {
+      "wins": 36,
+      "losses": 32,
+      "ties": 0,
+      "playoff_wins": 4,
+      "pf": 1641.36,
+      "pa": 1628.05
+    },
+    "Cronk": {
+      "wins": 34,
+      "losses": 34,
+      "ties": 0,
+      "playoff_wins": 2,
+      "pf": 1711.99,
+      "pa": 1605.2
+    },
+    "Randy": {
+      "wins": 31,
+      "losses": 37,
+      "ties": 0,
+      "playoff_wins": 5,
+      "pf": 1774.71,
+      "pa": 1661.99
+    },
+    "Alex": {
+      "wins": 29,
+      "losses": 39,
+      "ties": 0,
+      "playoff_wins": 3,
+      "pf": 1780.57,
+      "pa": 1667.63
+    },
+    "Jason": {
+      "wins": 19,
+      "losses": 49,
+      "ties": 0,
+      "playoff_wins": 2,
+      "pf": 1423.3,
+      "pa": 1632.18
+    },
+    "Todd": {
+      "wins": 23,
+      "losses": 44,
+      "ties": 1,
+      "playoff_wins": 4,
+      "pf": 1697.57,
+      "pa": 1731.27
+    },
+    "Luke": {
+      "wins": 39,
+      "losses": 28,
+      "ties": 0,
+      "playoff_wins": 7,
+      "pf": 1697.87,
+      "pa": 1704.84
+    },
+    "Micah": {
+      "wins": 37,
+      "losses": 31,
+      "ties": 0,
+      "playoff_wins": 4,
+      "pf": 1780.81,
+      "pa": 1670.45
+    },
+    "Josh": {
+      "wins": 28,
+      "losses": 38,
+      "ties": 1,
+      "playoff_wins": 4,
+      "pf": 1498.87,
+      "pa": 1822.28
+    },
+    "Austin": {
+      "wins": 24,
+      "losses": 44,
+      "ties": 0,
+      "playoff_wins": 1,
+      "pf": 1810.94,
+      "pa": 1693.26
+    }
+  }
+}

@@ -400,10 +400,146 @@ function renderCurrent() {
       <tbody>${rows}</tbody>
     </table>
     ${matchupsHtml}
+    <div id="power-rankings-section"></div>
     <div id="preview-section"></div>
   `;
   bindSortables(el);
+  renderPowerRankingsSection();
   renderPreviewSection();
+}
+
+/* ---------------- Power Rankings ----------------
+   A blended rank combining season record, season-long scoring average, and
+   recent form (last 3 played weeks), the standard formula fantasy sites use
+   for "power rankings" as distinct from plain win-loss standings. Each of
+   the three factors is scored by relative rank among the league (best team
+   in a factor scores 100, worst scores 0), then combined 40% record / 30%
+   season average / 30% recent form, since recent form gives lower-ranked
+   but hot teams a boost the raw standings can't show.
+
+   Everything here is computed directly from matchups_by_week rather than
+   trusting Sleeper's cumulative win/loss field, specifically so the same
+   function can reconstruct "as of last week" for the week-over-week
+   movement column -- no separate history/snapshot storage needed. */
+
+function playedWeeksList() {
+  return Object.keys(state.current.matchups_by_week || {})
+    .map(Number)
+    .filter(w => (state.current.matchups_by_week[String(w)] || []).some(m => (m.points || 0) > 0))
+    .sort((a, b) => a - b);
+}
+
+function computeStandingsThroughWeek(maxWeek) {
+  const byRoster = {};
+  state.current.teams.forEach(t => { byRoster[t.roster_id] = { wins: 0, losses: 0, ties: 0, scores: [] }; });
+
+  playedWeeksList().filter(w => w <= maxWeek).forEach(w => {
+    const wk = state.current.matchups_by_week[String(w)];
+    const byMatchup = {};
+    wk.forEach(m => { (byMatchup[m.matchup_id] = byMatchup[m.matchup_id] || []).push(m); });
+    Object.values(byMatchup).forEach(pair => {
+      if (pair.length < 2) return;
+      const [a, b] = pair;
+      const aScore = a.points || 0, bScore = b.points || 0;
+      if (byRoster[a.roster_id]) byRoster[a.roster_id].scores.push(aScore);
+      if (byRoster[b.roster_id]) byRoster[b.roster_id].scores.push(bScore);
+      if (aScore > bScore) { byRoster[a.roster_id].wins++; byRoster[b.roster_id].losses++; }
+      else if (bScore > aScore) { byRoster[b.roster_id].wins++; byRoster[a.roster_id].losses++; }
+      else { byRoster[a.roster_id].ties++; byRoster[b.roster_id].ties++; }
+    });
+  });
+  return byRoster;
+}
+
+function computePowerRankings(maxWeek) {
+  const standings = computeStandingsThroughWeek(maxWeek);
+  const list = state.current.teams.map(t => {
+    const s = standings[t.roster_id] || { wins: 0, losses: 0, ties: 0, scores: [] };
+    const gamesPlayed = s.scores.length;
+    const winPct = s.wins / Math.max(1, s.wins + s.losses + s.ties);
+    const seasonAvg = gamesPlayed ? s.scores.reduce((a, b) => a + b, 0) / gamesPlayed : 0;
+    const recent = s.scores.slice(-3);
+    const recentAvg = recent.length ? recent.reduce((a, b) => a + b, 0) / recent.length : seasonAvg;
+    return { team: t, wins: s.wins, losses: s.losses, ties: s.ties, gamesPlayed, winPct, seasonAvg, recentAvg };
+  });
+
+  if (!list.some(s => s.gamesPlayed > 0)) return null;
+
+  const n = list.length;
+  const rankScore = (key) => {
+    const sorted = [...list].sort((a, b) => b[key] - a[key]);
+    const scoreByRoster = new Map();
+    sorted.forEach((s, i) => scoreByRoster.set(s.team.roster_id, n > 1 ? (n - 1 - i) / (n - 1) * 100 : 100));
+    return scoreByRoster;
+  };
+  const winScores = rankScore('winPct');
+  const pfScores = rankScore('seasonAvg');
+  const recentScores = rankScore('recentAvg');
+
+  return list.map(s => {
+    const rid = s.team.roster_id;
+    const powerScore = 0.4 * winScores.get(rid) + 0.3 * pfScores.get(rid) + 0.3 * recentScores.get(rid);
+    return { ...s, powerScore };
+  }).sort((a, b) => b.powerScore - a.powerScore);
+}
+
+function renderPowerRankingsSection() {
+  const el = document.getElementById('power-rankings-section');
+  if (!el) return;
+
+  const played = playedWeeksList();
+  if (!played.length) { el.innerHTML = ''; return; }
+  const currentWeek = played[played.length - 1];
+  const previousWeek = played.length > 1 ? played[played.length - 2] : null;
+
+  const rankings = computePowerRankings(currentWeek);
+  if (!rankings) { el.innerHTML = ''; return; }
+
+  const prevRankings = previousWeek ? computePowerRankings(previousWeek) : null;
+  const prevRankByRoster = new Map();
+  if (prevRankings) prevRankings.forEach((r, i) => prevRankByRoster.set(r.team.roster_id, i + 1));
+
+  const movementCell = (rid, currentRank) => {
+    if (!prevRankByRoster.has(rid)) return `<span class="card-note">New</span>`;
+    const prevRank = prevRankByRoster.get(rid);
+    const delta = prevRank - currentRank; // positive = moved up
+    if (delta === 0) return `<span class="card-note">–</span>`;
+    const cls = delta > 0 ? 'move-up' : 'move-down';
+    const arrow = delta > 0 ? '▲' : '▼';
+    return `<span class="${cls}">${arrow} ${Math.abs(delta)}</span>`;
+  };
+
+  const rows = rankings.map((r, i) => {
+    const t = r.team;
+    const rank = i + 1;
+    return `<tr class="${i === 0 ? 'rank-1' : ''}">
+      <td data-sort-value="${rank}">${rank}</td>
+      <td data-sort-value="${prevRankByRoster.has(t.roster_id) ? (prevRankByRoster.get(t.roster_id) - rank) : 999}">${movementCell(t.roster_id, rank)}</td>
+      <td class="name-cell">${liveTeamLabel(t)}</td>
+      <td data-sort-value="${r.wins ?? 0}">${r.wins ?? 0}-${r.losses ?? 0}${r.ties ? `-${r.ties}` : ''}</td>
+      <td data-sort-value="${r.seasonAvg}">${r.seasonAvg.toFixed(1)}</td>
+      <td data-sort-value="${r.recentAvg}">${r.recentAvg.toFixed(1)}</td>
+      <td data-sort-value="${r.powerScore}"><strong>${r.powerScore.toFixed(0)}</strong></td>
+    </tr>`;
+  }).join('');
+
+  el.innerHTML = `
+    <h2 class="section-title">Power Rankings</h2>
+    <p class="card-note" style="margin-bottom:12px;">Blends record (40%), season scoring average (30%), and last-3-week form (30%) into one score out of 100 — a team on a hot streak can outrank a better record here. Movement compares to Week ${previousWeek ?? '–'}.</p>
+    <table class="sortable">
+      <thead><tr>
+        <th data-sort-key="rank" data-sort-type="num">#</th>
+        <th data-sort-key="move" data-sort-type="num">Move</th>
+        <th data-sort-key="team">Team</th>
+        <th data-sort-key="record" data-sort-type="num">Record</th>
+        <th data-sort-key="avg" data-sort-type="num">Season Avg</th>
+        <th data-sort-key="last3" data-sort-type="num">Last 3 Avg</th>
+        <th data-sort-key="power" data-sort-type="num">Power Score</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+  bindSortables(el);
 }
 
 /* ---------------- Matchup Previews ----------------
