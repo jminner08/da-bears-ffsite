@@ -492,9 +492,20 @@ function renderPreviewSection() {
   }
 
   const previews = computeMatchupPreviews(selectedPreviewWeek);
-  const cards = previews.map(p => {
+
+  // "Game of the Week" -- the closest projected matchup, only for the
+  // regular season (weeks 1-14; playoffs run 15-17 for this league).
+  let gowIndex = -1;
+  if (selectedPreviewWeek <= 14 && previews.length) {
+    let minMargin = Infinity;
+    previews.forEach((p, i) => { if (p.margin < minMargin) { minMargin = p.margin; gowIndex = i; } });
+  }
+
+  const cards = previews.map((p, i) => {
     const aFav = p.probA >= p.probB;
-    return `<div class="card">
+    const isGow = i === gowIndex;
+    return `<div class="card${isGow ? ' game-of-week' : ''}">
+      ${isGow ? `<div class="gow-badge">🔥 Game of the Week</div>` : ''}
       <div class="bis-row"><span class="label">${p.teamA}</span><span class="val">${p.projA.toFixed(1)} proj${aFav ? ` — <strong>${p.probA.toFixed(0)}%</strong>` : ` — ${p.probA.toFixed(0)}%`}</span></div>
       <div class="bis-row"><span class="label">${p.teamB}</span><span class="val">${p.projB.toFixed(1)} proj${!aFav ? ` — <strong>${p.probB.toFixed(0)}%</strong>` : ` — ${p.probB.toFixed(0)}%`}</span></div>
       <p class="card-note" style="margin-top:6px;">Projected margin: ${p.margin.toFixed(1)} pts</p>

@@ -332,6 +332,19 @@ footer {
 .tag-waiver { background: rgba(200, 56, 3, 0.2); color: var(--brass-bright); }
 .tag-trade { background: rgba(168, 68, 47, 0.2); color: #f2c9c0; }
 
+.card.game-of-week {
+  border-color: var(--brass);
+  box-shadow: 0 0 0 1px var(--brass), 0 0 16px rgba(200, 56, 3, 0.25);
+}
+.gow-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--brass-bright);
+  margin-bottom: 8px;
+}
+
 @media (max-width: 900px) {
   .two-col { grid-template-columns: 1fr; }
 }
