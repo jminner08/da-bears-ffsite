@@ -345,6 +345,9 @@ footer {
   margin-bottom: 8px;
 }
 
+.move-up { color: var(--win); font-family: 'IBM Plex Mono', monospace; font-weight: 600; }
+.move-down { color: var(--loss); font-family: 'IBM Plex Mono', monospace; font-weight: 600; }
+
 @media (max-width: 900px) {
   .two-col { grid-template-columns: 1fr; }
 }
