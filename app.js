@@ -31,6 +31,7 @@ async function loadData() {
   renderCurrent();
   renderArchive();
   renderAwards();
+  renderBenchScores();
   renderBestInShow();
   renderSetup();
 }
@@ -186,6 +187,7 @@ async function handleForceUpdate() {
     renderArchive();
     renderBestInShow();
     renderAwards();
+    renderBenchScores();
     setUpdateMsg(`Updated from Sleeper at ${data.fetched_at}.`, 'ok');
     renderSetup();
   } catch (err) {
@@ -1115,6 +1117,180 @@ function renderAwardsBodyWeekly(body, seasonsInScope, week, liveYear) {
    that best scorer was drafted, picked up off waivers, or acquired by trade.
    Only shown once the draft has happened and Week 1 is in the books, since
    before that there's no "best scorer" or running total yet. */
+
+/* ---------------- Bench Scores ----------------
+   Points left on the bench each week -- pulled from the Excel "Bench"
+   column for archived seasons (2022-2025), computed live from Sleeper's
+   roster-vs-starter point totals for the current season. Same Year/Week
+   button pattern as the Awards tab. */
+
+let selectedBenchYear = 'All-Time';
+let selectedBenchWeek = 'All Weeks';
+
+function computeLiveBenchForWeek(week) {
+  const c = state.current;
+  const wk = c && (c.matchups_by_week || {})[String(week)];
+  if (!wk || !wk.length) return null;
+  return wk.map(m => {
+    const score = m.points || 0;
+    const rosterTotal = Object.values(m.players_points || {}).reduce((a, b) => a + (b || 0), 0);
+    const team = c.teams.find(t => t.roster_id === m.roster_id);
+    return { owner: team ? liveTeamOwner(team) : null, label: team ? liveTeamLabel(team) : `Roster ${m.roster_id}`, bench: rosterTotal - score };
+  });
+}
+
+function renderBenchScores() {
+  const el = document.getElementById('panel-bench');
+  const histYears = (state.history?.seasons || []).map(s => s.year).filter(Boolean);
+  const liveYear = state.current ? Number(state.current.season) : null;
+  const years = Array.from(new Set([...histYears, ...(liveYear ? [liveYear] : [])])).sort((a, b) => a - b);
+
+  if (!years.length) {
+    el.innerHTML = `<div class="empty-state"><div class="display">No bench score data</div></div>`;
+    return;
+  }
+
+  const yearOptions = ['All-Time', ...years];
+  const weekSet = new Set();
+  (state.history?.seasons || []).forEach(s => Object.keys(s.bench_scores || {}).forEach(w => weekSet.add(Number(w))));
+  if (state.current) Object.keys(state.current.matchups_by_week || {}).forEach(w => weekSet.add(Number(w)));
+  const weekOptions = ['All Weeks', ...Array.from(weekSet).sort((a, b) => a - b)];
+
+  el.innerHTML = `
+    <h2 class="section-title">Bench Scores</h2>
+    <p class="card-note" style="margin-bottom:12px;">Points left on the bench each week — the higher the number, the more you left on the table.</p>
+    <div class="year-select">
+      ${yearOptions.map(y => `<button data-year="${y}" class="${String(y) === String(selectedBenchYear) ? 'active' : ''}">${y}${y === liveYear ? ' (live)' : ''}</button>`).join('')}
+    </div>
+    <div class="year-select">
+      ${weekOptions.map(w => `<button data-week="${w}" class="${String(w) === String(selectedBenchWeek) ? 'active' : ''}">${typeof w === 'number' ? `Wk ${w}` : w}</button>`).join('')}
+    </div>
+    <div id="bench-body"></div>
+  `;
+
+  el.querySelector('.year-select').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-year]');
+    if (!btn) return;
+    selectedBenchYear = isNaN(Number(btn.dataset.year)) ? btn.dataset.year : Number(btn.dataset.year);
+    renderBenchScores();
+  });
+  el.querySelectorAll('.year-select')[1].addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-week]');
+    if (!btn) return;
+    selectedBenchWeek = isNaN(Number(btn.dataset.week)) ? btn.dataset.week : Number(btn.dataset.week);
+    renderBenchScores();
+  });
+
+  renderBenchBody(years, liveYear);
+}
+
+function renderBenchBody(years, liveYear) {
+  const body = document.getElementById('bench-body');
+  const histSeasonsInScope = selectedBenchYear === 'All-Time'
+    ? (state.history?.seasons || [])
+    : (state.history?.seasons || []).filter(s => s.year === selectedBenchYear);
+  const includeLive = liveYear && (selectedBenchYear === 'All-Time' || selectedBenchYear === liveYear);
+
+  if (selectedBenchWeek === 'All Weeks') {
+    renderBenchSeasonAverages(body, histSeasonsInScope, includeLive ? liveYear : null);
+  } else {
+    renderBenchWeekly(body, histSeasonsInScope, selectedBenchWeek, includeLive ? liveYear : null);
+  }
+}
+
+function renderBenchSeasonAverages(body, histSeasonsInScope, liveYear) {
+  const totals = {}; // owner -> {sum, count}
+  histSeasonsInScope.forEach(season => {
+    Object.values(season.bench_scores || {}).forEach(weekEntries => {
+      weekEntries.forEach(e => {
+        const t = totals[e.owner] = totals[e.owner] || { sum: 0, count: 0 };
+        t.sum += e.bench_points;
+        t.count += 1;
+      });
+    });
+  });
+
+  if (liveYear) {
+    playedWeeksList().forEach(w => {
+      (computeLiveBenchForWeek(w) || []).forEach(e => {
+        if (!e.owner) return;
+        const t = totals[e.owner] = totals[e.owner] || { sum: 0, count: 0 };
+        t.sum += e.bench;
+        t.count += 1;
+      });
+    });
+  }
+
+  const rows = Object.entries(totals)
+    .map(([owner, t]) => ({ owner, avg: t.sum / t.count, total: t.sum, count: t.count }))
+    .sort((a, b) => b.avg - a.avg)
+    .map(r => `<tr>
+      <td class="name-cell">${ownerLabel(r.owner)}</td>
+      <td data-sort-value="${r.avg}">${r.avg.toFixed(1)}</td>
+      <td data-sort-value="${r.total}">${r.total.toFixed(1)}</td>
+      <td data-sort-value="${r.count}">${r.count}</td>
+    </tr>`).join('');
+
+  const scopeNote = selectedBenchYear === 'All-Time'
+    ? 'Average bench points per week, across every season on record.'
+    : `${selectedBenchYear} season average.`;
+
+  body.innerHTML = `
+    <p class="card-note" style="margin-bottom:16px;">${scopeNote}</p>
+    <table class="sortable">
+      <thead><tr>
+        <th data-sort-key="owner">Owner</th>
+        <th data-sort-key="avg" data-sort-type="num">Avg Bench / Wk</th>
+        <th data-sort-key="total" data-sort-type="num">Total Bench</th>
+        <th data-sort-key="weeks" data-sort-type="num">Weeks</th>
+      </tr></thead>
+      <tbody>${rows || '<tr><td colspan="4" class="card-note">No data for this selection.</td></tr>'}</tbody>
+    </table>
+  `;
+  bindSortables(body);
+}
+
+function renderBenchWeekly(body, histSeasonsInScope, week, liveYear) {
+  const rows = [];
+
+  histSeasonsInScope.forEach(season => {
+    const entries = (season.bench_scores || {})[String(week)] || [];
+    entries.forEach(e => {
+      rows.push({ label: ownerLabel(e.owner), value: e.bench_points, year: season.year });
+    });
+  });
+
+  if (liveYear) {
+    (computeLiveBenchForWeek(week) || []).forEach(e => {
+      rows.push({ label: e.label, value: e.bench, year: liveYear });
+    });
+  }
+
+  rows.sort((a, b) => b.value - a.value);
+
+  const tableRows = rows.map((r, i) => `<tr class="${i === 0 ? 'rank-1' : ''}">
+    <td data-sort-value="${i + 1}">${i + 1}</td>
+    <td class="name-cell">${selectedBenchYear === 'All-Time' ? `${r.year}: ` : ''}${r.label}</td>
+    <td data-sort-value="${r.value}">${r.value.toFixed(1)}</td>
+  </tr>`).join('');
+
+  const scopeNote = selectedBenchYear === 'All-Time'
+    ? `Week ${week} bench scores across every year on record.`
+    : `${selectedBenchYear}, Week ${week}.`;
+
+  body.innerHTML = `
+    <p class="card-note" style="margin-bottom:16px;">${scopeNote}</p>
+    <table class="sortable">
+      <thead><tr>
+        <th data-sort-key="rank" data-sort-type="num">#</th>
+        <th data-sort-key="owner">Owner</th>
+        <th data-sort-key="bench" data-sort-type="num">Bench Points</th>
+      </tr></thead>
+      <tbody>${tableRows || '<tr><td colspan="3" class="card-note">No data for this selection.</td></tr>'}</tbody>
+    </table>
+  `;
+  bindSortables(body);
+}
 
 function renderBestInShow() {
   const el = document.getElementById('panel-bestinshow');
