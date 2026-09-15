@@ -958,14 +958,40 @@ function renderRecordsBody() {
   const body = document.getElementById('records-body');
   if (!body) return;
 
-  const topScores = (state.history.all_time_top_scores || []).slice(0, 10);
+  // Top 10 single-week scores: historical scores come pre-computed from
+  // parse_history.py's "Past history" tab parsing, but that only covers
+  // archived years -- the live season's weekly scores are merged in here
+  // from Sleeper data so a big week right now shows up immediately instead
+  // of waiting for the season to be archived. Anything from the live season
+  // that's actually in the top 10 gets a * since it's provisional (the
+  // season isn't finalized yet, so it could still be bumped by a bigger
+  // week before the year is archived).
+  const historicalScores = (state.history.all_time_top_scores || []).map(r => ({ ...r, live: false }));
+  const liveScores = [];
+  if (state.current) {
+    const liveYearNum = Number(state.current.season);
+    Object.entries(state.current.matchups_by_week || {}).forEach(([week, wk]) => {
+      wk.forEach(m => {
+        if (!m.points) return;
+        const team = state.current.teams.find(t => t.roster_id === m.roster_id);
+        const owner = team ? liveTeamOwner(team) : null;
+        if (!owner) return;
+        liveScores.push({ owner, points: m.points, year: liveYearNum, week: Number(week), live: true });
+      });
+    });
+  }
+  const topScores = [...historicalScores, ...liveScores]
+    .sort((a, b) => (b.points || 0) - (a.points || 0))
+    .slice(0, 10);
+
   const scoreRows = topScores.map((r, i) => `
     <tr class="${i === 0 ? 'rank-1' : ''}">
       <td data-sort-value="${i + 1}">${i + 1}</td>
       <td class="name-cell">${ownerLabel(r.owner)}</td>
-      <td data-sort-value="${r.points ?? 0}">${r.points}</td>
+      <td data-sort-value="${r.points ?? 0}">${r.points}${r.live ? ' *' : ''}</td>
       <td data-sort-value="${r.year ?? 0}">${r.year}, wk ${r.week}</td>
     </tr>`).join('');
+  const hasLiveEntry = topScores.some(r => r.live);
 
   // Career totals (win-loss + PF/PA) come pre-computed from parse_history.py
   // for the archived (2022-2025) seasons, which already skips the flagged-
@@ -1028,6 +1054,7 @@ function renderRecordsBody() {
       </tr></thead>
       <tbody>${scoreRows}</tbody>
     </table>
+    ${hasLiveEntry ? `<p class="card-note" style="margin-top:8px;">* from the season in progress — provisional, since the year isn't archived yet.</p>` : ''}
   `;
   bindSortables(body);
 }
