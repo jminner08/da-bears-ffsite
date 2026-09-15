@@ -33,6 +33,7 @@ async function loadData() {
   renderAwards();
   renderBenchScores();
   renderBestInShow();
+  renderWaiversTrades();
   renderSetup();
 }
 
@@ -133,10 +134,24 @@ async function fetchSleeperLive(leagueId) {
     }
   } catch (e) { draft_picks = []; }
 
+  // Waiver claims, free agent pickups, and trades -- for the "Waivers & Trades"
+  // tab. Sleeper's "round" here lines up with the week number.
+  const transactions = [];
+  for (let week = 1; week <= 17; week++) {
+    try {
+      const tx = await getJson(`${base}/league/${leagueId}/transactions/${week}`);
+      (tx || []).forEach(t => { if (t.status === 'complete') transactions.push({ ...t, week }); });
+    } catch (e) { /* best-effort */ }
+  }
+
   const referencedIds = new Set();
   draft_picks.forEach(p => { if (p.player_id) referencedIds.add(String(p.player_id)); });
   Object.values(matchups_by_week).forEach(wk => {
     wk.forEach(m => Object.keys(m.players_points || {}).forEach(pid => referencedIds.add(String(pid))));
+  });
+  transactions.forEach(t => {
+    Object.keys(t.adds || {}).forEach(pid => referencedIds.add(String(pid)));
+    Object.keys(t.drops || {}).forEach(pid => referencedIds.add(String(pid)));
   });
 
   let players = {};
@@ -161,6 +176,7 @@ async function fetchSleeperLive(leagueId) {
     matchups_by_week,
     projections_by_week,
     draft_picks,
+    transactions,
     players,
     fetched_at: new Date().toLocaleString(),
   };
@@ -188,6 +204,7 @@ async function handleForceUpdate() {
     renderBestInShow();
     renderAwards();
     renderBenchScores();
+    renderWaiversTrades();
     setUpdateMsg(`Updated from Sleeper at ${data.fetched_at}.`, 'ok');
     renderSetup();
   } catch (err) {
@@ -626,9 +643,45 @@ function getHeadToHead(rosterA, rosterB, beforeWeek) {
     if (!entryA) continue;
     const entryB = wk.find(m => m.matchup_id === entryA.matchup_id && m.roster_id === rosterB);
     if (!entryB) continue;
-    return { week: w, scoreA: entryA.points || 0, scoreB: entryB.points || 0 };
+    return { week: w, scoreA: entryA.points || 0, scoreB: entryB.points || 0, year: Number(state.current.season) };
+  }
+
+  // Not met yet this season -- check past seasons (only years where the
+  // import_sleeper_history.py script has filled in matchup data; historical
+  // years sourced purely from Excel won't have this since the spreadsheets
+  // don't record who-played-who). Most recent year first.
+  const teamA = state.current.teams.find(t => t.roster_id === rosterA);
+  const teamB = state.current.teams.find(t => t.roster_id === rosterB);
+  const ownerA = teamA ? liveTeamOwner(teamA) : null;
+  const ownerB = teamB ? liveTeamOwner(teamB) : null;
+  if (!ownerA || !ownerB) return null;
+
+  const histSeasons = [...(state.history?.seasons || [])].sort((a, b) => b.year - a.year);
+  for (const season of histSeasons) {
+    const weeks = Object.keys(season.matchups || {}).map(Number).sort((a, b) => b - a);
+    for (const w of weeks) {
+      const entries = season.matchups[String(w)] || [];
+      const match = entries.find(e =>
+        (e.owner_a === ownerA && e.owner_b === ownerB) || (e.owner_a === ownerB && e.owner_b === ownerA)
+      );
+      if (!match) continue;
+      const scoreA = match.owner_a === ownerA ? match.score_a : match.score_b;
+      const scoreB = match.owner_a === ownerA ? match.score_b : match.score_a;
+      return { week: w, scoreA, scoreB, year: season.year };
+    }
   }
   return null;
+}
+
+function teamActualAverageSoFar(rosterId, beforeWeek) {
+  const played = playedWeeksList().filter(w => beforeWeek === undefined || w < beforeWeek);
+  const scores = [];
+  played.forEach(w => {
+    const wk = state.current.matchups_by_week[String(w)];
+    const entry = wk && wk.find(m => m.roster_id === rosterId);
+    if (entry) scores.push(entry.points || 0);
+  });
+  return scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : null;
 }
 
 function computeMatchupPreviews(week) {
@@ -642,15 +695,35 @@ function computeMatchupPreviews(week) {
   const byMatchup = {};
   wk.forEach(m => { (byMatchup[m.matchup_id] = byMatchup[m.matchup_id] || []).push(m); });
 
+  // A starter contributes to the projection only if it's a real player with
+  // a published projection that week -- an unfilled roster slot (Sleeper
+  // uses "0" as a placeholder) or a player missing from that week's
+  // projections feed is skipped rather than silently counted as 0 points.
+  // If a team ends up with NO valid projected starters at all (lineup not
+  // set yet, projections feed incomplete, etc.), fall back to that team's
+  // own scoring average so far rather than showing a false 0.0 projection
+  // that would otherwise make the matchup look like a 100%-0% lock.
   const teamProjection = (m) => {
-    let total = 0, variance = 0;
+    let total = 0, variance = 0, validCount = 0;
     (m.starters || []).forEach(pid => {
-      const p = proj[String(pid)] || 0;
+      if (!pid || pid === '0') return;
+      const p = proj[String(pid)];
+      if (typeof p !== 'number') return;
       const sd = Math.max(4, p * 0.4);
       total += p;
       variance += sd * sd;
+      validCount++;
     });
-    return { total, variance };
+    let usedFallback = false;
+    if (validCount === 0) {
+      const avg = teamActualAverageSoFar(m.roster_id, week);
+      if (avg !== null) {
+        total = avg;
+        variance = Math.pow(Math.max(15, avg * 0.2), 2);
+        usedFallback = true;
+      }
+    }
+    return { total, variance, usedFallback };
   };
 
   return Object.values(byMatchup)
@@ -671,6 +744,8 @@ function computeMatchupPreviews(week) {
         probA: probA * 100,
         probB: (1 - probA) * 100,
         margin: Math.abs(diff),
+        fallbackA: pa.usedFallback,
+        fallbackB: pb.usedFallback,
       };
     });
 }
@@ -703,19 +778,23 @@ function renderPreviewSection() {
     const projectionsCard = `<div class="card matchup-card${isGow ? ' game-of-week' : ''}">
       ${isGow ? `<div class="gow-badge">🔥 Game of the Week</div>` : ''}
       <div class="matchup-row"><span class="name">${p.teamA}</span><span class="stat">${p.projA.toFixed(1)} — ${aFav ? `<strong>${p.probA.toFixed(0)}%</strong>` : `${p.probA.toFixed(0)}%`}</span></div>
+      ${p.fallbackA ? `<div class="matchup-last">Lineup/projections unavailable — using season avg</div>` : ''}
       <div class="matchup-last">${lastResultLine(lastA)}</div>
       <div class="matchup-row"><span class="name">${p.teamB}</span><span class="stat">${p.projB.toFixed(1)} — ${!aFav ? `<strong>${p.probB.toFixed(0)}%</strong>` : `${p.probB.toFixed(0)}%`}</span></div>
+      ${p.fallbackB ? `<div class="matchup-last">Lineup/projections unavailable — using season avg</div>` : ''}
       <div class="matchup-last">${lastResultLine(lastB)}</div>
       <p class="card-note" style="margin-top:6px;">Projected margin: ${p.margin.toFixed(1)} pts</p>
     </div>`;
 
+    const liveYearNum = Number(state.current.season);
+    const h2hWhen = h2h ? (h2h.year === liveYearNum ? `Week ${h2h.week}` : `${h2h.year}, Week ${h2h.week}`) : null;
     const h2hCard = `<div class="card matchup-card">
       <div class="card-label">Last Meeting</div>
       ${h2h ? `
         <div class="matchup-row"><span class="name">${p.teamA}</span><span class="stat">${h2h.scoreA.toFixed(1)}</span></div>
         <div class="matchup-row"><span class="name">${p.teamB}</span><span class="stat">${h2h.scoreB.toFixed(1)}</span></div>
-        <p class="card-note" style="margin-top:4px;">Week ${h2h.week}</p>
-      ` : `<p class="card-note">Haven't played each other yet this season.</p>`}
+        <p class="card-note" style="margin-top:4px;">${h2hWhen}</p>
+      ` : `<p class="card-note">Haven't played each other before.</p>`}
     </div>`;
 
     return `<div class="matchup-pair">${projectionsCard}${h2hCard}</div>`;
@@ -726,7 +805,7 @@ function renderPreviewSection() {
     <div class="year-select">
       ${weeks.map(w => `<button data-week="${w}" class="${w === selectedPreviewWeek ? 'active' : ''}">Wk ${w}</button>`).join('')}
     </div>
-    <p class="card-note" style="margin:8px 0 16px;">Win % and margins are estimates from Sleeper's player projections, not guarantees — treat close ones as coin flips. "Last Meeting" only looks back within the current season.</p>
+    <p class="card-note" style="margin:8px 0 16px;">Win % and margins are estimates from Sleeper's player projections, not guarantees — treat close ones as coin flips. "Last Meeting" checks this season first, then past seasons where available.</p>
     <div class="preview-grid">${cards || '<p class="card-note">No matchup data for this week yet.</p>'}</div>
   `;
 
@@ -1448,6 +1527,121 @@ function renderBestInShow() {
 
 
 /* ---------------- Setup / how to update ---------------- */
+
+/* ---------------- Waivers & Trades ----------------
+   Live season only (transaction history isn't something the Excel archives
+   have). Shows a running waiver-spend leaderboard (Sleeper already tracks
+   this cumulatively per roster) plus a week-by-week log of every completed
+   waiver claim, free agent pickup, and trade. */
+
+let selectedWaiverWeek = 'All Weeks';
+
+function playerLabel(pid) {
+  const p = state.current.players?.[pid];
+  if (!p) return `Player ${pid}`;
+  const name = `${p.first_name || ''} ${p.last_name || ''}`.trim();
+  return p.position ? `${name} (${p.position}${p.team ? ` - ${p.team}` : ''})` : name;
+}
+
+function describeTransaction(t, teamByRoster) {
+  const rosterIds = t.roster_ids || [];
+
+  if (t.type === 'trade') {
+    const parts = rosterIds.map(rid => {
+      const gained = Object.entries(t.adds || {}).filter(([, r]) => r === rid).map(([pid]) => playerLabel(pid));
+      const gainedPicks = (t.draft_picks || []).filter(p => p.owner_id === rid)
+        .map(p => `${p.season} Round ${p.round} pick`);
+      const all = [...gained, ...gainedPicks];
+      return `<strong>${teamByRoster[rid] || `Roster ${rid}`}</strong> got ${all.length ? all.join(', ') : 'nothing (pick-only side)'}`;
+    });
+    return { type: 'Trade', body: parts.join('<br>'), amount: null };
+  }
+
+  const rid = rosterIds[0];
+  const added = Object.entries(t.adds || {}).filter(([, r]) => r === rid).map(([pid]) => playerLabel(pid));
+  const dropped = Object.entries(t.drops || {}).filter(([, r]) => r === rid).map(([pid]) => playerLabel(pid));
+  const bid = t.type === 'waiver' ? (t.settings && t.settings.waiver_bid) : null;
+
+  let body = `<strong>${teamByRoster[rid] || `Roster ${rid}`}</strong>`;
+  if (added.length) body += ` added ${added.join(', ')}`;
+  if (dropped.length) body += `${added.length ? ',' : ''} dropped ${dropped.join(', ')}`;
+
+  return { type: t.type === 'waiver' ? 'Waiver' : 'Free Agent', body, amount: bid };
+}
+
+function renderWaiversTrades() {
+  const el = document.getElementById('panel-waivers');
+  const c = state.current;
+
+  if (!c || !Array.isArray(c.transactions)) {
+    el.innerHTML = `
+      <div class="empty-state">
+        <div class="display">Not ready yet</div>
+        <p>Run Force Update (or the import script) to pull this season's waiver and trade history from Sleeper.</p>
+      </div>`;
+    return;
+  }
+
+  const teamByRoster = {};
+  c.teams.forEach(t => { teamByRoster[t.roster_id] = liveTeamLabel(t); });
+
+  const spendRows = [...c.teams]
+    .sort((a, b) => (b.waiver_budget_used || 0) - (a.waiver_budget_used || 0))
+    .map(t => `<tr>
+      <td class="name-cell">${liveTeamLabel(t)}</td>
+      <td data-sort-value="${t.waiver_budget_used || 0}">$${t.waiver_budget_used || 0}</td>
+    </tr>`).join('');
+
+  const weeks = Array.from(new Set(c.transactions.map(t => t.week))).sort((a, b) => a - b);
+  const weekOptions = ['All Weeks', ...weeks];
+
+  el.innerHTML = `
+    <h2 class="section-title">Waiver Spend (running total)</h2>
+    <table class="sortable">
+      <thead><tr>
+        <th data-sort-key="team">Team</th>
+        <th data-sort-key="spend" data-sort-type="num">$ Spent</th>
+      </tr></thead>
+      <tbody>${spendRows}</tbody>
+    </table>
+
+    <h2 class="section-title">Transaction Log</h2>
+    <div class="year-select">
+      ${weekOptions.map(w => `<button data-week="${w}" class="${String(w) === String(selectedWaiverWeek) ? 'active' : ''}">${typeof w === 'number' ? `Wk ${w}` : w}</button>`).join('')}
+    </div>
+    <div id="waivers-body"></div>
+  `;
+  bindSortables(el);
+
+  el.querySelector('.year-select').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-week]');
+    if (!btn) return;
+    selectedWaiverWeek = isNaN(Number(btn.dataset.week)) ? btn.dataset.week : Number(btn.dataset.week);
+    renderWaiversBody(teamByRoster);
+  });
+
+  renderWaiversBody(teamByRoster);
+}
+
+function renderWaiversBody(teamByRoster) {
+  const body = document.getElementById('waivers-body');
+  const c = state.current;
+  const inScope = selectedWaiverWeek === 'All Weeks'
+    ? c.transactions
+    : c.transactions.filter(t => t.week === selectedWaiverWeek);
+
+  const sorted = [...inScope].sort((a, b) => b.week - a.week || (b.created || 0) - (a.created || 0));
+
+  const rows = sorted.map(t => {
+    const d = describeTransaction(t, teamByRoster);
+    return `<div class="card">
+      <div class="bis-row"><span class="label">Wk ${t.week} — ${d.type}</span>${d.amount ? `<span class="val">$${d.amount}</span>` : ''}</div>
+      <p class="card-note" style="margin-top:4px;">${d.body}</p>
+    </div>`;
+  }).join('');
+
+  body.innerHTML = `<div class="preview-grid">${rows || '<p class="card-note">No transactions for this selection.</p>'}</div>`;
+}
 
 function renderSetup() {
   const el = document.getElementById('panel-setup');
