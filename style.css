@@ -260,6 +260,12 @@ tr:hover td { background: rgba(201, 162, 39, 0.06); }
   gap: 12px;
 }
 
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+}
+
 .award-card h3 {
   margin: 0 0 8px;
   font-family: 'Anton', sans-serif;
@@ -347,6 +353,38 @@ footer {
 
 .move-up { color: var(--win); font-family: 'IBM Plex Mono', monospace; font-weight: 600; }
 .move-down { color: var(--loss); font-family: 'IBM Plex Mono', monospace; font-weight: 600; }
+
+.matchup-card { display: flex; flex-direction: column; gap: 2px; }
+.matchup-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 13px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--felt-line);
+  white-space: nowrap;
+}
+.matchup-row:last-of-type { border-bottom: none; }
+.matchup-row .name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.matchup-row .stat {
+  font-family: 'IBM Plex Mono', monospace;
+  flex-shrink: 0;
+}
+.matchup-last {
+  font-size: 11px;
+  color: var(--chalk-dim);
+  padding: 2px 0 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.matchup-last:last-of-type { padding-bottom: 0; }
 
 @media (max-width: 900px) {
   .two-col { grid-template-columns: 1fr; }

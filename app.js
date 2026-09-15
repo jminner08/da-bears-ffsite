@@ -377,15 +377,18 @@ function renderCurrent() {
     const cards = Object.values(byMatchupId).map(pair => {
       if (pair.length < 2) return '';
       const [a, b] = pair;
-      return `<div class="card">
-        <div>${teamByRoster[a.roster_id] || a.roster_id} — <span class="mono">${(a.points ?? 0).toFixed(1)}</span></div>
-        <div>${teamByRoster[b.roster_id] || b.roster_id} — <span class="mono">${(b.points ?? 0).toFixed(1)}</span></div>
+      const scoreA = a.points ?? 0, scoreB = b.points ?? 0;
+      const resultA = scoreA > scoreB ? 'W' : (scoreA < scoreB ? 'L' : 'T');
+      const resultB = scoreB > scoreA ? 'W' : (scoreB < scoreA ? 'L' : 'T');
+      return `<div class="card matchup-card">
+        <div class="matchup-row"><span class="name">${teamByRoster[a.roster_id] || a.roster_id}</span><span class="stat">${resultA} ${scoreA.toFixed(1)}</span></div>
+        <div class="matchup-row"><span class="name">${teamByRoster[b.roster_id] || b.roster_id}</span><span class="stat">${resultB} ${scoreB.toFixed(1)}</span></div>
       </div>`;
     }).join('');
 
     matchupsHtml = `
       <h2 class="section-title">Week ${lastWeek} Matchups</h2>
-      <div class="award-grid">${cards}</div>
+      <div class="preview-grid">${cards}</div>
     `;
   }
 
@@ -572,6 +575,28 @@ function normCdf(z) {
   return 0.5 * (1 + erf(z / Math.SQRT2));
 }
 
+function getTeamLastResult(rosterId, beforeWeek) {
+  const played = playedWeeksList().filter(w => beforeWeek === undefined || w < beforeWeek);
+  for (let i = played.length - 1; i >= 0; i--) {
+    const w = played[i];
+    const wk = state.current.matchups_by_week[String(w)];
+    const entry = wk.find(m => m.roster_id === rosterId);
+    if (!entry) continue;
+    const opp = wk.find(m => m.matchup_id === entry.matchup_id && m.roster_id !== rosterId);
+    if (!opp) continue;
+    const score = entry.points || 0, oppScore = opp.points || 0;
+    const result = score > oppScore ? 'W' : (score < oppScore ? 'L' : 'T');
+    return { week: w, score, oppScore, result, margin: Math.abs(score - oppScore) };
+  }
+  return null;
+}
+
+function lastResultLine(last) {
+  if (!last) return 'First game of the season';
+  const sign = last.result === 'L' ? '−' : '+';
+  return `Wk${last.week}: ${last.result} ${last.score.toFixed(1)}–${last.oppScore.toFixed(1)} (${sign}${last.margin.toFixed(1)})`;
+}
+
 function computeMatchupPreviews(week) {
   const c = state.current;
   const wk = c && (c.matchups_by_week || {})[String(week)];
@@ -605,6 +630,8 @@ function computeMatchupPreviews(week) {
       return {
         teamA: teamByRoster[a.roster_id] || a.roster_id,
         teamB: teamByRoster[b.roster_id] || b.roster_id,
+        rosterA: a.roster_id,
+        rosterB: b.roster_id,
         projA: pa.total,
         projB: pb.total,
         probA: probA * 100,
@@ -642,10 +669,14 @@ function renderPreviewSection() {
   const cards = previews.map((p, i) => {
     const aFav = p.probA >= p.probB;
     const isGow = i === gowIndex;
-    return `<div class="card${isGow ? ' game-of-week' : ''}">
+    const lastA = getTeamLastResult(p.rosterA, selectedPreviewWeek);
+    const lastB = getTeamLastResult(p.rosterB, selectedPreviewWeek);
+    return `<div class="card matchup-card${isGow ? ' game-of-week' : ''}">
       ${isGow ? `<div class="gow-badge">🔥 Game of the Week</div>` : ''}
-      <div class="bis-row"><span class="label">${p.teamA}</span><span class="val">${p.projA.toFixed(1)} proj${aFav ? ` — <strong>${p.probA.toFixed(0)}%</strong>` : ` — ${p.probA.toFixed(0)}%`}</span></div>
-      <div class="bis-row"><span class="label">${p.teamB}</span><span class="val">${p.projB.toFixed(1)} proj${!aFav ? ` — <strong>${p.probB.toFixed(0)}%</strong>` : ` — ${p.probB.toFixed(0)}%`}</span></div>
+      <div class="matchup-row"><span class="name">${p.teamA}</span><span class="stat">${p.projA.toFixed(1)} — ${aFav ? `<strong>${p.probA.toFixed(0)}%</strong>` : `${p.probA.toFixed(0)}%`}</span></div>
+      <div class="matchup-last">${lastResultLine(lastA)}</div>
+      <div class="matchup-row"><span class="name">${p.teamB}</span><span class="stat">${p.projB.toFixed(1)} — ${!aFav ? `<strong>${p.probB.toFixed(0)}%</strong>` : `${p.probB.toFixed(0)}%`}</span></div>
+      <div class="matchup-last">${lastResultLine(lastB)}</div>
       <p class="card-note" style="margin-top:6px;">Projected margin: ${p.margin.toFixed(1)} pts</p>
     </div>`;
   }).join('');
@@ -656,7 +687,7 @@ function renderPreviewSection() {
       ${weeks.map(w => `<button data-week="${w}" class="${w === selectedPreviewWeek ? 'active' : ''}">Wk ${w}</button>`).join('')}
     </div>
     <p class="card-note" style="margin:8px 0 16px;">Win % and margins are estimates from Sleeper's player projections, not guarantees — treat close ones as coin flips.</p>
-    <div class="award-grid">${cards || '<p class="card-note">No matchup data for this week yet.</p>'}</div>
+    <div class="preview-grid">${cards || '<p class="card-note">No matchup data for this week yet.</p>'}</div>
   `;
 
   el.querySelectorAll('.year-select button').forEach(btn => {
