@@ -868,11 +868,17 @@ function renderArchiveBody(liveYear) {
     warn = `<div class="warn">Heads up: this season's PF/PA/waiver numbers look like a copy-paste of the prior year in the source spreadsheet. Win-loss records below are correct — the PF/PA columns may not be.</div>`;
   }
 
-  // The sheet's "Final Standings" column is frozen at 2022's results and
-  // never updated in later years, so we don't use it to rank or crown a
-  // winner. Default sort is regular-season record, but every column here
-  // is click-sortable.
+  // The sheet's "Final Standings" column is frozen at 2022's results in
+  // most years and never updated, so by default we don't use it to rank or
+  // crown a winner -- EXCEPT for years explicitly verified trustworthy
+  // (see TRUSTED_FINAL_STANDINGS_YEARS in parse_history.py), where it's the
+  // real final result and we sort by it and crown the champion.
+  const trusted = !!season.final_standings_trusted;
   const wl = [...season.win_loss_records].sort((a, b) => {
+    if (trusted) {
+      const sa = a.final_standing ?? 999, sb = b.final_standing ?? 999;
+      if (sa !== sb) return sa - sb;
+    }
     const wDiff = (b.wins ?? 0) - (a.wins ?? 0);
     if (wDiff !== 0) return wDiff;
     return (a.losses ?? 0) - (b.losses ?? 0);
@@ -880,11 +886,13 @@ function renderArchiveBody(liveYear) {
   const standingsByOwner = {};
   (season.standings || []).forEach(s => { if (s.owner) standingsByOwner[s.owner] = s; });
 
-  const rows = wl.map((t) => {
+  const rows = wl.map((t, i) => {
     const extra = standingsByOwner[t.owner];
     const pf = extra?.pf ?? extra?.fp;
     const pa = extra?.pa;
-    return `<tr>
+    const isChamp = trusted && t.final_standing === 1;
+    return `<tr class="${isChamp ? 'rank-1' : ''}">
+      ${trusted ? `<td data-sort-value="${t.final_standing ?? 999}">${t.final_standing ?? '-'}</td>` : ''}
       <td class="name-cell">${ownerTeamLabel(t.owner)}</td>
       <td data-sort-value="${t.wins ?? 0}">${t.wins}-${t.losses}${t.ties ? `-${t.ties}` : ''}</td>
       <td data-sort-value="${t.playoff_wins ?? 0}">${t.playoff_wins ?? 0}</td>
@@ -896,9 +904,12 @@ function renderArchiveBody(liveYear) {
   body.innerHTML = `
     ${warn}
     <h2 class="section-title">${selectedYear} Win-Loss Records</h2>
-    <p class="card-note" style="margin-bottom:12px;">Sorted by regular-season record by default — click any column header to re-sort. This league's actual final standings/champion aren't tracked reliably in the source data (see "Administration" tab), so no winner is crowned here.</p>
+    <p class="card-note" style="margin-bottom:12px;">${trusted
+      ? `Sorted by final standing — <strong>${ownerTeamLabel(wl[0]?.owner)}</strong> won the league. Click any column header to re-sort.`
+      : `Sorted by regular-season record by default — click any column header to re-sort. This league's actual final standings/champion aren't tracked reliably in the source data (see "Administration" tab), so no winner is crowned here.`}</p>
     <table class="sortable">
       <thead><tr>
+        ${trusted ? `<th data-sort-key="standing" data-sort-type="num">Standing</th>` : ''}
         <th data-sort-key="team">Team</th>
         <th data-sort-key="record" data-sort-type="num">Record</th>
         <th data-sort-key="playoff" data-sort-type="num">Playoff W</th>
@@ -967,7 +978,7 @@ function renderRecordsBody() {
     state.current.teams.forEach(t => {
       const owner = liveTeamOwner(t);
       if (!owner) return;
-      const c = career[owner] = career[owner] || { wins: 0, losses: 0, ties: 0, playoff_wins: 0, pf: 0, pa: 0 };
+      const c = career[owner] = career[owner] || { wins: 0, losses: 0, ties: 0, playoff_wins: 0, pf: 0, pa: 0, championships: 0 };
       c.wins += t.wins || 0;
       c.losses += t.losses || 0;
       c.ties += t.ties || 0;
@@ -976,12 +987,13 @@ function renderRecordsBody() {
     });
   }
   const careerRows = Object.entries(career)
-    .sort((a, b) => b[1].wins - a[1].wins)
+    .sort((a, b) => (b[1].championships || 0) - (a[1].championships || 0) || b[1].wins - a[1].wins)
     .map(([owner, c]) => {
       const pct = c.wins / Math.max(1, c.wins + c.losses + c.ties) * 100;
       return `
-      <tr>
+      <tr class="${(c.championships || 0) > 0 ? 'rank-1' : ''}">
         <td class="name-cell">${ownerLabel(owner)}</td>
+        <td data-sort-value="${c.championships || 0}">${c.championships || 0}</td>
         <td data-sort-value="${c.wins}">${c.wins}-${c.losses}${c.ties ? `-${c.ties}` : ''}</td>
         <td data-sort-value="${pct}">${pct.toFixed(1)}%</td>
         <td data-sort-value="${c.pf ?? 0}">${(c.pf ?? 0).toFixed(1)}</td>
@@ -991,10 +1003,11 @@ function renderRecordsBody() {
 
   body.innerHTML = `
     <h2 class="section-title">All-Time (Career)</h2>
-    <p class="card-note" style="margin-bottom:12px;">Running totals across every archived season plus the live season in progress. No championship count — see the note on the left about why.</p>
+    <p class="card-note" style="margin-bottom:12px;">Running totals across every archived season plus the live season in progress. Championships only count years where the final standings are verified accurate — see the Season Archive tab for which years qualify.</p>
     <table class="sortable">
       <thead><tr>
         <th data-sort-key="owner">Owner</th>
+        <th data-sort-key="championships" data-sort-type="num">🏆</th>
         <th data-sort-key="record" data-sort-type="num">Record</th>
         <th data-sort-key="pct" data-sort-type="num">Win %</th>
         <th data-sort-key="pf" data-sort-type="num">PF</th>
