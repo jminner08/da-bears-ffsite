@@ -1914,6 +1914,490 @@
           }
         ]
       },
+      "matchups": {
+        "1": [
+          {
+            "owner_a": "Randy",
+            "owner_b": "Jason",
+            "score_a": 124.5,
+            "score_b": 116.5
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Austin",
+            "score_a": 88.5,
+            "score_b": 85.5
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Alex",
+            "score_a": 143.0,
+            "score_b": 90.5
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Todd",
+            "score_a": 86.5,
+            "score_b": 80.5
+          }
+        ],
+        "2": [
+          {
+            "owner_a": "Moss",
+            "owner_b": "Todd",
+            "score_a": 135.5,
+            "score_b": 106.0
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Luke",
+            "score_a": 97.5,
+            "score_b": 88.5
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Micah",
+            "score_a": 134.5,
+            "score_b": 113.0
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Alex",
+            "score_a": 128.0,
+            "score_b": 97.0
+          }
+        ],
+        "3": [
+          {
+            "owner_a": "Josh",
+            "owner_b": "Micah",
+            "score_a": 104.5,
+            "score_b": 89.0
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Todd",
+            "score_a": 82.0,
+            "score_b": 50.5
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Randy",
+            "score_a": 92.0,
+            "score_b": 67.5
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Jason",
+            "score_a": 124.0,
+            "score_b": 88.5
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Austin",
+            "score_a": 95.5,
+            "score_b": 95.0
+          }
+        ],
+        "4": [
+          {
+            "owner_a": "Alex",
+            "owner_b": "Austin",
+            "score_a": 126.0,
+            "score_b": 103.0
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Randy",
+            "score_a": 149.5,
+            "score_b": 86.0
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Jason",
+            "score_a": 129.0,
+            "score_b": 128.5
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Micah",
+            "score_a": 126.0,
+            "score_b": 111.5
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Todd",
+            "score_a": 93.5,
+            "score_b": 48.5
+          }
+        ],
+        "5": [
+          {
+            "owner_a": "Todd",
+            "owner_b": "Austin",
+            "score_a": 124.0,
+            "score_b": 68.5
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Cronk",
+            "score_a": 114.5,
+            "score_b": 100.0
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Alex",
+            "score_a": 118.5,
+            "score_b": 116.5
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Randy",
+            "score_a": 111.5,
+            "score_b": 68.0
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Jason",
+            "score_a": 189.0,
+            "score_b": 131.0
+          }
+        ],
+        "6": [
+          {
+            "owner_a": "Luke",
+            "owner_b": "Alex",
+            "score_a": 124.5,
+            "score_b": 65.5
+          },
+          {
+            "owner_a": "Jason",
+            "owner_b": "Austin",
+            "score_a": 96.5,
+            "score_b": 80.5
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Micah",
+            "score_a": 112.5,
+            "score_b": 79.5
+          }
+        ],
+        "7": [
+          {
+            "owner_a": "Alex",
+            "owner_b": "Jason",
+            "score_a": 115.5,
+            "score_b": 74.5
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Micah",
+            "score_a": 137.5,
+            "score_b": 116.0
+          },
+          {
+            "owner_a": "Todd",
+            "owner_b": "Randy",
+            "score_a": 116.0,
+            "score_b": 96.5
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Moss",
+            "score_a": 87.0,
+            "score_b": 71.0
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Austin",
+            "score_a": 101.5,
+            "score_b": 96.0
+          }
+        ],
+        "8": [
+          {
+            "owner_a": "Jason",
+            "owner_b": "Micah",
+            "score_a": 107.5,
+            "score_b": 81.0
+          },
+          {
+            "owner_a": "Todd",
+            "owner_b": "Luke",
+            "score_a": 117.0,
+            "score_b": 116.0
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Moss",
+            "score_a": 118.5,
+            "score_b": 84.5
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Austin",
+            "score_a": 152.5,
+            "score_b": 139.0
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Cronk",
+            "score_a": 147.5,
+            "score_b": 107.5
+          }
+        ],
+        "9": [
+          {
+            "owner_a": "Randy",
+            "owner_b": "Jason",
+            "score_a": 128.0,
+            "score_b": 106.5
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Luke",
+            "score_a": 122.0,
+            "score_b": 101.5
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Todd",
+            "score_a": 113.0,
+            "score_b": 83.0
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Alex",
+            "score_a": 116.0,
+            "score_b": 73.0
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Cronk",
+            "score_a": 104.5,
+            "score_b": 53.0
+          }
+        ],
+        "10": [
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Jason",
+            "score_a": 125.0,
+            "score_b": 84.5
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Randy",
+            "score_a": 116.5,
+            "score_b": 94.5
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Alex",
+            "score_a": 119.0,
+            "score_b": 80.5
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Josh",
+            "score_a": 97.5,
+            "score_b": 96.0
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Todd",
+            "score_a": 94.0,
+            "score_b": 70.5
+          }
+        ],
+        "11": [
+          {
+            "owner_a": "Luke",
+            "owner_b": "Jason",
+            "score_a": 119.0,
+            "score_b": 94.5
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Josh",
+            "score_a": 134.0,
+            "score_b": 116.0
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Austin",
+            "score_a": 141.0,
+            "score_b": 92.0
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Randy",
+            "score_a": 88.0,
+            "score_b": 84.0
+          },
+          {
+            "owner_a": "Todd",
+            "owner_b": "Moss",
+            "score_a": 133.0,
+            "score_b": 106.0
+          }
+        ],
+        "12": [
+          {
+            "owner_a": "Jason",
+            "owner_b": "Josh",
+            "score_a": 95.0,
+            "score_b": 78.5
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Cronk",
+            "score_a": 177.5,
+            "score_b": 102.0
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Todd",
+            "score_a": 105.5,
+            "score_b": 78.0
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Austin",
+            "score_a": 107.0,
+            "score_b": 100.5
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Randy",
+            "score_a": 128.5,
+            "score_b": 98.0
+          }
+        ],
+        "13": [
+          {
+            "owner_a": "Todd",
+            "owner_b": "Jason",
+            "score_a": 97.0,
+            "score_b": 96.0
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Moss",
+            "score_a": 126.0,
+            "score_b": 100.0
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Cronk",
+            "score_a": 126.0,
+            "score_b": 91.5
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Austin",
+            "score_a": 99.5,
+            "score_b": 95.0
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Josh",
+            "score_a": 125.0,
+            "score_b": 91.0
+          }
+        ],
+        "14": [
+          {
+            "owner_a": "Moss",
+            "owner_b": "Jason",
+            "score_a": 96.5,
+            "score_b": 58.5
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Austin",
+            "score_a": 101.0,
+            "score_b": 98.0
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Alex",
+            "score_a": 114.0,
+            "score_b": 100.5
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Josh",
+            "score_a": 111.5,
+            "score_b": 57.5
+          },
+          {
+            "owner_a": "Todd",
+            "owner_b": "Cronk",
+            "score_a": 89.0,
+            "score_b": 73.0
+          }
+        ],
+        "15": [
+          {
+            "owner_a": "Randy",
+            "owner_b": "Micah",
+            "score_a": 91.0,
+            "score_b": 82.0
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Alex",
+            "score_a": 128.0,
+            "score_b": 84.0
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Jason",
+            "score_a": 142.5,
+            "score_b": 69.5
+          },
+          {
+            "owner_a": "Todd",
+            "owner_b": "Cronk",
+            "score_a": 150.5,
+            "score_b": 90.5
+          }
+        ],
+        "17": [
+          {
+            "owner_a": "Moss",
+            "owner_b": "Luke",
+            "score_a": 100.0,
+            "score_b": 51.0
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Randy",
+            "score_a": 159.5,
+            "score_b": 61.5
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Alex",
+            "score_a": 105.0,
+            "score_b": 75.5
+          },
+          {
+            "owner_a": "Todd",
+            "owner_b": "Cronk",
+            "score_a": 106.5,
+            "score_b": 92.0
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Jason",
+            "score_a": 115.5,
+            "score_b": 96.0
+          }
+        ]
+      },
       "final_standings_trusted": false
     },
     {
@@ -3865,6 +4349,502 @@
           }
         ]
       },
+      "matchups": {
+        "1": [
+          {
+            "owner_a": "Todd",
+            "owner_b": "Jason",
+            "score_a": 114.85,
+            "score_b": 107.16
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Josh",
+            "score_a": 133.89,
+            "score_b": 93.61
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Randy",
+            "score_a": 128.69,
+            "score_b": 101.47
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Luke",
+            "score_a": 141.29,
+            "score_b": 79.63
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Cronk",
+            "score_a": 107.77,
+            "score_b": 95.89
+          }
+        ],
+        "2": [
+          {
+            "owner_a": "Moss",
+            "owner_b": "Luke",
+            "score_a": 125.34,
+            "score_b": 119.33
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Randy",
+            "score_a": 127.64,
+            "score_b": 117.3
+          },
+          {
+            "owner_a": "Jason",
+            "owner_b": "Austin",
+            "score_a": 118.08,
+            "score_b": 104.8
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Todd",
+            "score_a": 133.14,
+            "score_b": 117.22
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Cronk",
+            "score_a": 138.21,
+            "score_b": 119.45
+          }
+        ],
+        "3": [
+          {
+            "owner_a": "Luke",
+            "owner_b": "Randy",
+            "score_a": 130.51,
+            "score_b": 127.08
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Moss",
+            "score_a": 113.66,
+            "score_b": 103.21
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Alex",
+            "score_a": 162.1,
+            "score_b": 155.87
+          },
+          {
+            "owner_a": "Jason",
+            "owner_b": "Micah",
+            "score_a": 178.19,
+            "score_b": 110.01
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Todd",
+            "score_a": 136.23,
+            "score_b": 104.43
+          }
+        ],
+        "4": [
+          {
+            "owner_a": "Randy",
+            "owner_b": "Josh",
+            "score_a": 98.66,
+            "score_b": 75.65
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Cronk",
+            "score_a": 131.5,
+            "score_b": 103.62
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Todd",
+            "score_a": 154.33,
+            "score_b": 100.21
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Jason",
+            "score_a": 161.15,
+            "score_b": 83.28
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Luke",
+            "score_a": 140.17,
+            "score_b": 106.98
+          }
+        ],
+        "5": [
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Jason",
+            "score_a": 119.04,
+            "score_b": 107.77
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Josh",
+            "score_a": 139.13,
+            "score_b": 86.58
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Moss",
+            "score_a": 147.45,
+            "score_b": 131.73
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Randy",
+            "score_a": 174.66,
+            "score_b": 99.21
+          },
+          {
+            "owner_a": "Todd",
+            "owner_b": "Alex",
+            "score_a": 141.97,
+            "score_b": 105.91
+          }
+        ],
+        "6": [
+          {
+            "owner_a": "Jason",
+            "owner_b": "Randy",
+            "score_a": 105.88,
+            "score_b": 104.49
+          },
+          {
+            "owner_a": "Todd",
+            "owner_b": "Luke",
+            "score_a": 123.55,
+            "score_b": 94.7
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Alex",
+            "score_a": 121.07,
+            "score_b": 114.06
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Micah",
+            "score_a": 123.89,
+            "score_b": 109.94
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Moss",
+            "score_a": 151.78,
+            "score_b": 79.67
+          }
+        ],
+        "7": [
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Josh",
+            "score_a": 184.46,
+            "score_b": 105.96
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Austin",
+            "score_a": 120.41,
+            "score_b": 108.96
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Alex",
+            "score_a": 108.49,
+            "score_b": 98.8
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Todd",
+            "score_a": 135.97,
+            "score_b": 91.36
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Jason",
+            "score_a": 96.55,
+            "score_b": 92.99
+          }
+        ],
+        "9": [
+          {
+            "owner_a": "Micah",
+            "owner_b": "Alex",
+            "score_a": 130.89,
+            "score_b": 89.62
+          },
+          {
+            "owner_a": "Todd",
+            "owner_b": "Moss",
+            "score_a": 114.53,
+            "score_b": 83.45
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Austin",
+            "score_a": 126.12,
+            "score_b": 89.24
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Cronk",
+            "score_a": 157.16,
+            "score_b": 61.55
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Jason",
+            "score_a": 132.3,
+            "score_b": 105.68
+          }
+        ],
+        "10": [
+          {
+            "owner_a": "Todd",
+            "owner_b": "Jason",
+            "score_a": 156.67,
+            "score_b": 128.12
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Josh",
+            "score_a": 105.05,
+            "score_b": 98.44
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Moss",
+            "score_a": 136.71,
+            "score_b": 121.73
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Alex",
+            "score_a": 133.03,
+            "score_b": 116.43
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Cronk",
+            "score_a": 151.67,
+            "score_b": 147.52
+          }
+        ],
+        "11": [
+          {
+            "owner_a": "Jason",
+            "owner_b": "Austin",
+            "score_a": 90.05,
+            "score_b": 81.05
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Luke",
+            "score_a": 157.0,
+            "score_b": 107.04
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Randy",
+            "score_a": 169.48,
+            "score_b": 125.16
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Todd",
+            "score_a": 99.88,
+            "score_b": 91.65
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Alex",
+            "score_a": 144.88,
+            "score_b": 101.25
+          }
+        ],
+        "12": [
+          {
+            "owner_a": "Micah",
+            "owner_b": "Jason",
+            "score_a": 117.11,
+            "score_b": 69.57
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Luke",
+            "score_a": 148.29,
+            "score_b": 137.34
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Josh",
+            "score_a": 142.48,
+            "score_b": 141.48
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Austin",
+            "score_a": 172.11,
+            "score_b": 94.58
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Todd",
+            "score_a": 127.97,
+            "score_b": 119.2
+          }
+        ],
+        "13": [
+          {
+            "owner_a": "Alex",
+            "owner_b": "Jason",
+            "score_a": 125.55,
+            "score_b": 95.55
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Micah",
+            "score_a": 165.55,
+            "score_b": 115.12
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Josh",
+            "score_a": 167.96,
+            "score_b": 99.76
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Moss",
+            "score_a": 111.95,
+            "score_b": 84.08
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Todd",
+            "score_a": 154.6,
+            "score_b": 149.07
+          }
+        ],
+        "14": [
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Jason",
+            "score_a": 102.09,
+            "score_b": 70.75
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Josh",
+            "score_a": 145.56,
+            "score_b": 109.27
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Micah",
+            "score_a": 136.82,
+            "score_b": 110.32
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Austin",
+            "score_a": 150.99,
+            "score_b": 92.19
+          },
+          {
+            "owner_a": "Todd",
+            "owner_b": "Alex",
+            "score_a": 148.33,
+            "score_b": 118.27
+          }
+        ],
+        "15": [
+          {
+            "owner_a": "Alex",
+            "owner_b": "Jason",
+            "score_a": 118.16,
+            "score_b": 92.94
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Moss",
+            "score_a": 68.96,
+            "score_b": 62.79
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Austin",
+            "score_a": 159.44,
+            "score_b": 136.47
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Todd",
+            "score_a": 119.51,
+            "score_b": 104.77
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Cronk",
+            "score_a": 129.38,
+            "score_b": 96.3
+          }
+        ],
+        "16": [
+          {
+            "owner_a": "Jason",
+            "owner_b": "Todd",
+            "score_a": 163.03,
+            "score_b": 131.39
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Randy",
+            "score_a": 110.44,
+            "score_b": 90.27
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Cronk",
+            "score_a": 128.35,
+            "score_b": 105.7
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Austin",
+            "score_a": 147.55,
+            "score_b": 89.92
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Josh",
+            "score_a": 178.33,
+            "score_b": 73.61
+          }
+        ],
+        "17": [
+          {
+            "owner_a": "Randy",
+            "owner_b": "Cronk",
+            "score_a": 142.45,
+            "score_b": 105.65
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Micah",
+            "score_a": 133.16,
+            "score_b": 133.1
+          }
+        ]
+      },
       "final_standings_trusted": false
     },
     {
@@ -5778,6 +6758,528 @@
           {
             "owner": "Josh",
             "bench_points": 65.8
+          }
+        ]
+      },
+      "matchups": {
+        "1": [
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Jason",
+            "score_a": 181.0,
+            "score_b": 138.9
+          },
+          {
+            "owner_a": "Todd",
+            "owner_b": "Alex",
+            "score_a": 179.75,
+            "score_b": 169.65
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Austin",
+            "score_a": 144.3,
+            "score_b": 139.05
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Moss",
+            "score_a": 168.8,
+            "score_b": 118.4
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Luke",
+            "score_a": 178.1,
+            "score_b": 139.4
+          }
+        ],
+        "2": [
+          {
+            "owner_a": "Jason",
+            "owner_b": "Micah",
+            "score_a": 199.2,
+            "score_b": 114.35
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Todd",
+            "score_a": 157.25,
+            "score_b": 107.95
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Cronk",
+            "score_a": 167.55,
+            "score_b": 161.35
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Randy",
+            "score_a": 148.0,
+            "score_b": 137.4
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Moss",
+            "score_a": 173.0,
+            "score_b": 170.75
+          }
+        ],
+        "3": [
+          {
+            "owner_a": "Jason",
+            "owner_b": "Todd",
+            "score_a": 155.15,
+            "score_b": 111.75
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Alex",
+            "score_a": 178.0,
+            "score_b": 134.8
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Cronk",
+            "score_a": 159.75,
+            "score_b": 151.25
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Randy",
+            "score_a": 195.7,
+            "score_b": 141.65
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Josh",
+            "score_a": 177.15,
+            "score_b": 68.35
+          }
+        ],
+        "4": [
+          {
+            "owner_a": "Alex",
+            "owner_b": "Jason",
+            "score_a": 160.9,
+            "score_b": 112.05
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Austin",
+            "score_a": 163.4,
+            "score_b": 132.75
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Todd",
+            "score_a": 182.6,
+            "score_b": 118.35
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Randy",
+            "score_a": 167.5,
+            "score_b": 166.4
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Micah",
+            "score_a": 197.3,
+            "score_b": 92.7
+          }
+        ],
+        "5": [
+          {
+            "owner_a": "Jason",
+            "owner_b": "Austin",
+            "score_a": 152.05,
+            "score_b": 122.1
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Todd",
+            "score_a": 187.5,
+            "score_b": 130.45
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Luke",
+            "score_a": 202.0,
+            "score_b": 151.1
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Randy",
+            "score_a": 174.45,
+            "score_b": 169.95
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Josh",
+            "score_a": 178.8,
+            "score_b": 153.35
+          }
+        ],
+        "6": [
+          {
+            "owner_a": "Jason",
+            "owner_b": "Randy",
+            "score_a": 154.55,
+            "score_b": 126.3
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Austin",
+            "score_a": 211.25,
+            "score_b": 87.4
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Cronk",
+            "score_a": 163.15,
+            "score_b": 140.15
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Todd",
+            "score_a": 207.3,
+            "score_b": 129.2
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Alex",
+            "score_a": 167.0,
+            "score_b": 151.85
+          }
+        ],
+        "7": [
+          {
+            "owner_a": "Josh",
+            "owner_b": "Jason",
+            "score_a": 148.65,
+            "score_b": 122.8
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Moss",
+            "score_a": 170.65,
+            "score_b": 165.0
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Luke",
+            "score_a": 170.3,
+            "score_b": 156.55
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Todd",
+            "score_a": 122.3,
+            "score_b": 85.7
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Alex",
+            "score_a": 151.75,
+            "score_b": 119.65
+          }
+        ],
+        "8": [
+          {
+            "owner_a": "Luke",
+            "owner_b": "Jason",
+            "score_a": 142.6,
+            "score_b": 137.8
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Austin",
+            "score_a": 185.9,
+            "score_b": 146.55
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Micah",
+            "score_a": 173.75,
+            "score_b": 167.15
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Todd",
+            "score_a": 188.1,
+            "score_b": 125.15
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Randy",
+            "score_a": 182.45,
+            "score_b": 173.2
+          }
+        ],
+        "9": [
+          {
+            "owner_a": "Moss",
+            "owner_b": "Jason",
+            "score_a": 163.9,
+            "score_b": 162.15
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Austin",
+            "score_a": 159.25,
+            "score_b": 111.15
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Randy",
+            "score_a": 193.5,
+            "score_b": 167.0
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Todd",
+            "score_a": 155.95,
+            "score_b": 144.4
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Josh",
+            "score_a": 237.0,
+            "score_b": 174.55
+          }
+        ],
+        "10": [
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Jason",
+            "score_a": 137.3,
+            "score_b": 120.2
+          },
+          {
+            "owner_a": "Todd",
+            "owner_b": "Alex",
+            "score_a": 145.1,
+            "score_b": 140.9
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Austin",
+            "score_a": 149.45,
+            "score_b": 143.25
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Micah",
+            "score_a": 225.4,
+            "score_b": 170.8
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Josh",
+            "score_a": 180.6,
+            "score_b": 154.9
+          }
+        ],
+        "11": [
+          {
+            "owner_a": "Jason",
+            "owner_b": "Micah",
+            "score_a": 204.85,
+            "score_b": 120.0
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Todd",
+            "score_a": 196.35,
+            "score_b": 125.7
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Alex",
+            "score_a": 181.9,
+            "score_b": 143.85
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Randy",
+            "score_a": 178.55,
+            "score_b": 163.55
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Luke",
+            "score_a": 184.95,
+            "score_b": 137.1
+          }
+        ],
+        "12": [
+          {
+            "owner_a": "Jason",
+            "owner_b": "Todd",
+            "score_a": 175.05,
+            "score_b": 161.45
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Austin",
+            "score_a": 149.75,
+            "score_b": 138.25
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Cronk",
+            "score_a": 180.05,
+            "score_b": 170.2
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Randy",
+            "score_a": 134.2,
+            "score_b": 123.7
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Josh",
+            "score_a": 148.8,
+            "score_b": 120.0
+          }
+        ],
+        "13": [
+          {
+            "owner_a": "Jason",
+            "owner_b": "Alex",
+            "score_a": 171.2,
+            "score_b": 165.85
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Cronk",
+            "score_a": 166.65,
+            "score_b": 164.05
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Todd",
+            "score_a": 121.2,
+            "score_b": 113.2
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Moss",
+            "score_a": 189.45,
+            "score_b": 181.3
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Luke",
+            "score_a": 166.7,
+            "score_b": 154.25
+          }
+        ],
+        "14": [
+          {
+            "owner_a": "Austin",
+            "owner_b": "Jason",
+            "score_a": 163.5,
+            "score_b": 150.95
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Todd",
+            "score_a": 167.95,
+            "score_b": 104.8
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Luke",
+            "score_a": 167.55,
+            "score_b": 159.85
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Micah",
+            "score_a": 200.95,
+            "score_b": 174.5
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Josh",
+            "score_a": 217.3,
+            "score_b": 182.25
+          }
+        ],
+        "15": [
+          {
+            "owner_a": "Todd",
+            "owner_b": "Jason",
+            "score_a": 148.55,
+            "score_b": 134.4
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Micah",
+            "score_a": 197.1,
+            "score_b": 160.9
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Alex",
+            "score_a": 171.15,
+            "score_b": 160.3
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Austin",
+            "score_a": 122.85,
+            "score_b": 114.6
+          }
+        ],
+        "16": [
+          {
+            "owner_a": "Jason",
+            "owner_b": "Austin",
+            "score_a": 179.9,
+            "score_b": 160.8
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Todd",
+            "score_a": 200.4,
+            "score_b": 171.3
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Micah",
+            "score_a": 163.25,
+            "score_b": 113.5
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Cronk",
+            "score_a": 198.4,
+            "score_b": 197.95
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Moss",
+            "score_a": 209.95,
+            "score_b": 201.55
+          }
+        ],
+        "17": [
+          {
+            "owner_a": "Luke",
+            "owner_b": "Josh",
+            "score_a": 201.8,
+            "score_b": 182.45
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Moss",
+            "score_a": 227.85,
+            "score_b": 124.95
           }
         ]
       },
@@ -7804,6 +9306,510 @@
           {
             "owner": "Austin",
             "bench_points": 0.0
+          }
+        ]
+      },
+      "matchups": {
+        "1": [
+          {
+            "owner_a": "Micah",
+            "owner_b": "Moss",
+            "score_a": 189.8,
+            "score_b": 145.6
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Luke",
+            "score_a": 126.0,
+            "score_b": 109.95
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Randy",
+            "score_a": 158.85,
+            "score_b": 130.55
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Alex",
+            "score_a": 119.65,
+            "score_b": 119.05
+          },
+          {
+            "owner_a": "Todd",
+            "owner_b": "Jason",
+            "score_a": 153.1,
+            "score_b": 147.9
+          }
+        ],
+        "2": [
+          {
+            "owner_a": "Alex",
+            "owner_b": "Jason",
+            "score_a": 138.6,
+            "score_b": 125.05
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Luke",
+            "score_a": 140.7,
+            "score_b": 138.9
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Josh",
+            "score_a": 194.05,
+            "score_b": 151.55
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Moss",
+            "score_a": 181.25,
+            "score_b": 153.0
+          },
+          {
+            "owner_a": "Todd",
+            "owner_b": "Cronk",
+            "score_a": 159.4,
+            "score_b": 158.6
+          }
+        ],
+        "3": [
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Jason",
+            "score_a": 181.9,
+            "score_b": 103.2
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Josh",
+            "score_a": 166.3,
+            "score_b": 165.15
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Moss",
+            "score_a": 125.65,
+            "score_b": 115.45
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Micah",
+            "score_a": 150.5,
+            "score_b": 134.9
+          },
+          {
+            "owner_a": "Todd",
+            "owner_b": "Austin",
+            "score_a": 171.05,
+            "score_b": 164.4
+          }
+        ],
+        "4": [
+          {
+            "owner_a": "Austin",
+            "owner_b": "Jason",
+            "score_a": 177.15,
+            "score_b": 173.6
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Micah",
+            "score_a": 170.35,
+            "score_b": 165.3
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Josh",
+            "score_a": 171.4,
+            "score_b": 160.55
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Todd",
+            "score_a": 191.25,
+            "score_b": 128.15
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Alex",
+            "score_a": 183.5,
+            "score_b": 139.55
+          }
+        ],
+        "5": [
+          {
+            "owner_a": "Josh",
+            "owner_b": "Jason",
+            "score_a": 198.45,
+            "score_b": 155.8
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Randy",
+            "score_a": 142.8,
+            "score_b": 134.1
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Micah",
+            "score_a": 177.75,
+            "score_b": 113.1
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Austin",
+            "score_a": 204.4,
+            "score_b": 174.75
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Todd",
+            "score_a": 147.25,
+            "score_b": 112.9
+          }
+        ],
+        "6": [
+          {
+            "owner_a": "Jason",
+            "owner_b": "Luke",
+            "score_a": 179.55,
+            "score_b": 156.55
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Austin",
+            "score_a": 202.7,
+            "score_b": 104.45
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Cronk",
+            "score_a": 130.5,
+            "score_b": 103.15
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Todd",
+            "score_a": 210.35,
+            "score_b": 113.2
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Josh",
+            "score_a": 193.65,
+            "score_b": 148.95
+          }
+        ],
+        "7": [
+          {
+            "owner_a": "Micah",
+            "owner_b": "Jason",
+            "score_a": 142.2,
+            "score_b": 123.5
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Alex",
+            "score_a": 150.7,
+            "score_b": 150.3
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Todd",
+            "score_a": 175.45,
+            "score_b": 101.4
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Luke",
+            "score_a": 170.95,
+            "score_b": 158.35
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Josh",
+            "score_a": 191.5,
+            "score_b": 190.7
+          }
+        ],
+        "8": [
+          {
+            "owner_a": "Jason",
+            "owner_b": "Moss",
+            "score_a": 195.45,
+            "score_b": 116.85
+          },
+          {
+            "owner_a": "Todd",
+            "owner_b": "Randy",
+            "score_a": 143.65,
+            "score_b": 141.8
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Austin",
+            "score_a": 183.85,
+            "score_b": 169.65
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Alex",
+            "score_a": 191.5,
+            "score_b": 113.0
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Josh",
+            "score_a": 145.3,
+            "score_b": 132.3
+          }
+        ],
+        "9": [
+          {
+            "owner_a": "Randy",
+            "owner_b": "Jason",
+            "score_a": 171.7,
+            "score_b": 130.2
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Alex",
+            "score_a": 194.85,
+            "score_b": 143.25
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Micah",
+            "score_a": 143.7,
+            "score_b": 104.7
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Luke",
+            "score_a": 161.9,
+            "score_b": 134.05
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Todd",
+            "score_a": 165.2,
+            "score_b": 142.05
+          }
+        ],
+        "10": [
+          {
+            "owner_a": "Todd",
+            "owner_b": "Jason",
+            "score_a": 140.6,
+            "score_b": 135.6
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Moss",
+            "score_a": 133.25,
+            "score_b": 111.1
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Josh",
+            "score_a": 201.7,
+            "score_b": 141.8
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Cronk",
+            "score_a": 218.4,
+            "score_b": 179.65
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Austin",
+            "score_a": 160.6,
+            "score_b": 157.0
+          }
+        ],
+        "11": [
+          {
+            "owner_a": "Alex",
+            "owner_b": "Jason",
+            "score_a": 181.25,
+            "score_b": 162.4
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Randy",
+            "score_a": 118.0,
+            "score_b": 103.45
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Josh",
+            "score_a": 178.45,
+            "score_b": 144.3
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Moss",
+            "score_a": 169.95,
+            "score_b": 155.25
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Todd",
+            "score_a": 150.25,
+            "score_b": 149.65
+          }
+        ],
+        "12": [
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Jason",
+            "score_a": 175.75,
+            "score_b": 161.3
+          },
+          {
+            "owner_a": "Josh",
+            "owner_b": "Randy",
+            "score_a": 197.65,
+            "score_b": 148.35
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Luke",
+            "score_a": 229.15,
+            "score_b": 178.75
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Alex",
+            "score_a": 178.75,
+            "score_b": 167.7
+          },
+          {
+            "owner_a": "Austin",
+            "owner_b": "Todd",
+            "score_a": 146.55,
+            "score_b": 128.35
+          }
+        ],
+        "13": [
+          {
+            "owner_a": "Austin",
+            "owner_b": "Jason",
+            "score_a": 135.8,
+            "score_b": 130.75
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Micah",
+            "score_a": 174.65,
+            "score_b": 155.9
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Josh",
+            "score_a": 151.25,
+            "score_b": 122.0
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Todd",
+            "score_a": 166.25,
+            "score_b": 127.35
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Cronk",
+            "score_a": 213.4,
+            "score_b": 148.3
+          }
+        ],
+        "14": [
+          {
+            "owner_a": "Jason",
+            "owner_b": "Josh",
+            "score_a": 140.0,
+            "score_b": 131.3
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Randy",
+            "score_a": 187.45,
+            "score_b": 125.9
+          }
+        ],
+        "15": [
+          {
+            "owner_a": "Luke",
+            "owner_b": "Jason",
+            "score_a": 156.65,
+            "score_b": 153.45
+          },
+          {
+            "owner_a": "Randy",
+            "owner_b": "Alex",
+            "score_a": 154.04,
+            "score_b": 150.75
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Austin",
+            "score_a": 197.4,
+            "score_b": 181.3
+          },
+          {
+            "owner_a": "Todd",
+            "owner_b": "Josh",
+            "score_a": 141.9,
+            "score_b": 126.0
+          }
+        ],
+        "16": [
+          {
+            "owner_a": "Josh",
+            "owner_b": "Jason",
+            "score_a": 174.45,
+            "score_b": 168.4
+          },
+          {
+            "owner_a": "Cronk",
+            "owner_b": "Randy",
+            "score_a": 235.0,
+            "score_b": 115.75
+          },
+          {
+            "owner_a": "Micah",
+            "owner_b": "Moss",
+            "score_a": 173.35,
+            "score_b": 169.95
+          },
+          {
+            "owner_a": "Alex",
+            "owner_b": "Austin",
+            "score_a": 173.3,
+            "score_b": 129.5
+          },
+          {
+            "owner_a": "Luke",
+            "owner_b": "Todd",
+            "score_a": 223.85,
+            "score_b": 103.4
+          }
+        ],
+        "17": [
+          {
+            "owner_a": "Micah",
+            "owner_b": "Cronk",
+            "score_a": 100.2,
+            "score_b": 92.85
+          },
+          {
+            "owner_a": "Moss",
+            "owner_b": "Randy",
+            "score_a": 149.0,
+            "score_b": 122.0
           }
         ]
       },

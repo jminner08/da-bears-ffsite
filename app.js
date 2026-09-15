@@ -646,10 +646,12 @@ function getHeadToHead(rosterA, rosterB, beforeWeek) {
     return { week: w, scoreA: entryA.points || 0, scoreB: entryB.points || 0, year: Number(state.current.season) };
   }
 
-  // Not met yet this season -- check past seasons (only years where the
-  // import_sleeper_history.py script has filled in matchup data; historical
-  // years sourced purely from Excel won't have this since the spreadsheets
-  // don't record who-played-who). Most recent year first.
+  // Not met yet this season -- check past seasons. Historical years get
+  // their matchup pairings straight from each Week tab's Winner/Loser
+  // columns in the Excel files (parse_history.py), so this works for every
+  // archived year (2022-2025), not just ones pulled from Sleeper. Most
+  // recent year first, so a rematch from last year takes priority over one
+  // from further back.
   const teamA = state.current.teams.find(t => t.roster_id === rosterA);
   const teamB = state.current.teams.find(t => t.roster_id === rosterB);
   const ownerA = teamA ? liveTeamOwner(teamA) : null;

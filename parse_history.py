@@ -191,6 +191,57 @@ def parse_weekly_awards(wb):
     return result
 
 
+def parse_matchups(wb):
+    """Returns { "1": [{"owner_a":..., "owner_b":..., "score_a":..., "score_b":...}, ...], ... }
+
+    Every Week N tab has a results table with "Winner"/"Points"/"Loser"/"Points"
+    columns (confirmed identical layout across all 4 years: winner name, then
+    winner's score, then loser name, then loser's score, in four consecutive
+    columns). This is what powers "Last Meeting" on Matchup Previews for
+    archived seasons, without needing anything from Sleeper.
+    """
+    result = {}
+    week_sheet_re = re.compile(r"^Week\s+(\d+)$")
+    for sheet_name in wb.sheetnames:
+        m = week_sheet_re.match(sheet_name.strip())
+        if not m:
+            continue
+        week_num = m.group(1)
+        ws = wb[sheet_name]
+
+        winner_col = None
+        header_row = None
+        for row in ws.iter_rows(min_row=1, max_row=ws.max_row):
+            for c in row:
+                if c.value == "Winner":
+                    winner_col = c.column
+                    header_row = c.row
+                    break
+            if winner_col:
+                break
+        if not winner_col:
+            continue
+
+        entries = []
+        r = header_row + 1
+        while r <= ws.max_row:
+            winner = canonical_owner(ws.cell(row=r, column=winner_col).value)
+            loser = canonical_owner(ws.cell(row=r, column=winner_col + 2).value)
+            if winner is None or loser is None:
+                break
+            score_winner = ws.cell(row=r, column=winner_col + 1).value
+            score_loser = ws.cell(row=r, column=winner_col + 3).value
+            if isinstance(score_winner, (int, float)) and isinstance(score_loser, (int, float)):
+                entries.append({
+                    "owner_a": winner, "owner_b": loser,
+                    "score_a": round(float(score_winner), 2), "score_b": round(float(score_loser), 2),
+                })
+            r += 1
+        if entries:
+            result[week_num] = entries
+    return result
+
+
 def parse_bench_scores(wb):
     """Returns { "1": [{"owner": "Moss", "bench_points": 62.0}, ...], "2": [...], ... }
 
@@ -429,6 +480,7 @@ def parse_file(path):
         "standings": parse_standings_generic(standings_ws),
         "weekly_awards": parse_weekly_awards(wb),
         "bench_scores": parse_bench_scores(wb),
+        "matchups": parse_matchups(wb),
         "final_standings_trusted": year in TRUSTED_FINAL_STANDINGS_YEARS,
     }
     return season, parse_past_history(past_history_ws)
