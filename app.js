@@ -373,6 +373,7 @@ function renderCurrent() {
     });
     const teamByRoster = {};
     state.current.teams.forEach(t => { teamByRoster[t.roster_id] = liveTeamLabel(t); });
+    const gowPair = computeGameOfWeekPair(lastWeek);
 
     const cards = Object.values(byMatchupId).map(pair => {
       if (pair.length < 2) return '';
@@ -380,7 +381,9 @@ function renderCurrent() {
       const scoreA = a.points ?? 0, scoreB = b.points ?? 0;
       const resultA = scoreA > scoreB ? 'W' : (scoreA < scoreB ? 'L' : 'T');
       const resultB = scoreB > scoreA ? 'W' : (scoreB < scoreA ? 'L' : 'T');
-      return `<div class="card matchup-card">
+      const isGow = gowPair && gowPair.has(a.roster_id) && gowPair.has(b.roster_id);
+      return `<div class="card matchup-card${isGow ? ' game-of-week' : ''}">
+        ${isGow ? `<div class="gow-badge">🔥 Game of the Week</div>` : ''}
         <div class="matchup-row"><span class="name">${teamByRoster[a.roster_id] || a.roster_id}</span><span class="stat">${resultA} ${scoreA.toFixed(1)}</span></div>
         <div class="matchup-row"><span class="name">${teamByRoster[b.roster_id] || b.roster_id}</span><span class="stat">${resultB} ${scoreB.toFixed(1)}</span></div>
       </div>`;
@@ -597,6 +600,37 @@ function lastResultLine(last) {
   return `Wk${last.week}: ${last.result} ${last.score.toFixed(1)}–${last.oppScore.toFixed(1)} (${sign}${last.margin.toFixed(1)})`;
 }
 
+/* The closest projected matchup for a given week, used to flag Game of the
+   Week -- computed once and shared between the Preview cards and the
+   actual-results cards so both agree on the same game. Regular season only
+   (weeks 1-14; playoffs run 15-17 for this league). */
+function computeGameOfWeekPair(week) {
+  if (week > 14) return null;
+  const previews = computeMatchupPreviews(week);
+  if (!previews.length) return null;
+  let best = null;
+  previews.forEach(p => { if (!best || p.margin < best.margin) best = p; });
+  return best ? new Set([best.rosterA, best.rosterB]) : null;
+}
+
+/* The last time these two specific teams played each other, within the
+   current live season (historical archive years don't store per-week
+   opponent pairings, only weekly awards/bench data, so this can't reach
+   back further than the current season). */
+function getHeadToHead(rosterA, rosterB, beforeWeek) {
+  const played = playedWeeksList().filter(w => beforeWeek === undefined || w < beforeWeek);
+  for (let i = played.length - 1; i >= 0; i--) {
+    const w = played[i];
+    const wk = state.current.matchups_by_week[String(w)];
+    const entryA = wk.find(m => m.roster_id === rosterA);
+    if (!entryA) continue;
+    const entryB = wk.find(m => m.matchup_id === entryA.matchup_id && m.roster_id === rosterB);
+    if (!entryB) continue;
+    return { week: w, scoreA: entryA.points || 0, scoreB: entryB.points || 0 };
+  }
+  return null;
+}
+
 function computeMatchupPreviews(week) {
   const c = state.current;
   const wk = c && (c.matchups_by_week || {})[String(week)];
@@ -657,21 +691,16 @@ function renderPreviewSection() {
   }
 
   const previews = computeMatchupPreviews(selectedPreviewWeek);
+  const gowPair = computeGameOfWeekPair(selectedPreviewWeek);
 
-  // "Game of the Week" -- the closest projected matchup, only for the
-  // regular season (weeks 1-14; playoffs run 15-17 for this league).
-  let gowIndex = -1;
-  if (selectedPreviewWeek <= 14 && previews.length) {
-    let minMargin = Infinity;
-    previews.forEach((p, i) => { if (p.margin < minMargin) { minMargin = p.margin; gowIndex = i; } });
-  }
-
-  const cards = previews.map((p, i) => {
+  const cards = previews.map((p) => {
     const aFav = p.probA >= p.probB;
-    const isGow = i === gowIndex;
+    const isGow = gowPair && gowPair.has(p.rosterA) && gowPair.has(p.rosterB);
     const lastA = getTeamLastResult(p.rosterA, selectedPreviewWeek);
     const lastB = getTeamLastResult(p.rosterB, selectedPreviewWeek);
-    return `<div class="card matchup-card${isGow ? ' game-of-week' : ''}">
+    const h2h = getHeadToHead(p.rosterA, p.rosterB, selectedPreviewWeek);
+
+    const projectionsCard = `<div class="card matchup-card${isGow ? ' game-of-week' : ''}">
       ${isGow ? `<div class="gow-badge">🔥 Game of the Week</div>` : ''}
       <div class="matchup-row"><span class="name">${p.teamA}</span><span class="stat">${p.projA.toFixed(1)} — ${aFav ? `<strong>${p.probA.toFixed(0)}%</strong>` : `${p.probA.toFixed(0)}%`}</span></div>
       <div class="matchup-last">${lastResultLine(lastA)}</div>
@@ -679,6 +708,17 @@ function renderPreviewSection() {
       <div class="matchup-last">${lastResultLine(lastB)}</div>
       <p class="card-note" style="margin-top:6px;">Projected margin: ${p.margin.toFixed(1)} pts</p>
     </div>`;
+
+    const h2hCard = `<div class="card matchup-card">
+      <div class="card-label">Last Meeting</div>
+      ${h2h ? `
+        <div class="matchup-row"><span class="name">${p.teamA}</span><span class="stat">${h2h.scoreA.toFixed(1)}</span></div>
+        <div class="matchup-row"><span class="name">${p.teamB}</span><span class="stat">${h2h.scoreB.toFixed(1)}</span></div>
+        <p class="card-note" style="margin-top:4px;">Week ${h2h.week}</p>
+      ` : `<p class="card-note">Haven't played each other yet this season.</p>`}
+    </div>`;
+
+    return `<div class="matchup-pair">${projectionsCard}${h2hCard}</div>`;
   }).join('');
 
   el.innerHTML = `
@@ -686,7 +726,7 @@ function renderPreviewSection() {
     <div class="year-select">
       ${weeks.map(w => `<button data-week="${w}" class="${w === selectedPreviewWeek ? 'active' : ''}">Wk ${w}</button>`).join('')}
     </div>
-    <p class="card-note" style="margin:8px 0 16px;">Win % and margins are estimates from Sleeper's player projections, not guarantees — treat close ones as coin flips.</p>
+    <p class="card-note" style="margin:8px 0 16px;">Win % and margins are estimates from Sleeper's player projections, not guarantees — treat close ones as coin flips. "Last Meeting" only looks back within the current season.</p>
     <div class="preview-grid">${cards || '<p class="card-note">No matchup data for this week yet.</p>'}</div>
   `;
 

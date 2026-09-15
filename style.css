@@ -386,6 +386,21 @@ footer {
 }
 .matchup-last:last-of-type { padding-bottom: 0; }
 
+.matchup-pair {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--chalk-dim);
+  margin-bottom: 8px;
+}
+
 @media (max-width: 900px) {
   .two-col { grid-template-columns: 1fr; }
 }
