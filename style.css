@@ -5,7 +5,7 @@
   --felt-light: #132340;
   --felt-line: #23385c;
   --chalk: #f2f0eb;
-  --chalk-dim: #a9b3c8;
+  --chalk-dim: #c0c9de;
   --brass: #c83803;
   --brass-bright: #f2540f;
   --loss: #7a2b2b;
@@ -20,6 +20,8 @@ html, body {
   background: var(--felt);
   color: var(--chalk);
   font-family: 'Inter', system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.5;
   min-height: 100vh;
 }
 
@@ -61,13 +63,13 @@ html, body {
 
 .league-sub {
   color: var(--chalk-dim);
-  font-size: 13px;
+  font-size: 15px;
   margin-top: 6px;
 }
 
 .status-pill {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
+  font-size: 13px;
   border: 1px solid var(--brass);
   color: var(--brass-bright);
   padding: 5px 10px;
@@ -77,7 +79,7 @@ html, body {
 
 .update-btn {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
+  font-size: 14px;
   background: var(--brass);
   color: #1a1005;
   border: 1px solid var(--brass);
@@ -95,7 +97,7 @@ html, body {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 24px;
-  font-size: 12px;
+  font-size: 14px;
   min-height: 18px;
   color: var(--chalk-dim);
 }
@@ -116,7 +118,7 @@ nav.tabs button {
   font-family: 'Anton', sans-serif;
   letter-spacing: 0.03em;
   text-transform: uppercase;
-  font-size: 14px;
+  font-size: 16px;
   background: transparent;
   color: var(--chalk-dim);
   border: none;
@@ -153,7 +155,7 @@ h2.section-title {
   text-transform: uppercase;
   letter-spacing: 0.02em;
   color: var(--brass-bright);
-  font-size: 22px;
+  font-size: 25px;
   border-bottom: 1px solid var(--felt-line);
   padding-bottom: 8px;
   margin: 32px 0 16px;
@@ -163,13 +165,13 @@ h2.section-title:first-child { margin-top: 0; }
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 th {
   text-align: left;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--chalk-dim);
@@ -217,7 +219,7 @@ tr:hover td { background: rgba(201, 162, 39, 0.06); }
 
 .card-note {
   color: var(--chalk-dim);
-  font-size: 12px;
+  font-size: 14px;
   margin-top: 4px;
 }
 
@@ -227,7 +229,7 @@ tr:hover td { background: rgba(201, 162, 39, 0.06); }
   color: #f2c9c0;
   padding: 10px 14px;
   border-radius: var(--radius);
-  font-size: 13px;
+  font-size: 15px;
   margin-bottom: 16px;
 }
 
@@ -244,9 +246,9 @@ tr:hover td { background: rgba(201, 162, 39, 0.06); }
   color: var(--chalk-dim);
   border: 1px solid var(--felt-line);
   border-radius: 6px;
-  padding: 6px 12px;
+  padding: 7px 13px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .year-select button.active {
@@ -270,25 +272,25 @@ tr:hover td { background: rgba(201, 162, 39, 0.06); }
   margin: 0 0 8px;
   font-family: 'Anton', sans-serif;
   color: var(--brass-bright);
-  font-size: 16px;
+  font-size: 18px;
   letter-spacing: 0.02em;
 }
 
-.award-list { list-style: none; margin: 0; padding: 0; font-size: 13px; }
+.award-list { list-style: none; margin: 0; padding: 0; font-size: 15px; }
 .award-list li { display: flex; justify-content: space-between; padding: 3px 0; }
-.award-list li .n { font-family: 'IBM Plex Mono', monospace; color: var(--brass); }
+.award-list li .n { font-family: 'IBM Plex Mono', monospace; color: var(--brass-bright); font-weight: 600; }
 
 .empty-state {
   text-align: center;
   padding: 60px 20px;
   color: var(--chalk-dim);
 }
-.empty-state .display { font-size: 28px; color: var(--brass); margin-bottom: 8px; }
+.empty-state .display { font-size: 30px; color: var(--brass-bright); margin-bottom: 8px; }
 
 footer {
   text-align: center;
   color: var(--chalk-dim);
-  font-size: 12px;
+  font-size: 14px;
   padding: 40px 20px;
 }
 
@@ -309,14 +311,14 @@ footer {
   margin: 0 0 10px;
   font-family: 'Anton', sans-serif;
   color: var(--brass-bright);
-  font-size: 17px;
+  font-size: 19px;
 }
 
 .bis-row {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  font-size: 13px;
+  font-size: 15px;
   padding: 6px 0;
   border-bottom: 1px solid var(--felt-line);
 }
@@ -327,7 +329,7 @@ footer {
 .tag {
   display: inline-block;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 2px 7px;
@@ -344,7 +346,7 @@ footer {
 }
 .gow-badge {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
+  font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--brass-bright);
@@ -360,7 +362,7 @@ footer {
   justify-content: space-between;
   align-items: baseline;
   gap: 10px;
-  font-size: 13px;
+  font-size: 15px;
   padding: 5px 0;
   border-bottom: 1px solid var(--felt-line);
   white-space: nowrap;
@@ -377,7 +379,7 @@ footer {
   flex-shrink: 0;
 }
 .matchup-last {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--chalk-dim);
   padding: 2px 0 5px;
   white-space: nowrap;
@@ -394,7 +396,7 @@ footer {
 
 .card-label {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
+  font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--chalk-dim);
@@ -406,5 +408,5 @@ footer {
 }
 
 @media (max-width: 640px) {
-  th, td { padding: 7px 6px; font-size: 12px; }
+  th, td { padding: 7px 6px; font-size: 14px; }
 }
