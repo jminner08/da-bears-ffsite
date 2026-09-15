@@ -71,7 +71,8 @@ html, body {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 13px;
   border: 1px solid var(--brass);
-  color: var(--brass-bright);
+  color: var(--chalk);
+  font-weight: 600;
   padding: 5px 10px;
   border-radius: 999px;
   white-space: nowrap;
@@ -102,7 +103,7 @@ html, body {
   color: var(--chalk-dim);
 }
 .update-msg.error { color: #f2c9c0; }
-.update-msg.ok { color: var(--brass-bright); }
+.update-msg.ok { color: var(--chalk); font-weight: 600; }
 
 /* --- Tabs --- */
 nav.tabs {
@@ -132,7 +133,7 @@ nav.tabs button {
 nav.tabs button:hover { color: var(--chalk); }
 
 nav.tabs button.active {
-  color: var(--brass-bright);
+  color: var(--chalk);
   border-bottom-color: var(--brass);
 }
 
@@ -253,7 +254,8 @@ tr:hover td { background: rgba(201, 162, 39, 0.06); }
 
 .year-select button.active {
   border-color: var(--brass);
-  color: var(--brass-bright);
+  color: var(--chalk);
+  font-weight: 700;
 }
 
 .award-grid {
@@ -278,7 +280,7 @@ tr:hover td { background: rgba(201, 162, 39, 0.06); }
 
 .award-list { list-style: none; margin: 0; padding: 0; font-size: 15px; }
 .award-list li { display: flex; justify-content: space-between; padding: 3px 0; }
-.award-list li .n { font-family: 'IBM Plex Mono', monospace; color: var(--brass-bright); font-weight: 600; }
+.award-list li .n { font-family: 'IBM Plex Mono', monospace; color: var(--chalk); font-weight: 700; }
 
 .empty-state {
   text-align: center;
@@ -337,7 +339,7 @@ footer {
   margin-left: 6px;
 }
 .tag-drafted { background: rgba(63, 122, 84, 0.2); color: var(--win); }
-.tag-waiver { background: rgba(200, 56, 3, 0.2); color: var(--brass-bright); }
+.tag-waiver { background: rgba(200, 56, 3, 0.35); color: var(--chalk); font-weight: 600; }
 .tag-trade { background: rgba(168, 68, 47, 0.2); color: #f2c9c0; }
 
 .card.game-of-week {
@@ -349,7 +351,8 @@ footer {
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--brass-bright);
+  color: var(--chalk);
+  font-weight: 700;
   margin-bottom: 8px;
 }
 
