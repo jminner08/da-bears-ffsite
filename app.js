@@ -5,8 +5,15 @@ let selectedYear = null;
 let selectedAwardsYear = 'All-Time';
 
 async function loadData() {
+  // These data files change independently of app.js/style.css (running
+  // parse_history.py or Force Update updates them without touching the
+  // code), so they can't rely on the "?v=N" cache-busting used for the code
+  // files -- a timestamp query string plus cache: 'no-store' forces a fresh
+  // fetch every page load instead of silently serving a stale cached copy.
+  const noCacheFetch = (url) => fetch(`${url}?t=${Date.now()}`, { cache: 'no-store' });
+
   try {
-    const res = await fetch('data/history.json');
+    const res = await noCacheFetch('data/history.json');
     state.history = res.ok ? await res.json() : null;
   } catch (e) { state.history = null; }
 
@@ -17,13 +24,13 @@ async function loadData() {
     state.current = cached;
   } else {
     try {
-      const res = await fetch('data/current_season.json');
+      const res = await noCacheFetch('data/current_season.json');
       state.current = res.ok ? await res.json() : null;
     } catch (e) { state.current = null; }
   }
 
   try {
-    const res = await fetch('data/manual_awards.json');
+    const res = await noCacheFetch('data/manual_awards.json');
     state.manualAwardsFile = res.ok ? await res.json() : {};
   } catch (e) { state.manualAwardsFile = {}; }
 
