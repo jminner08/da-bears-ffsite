@@ -249,23 +249,43 @@ function firstName(realName) {
   return realName.trim().split(/\s+/)[0];
 }
 
-function ownerFirstName(owner) {
+function lastName(realName) {
+  if (!realName) return null;
+  const parts = realName.trim().split(/\s+/);
+  return parts[parts.length - 1];
+}
+
+// A couple of owners prefer to be shown by last name instead of first name
+// in the "(Name)" tag that appears next to team names and nicknames
+// site-wide. Add a nickname here to switch that owner to last name.
+const USE_LAST_NAME = new Set(['Cronk', 'Moss']);
+
+function ownerDisplayName(owner) {
   const reg = state.history?.owner_registry?.[owner];
-  return reg ? firstName(reg.real_name) : null;
+  if (!reg) return null;
+  return USE_LAST_NAME.has(owner) ? lastName(reg.real_name) : firstName(reg.real_name);
+}
+
+function ownerFirstName(owner) {
+  return ownerDisplayName(owner);
 }
 
 function ownerLabel(owner) {
   const reg = state.history?.owner_registry?.[owner];
   if (!reg) return owner;
-  const fn = firstName(reg.real_name);
-  return fn ? `${owner} (${fn})` : owner;
+  const dn = ownerDisplayName(owner);
+  // If the display name would just repeat the nickname itself (e.g. Cronk's
+  // last name IS "Cronk"), showing "Cronk (Cronk)" is redundant -- just
+  // show the nickname alone.
+  if (!dn || dn.toLowerCase() === owner.toLowerCase()) return owner;
+  return `${owner} (${dn})`;
 }
 
 function ownerTeamLabel(owner) {
   const reg = state.history?.owner_registry?.[owner];
   if (!reg) return owner;
-  const fn = firstName(reg.real_name);
-  return `${reg.team}${fn ? ` (${fn})` : ''}`;
+  const dn = ownerDisplayName(owner);
+  return `${reg.team}${dn ? ` (${dn})` : ''}`;
 }
 
 /* Live-season (Sleeper) usernames mapped to the same canonical owner keys
@@ -362,7 +382,7 @@ function renderCurrent() {
   }
 
   const rows = state.current.teams.map((t, i) => `
-    <tr class="${i === 0 ? 'rank-1' : ''}">
+    <tr class="${i === 0 ? 'rank-1' : ''}${i === 5 ? ' playoff-cutoff' : ''}">
       <td data-sort-value="${i + 1}">${i + 1}</td>
       <td class="name-cell">${liveTeamLabel(t)}</td>
       <td data-sort-value="${t.wins ?? 0}">${t.wins ?? 0}-${t.losses ?? 0}${t.ties ? `-${t.ties}` : ''}</td>
@@ -392,6 +412,16 @@ function renderCurrent() {
     state.current.teams.forEach(t => { teamByRoster[t.roster_id] = liveTeamLabel(t); });
     const gowPair = computeGameOfWeekPair(lastWeek);
 
+    // Mark any score that's actually in the merged all-time top 10 (see
+    // computeTop10Scores / the Season Archive & Records tab) with a * so a
+    // record-setting week is obvious right on the scoreboard, not just
+    // buried in the records table.
+    const top10ThisWeek = new Set(
+      computeTop10Scores()
+        .filter(r => r.live && r.week === lastWeek)
+        .map(r => r.roster_id)
+    );
+
     const cards = Object.values(byMatchupId).map(pair => {
       if (pair.length < 2) return '';
       const [a, b] = pair;
@@ -399,21 +429,27 @@ function renderCurrent() {
       const resultA = scoreA > scoreB ? 'W' : (scoreA < scoreB ? 'L' : 'T');
       const resultB = scoreB > scoreA ? 'W' : (scoreB < scoreA ? 'L' : 'T');
       const isGow = gowPair && gowPair.has(a.roster_id) && gowPair.has(b.roster_id);
+      const aStar = top10ThisWeek.has(a.roster_id) ? ' *' : '';
+      const bStar = top10ThisWeek.has(b.roster_id) ? ' *' : '';
       return `<div class="card matchup-card${isGow ? ' game-of-week' : ''}">
         ${isGow ? `<div class="gow-badge">🔥 Game of the Week</div>` : ''}
-        <div class="matchup-row"><span class="name">${teamByRoster[a.roster_id] || a.roster_id}</span><span class="stat">${resultA} ${scoreA.toFixed(1)}</span></div>
-        <div class="matchup-row"><span class="name">${teamByRoster[b.roster_id] || b.roster_id}</span><span class="stat">${resultB} ${scoreB.toFixed(1)}</span></div>
+        <div class="matchup-row"><span class="name">${teamByRoster[a.roster_id] || a.roster_id}</span><span class="stat">${resultA} ${scoreA.toFixed(1)}${aStar}</span></div>
+        <div class="matchup-row"><span class="name">${teamByRoster[b.roster_id] || b.roster_id}</span><span class="stat">${resultB} ${scoreB.toFixed(1)}${bStar}</span></div>
       </div>`;
     }).join('');
+
+    const hasTop10Star = top10ThisWeek.size > 0;
 
     matchupsHtml = `
       <h2 class="section-title">Week ${lastWeek} Matchups</h2>
       <div class="preview-grid">${cards}</div>
+      ${hasTop10Star ? `<p class="card-note" style="margin-top:8px;">* top-10 all-time single-week score — see Season Archive &amp; Records.</p>` : ''}
     `;
   }
 
   el.innerHTML = `
     <h2 class="section-title">Current Standings</h2>
+    <p class="card-note" style="margin-bottom:12px;">Orange line marks the playoff cutoff (top 6).</p>
     <table class="sortable">
       <thead><tr>
         <th data-sort-key="rank" data-sort-type="num">#</th>
@@ -839,8 +875,9 @@ function renderArchive() {
     </div>
     <div class="two-col">
       <div id="archive-body"></div>
-      <div id="records-body"></div>
+      <div id="top10-body"></div>
     </div>
+    <div id="career-body"></div>
   `;
 
   el.querySelectorAll('.year-select button').forEach(btn => {
@@ -851,7 +888,8 @@ function renderArchive() {
   });
 
   renderArchiveBody(liveYear);
-  renderRecordsBody();
+  renderTop10Body();
+  renderCareerBody();
 }
 
 function renderArchiveBody(liveYear) {
@@ -954,10 +992,7 @@ function renderLiveArchiveBody(body) {
   bindSortables(body);
 }
 
-function renderRecordsBody() {
-  const body = document.getElementById('records-body');
-  if (!body) return;
-
+function computeTop10Scores() {
   // Top 10 single-week scores: historical scores come pre-computed from
   // parse_history.py's "Past history" tab parsing, but that only covers
   // archived years -- the live season's weekly scores are merged in here
@@ -966,7 +1001,7 @@ function renderRecordsBody() {
   // that's actually in the top 10 gets a * since it's provisional (the
   // season isn't finalized yet, so it could still be bumped by a bigger
   // week before the year is archived).
-  const historicalScores = (state.history.all_time_top_scores || []).map(r => ({ ...r, live: false }));
+  const historicalScores = (state.history?.all_time_top_scores || []).map(r => ({ ...r, live: false }));
   const liveScores = [];
   if (state.current) {
     const liveYearNum = Number(state.current.season);
@@ -976,14 +1011,18 @@ function renderRecordsBody() {
         const team = state.current.teams.find(t => t.roster_id === m.roster_id);
         const owner = team ? liveTeamOwner(team) : null;
         if (!owner) return;
-        liveScores.push({ owner, points: m.points, year: liveYearNum, week: Number(week), live: true });
+        liveScores.push({ owner, points: m.points, year: liveYearNum, week: Number(week), roster_id: m.roster_id, live: true });
       });
     });
   }
-  const topScores = [...historicalScores, ...liveScores]
-    .sort((a, b) => (b.points || 0) - (a.points || 0))
-    .slice(0, 10);
+  return [...historicalScores, ...liveScores].sort((a, b) => (b.points || 0) - (a.points || 0)).slice(0, 10);
+}
 
+function renderTop10Body() {
+  const body = document.getElementById('top10-body');
+  if (!body) return;
+
+  const topScores = computeTop10Scores();
   const scoreRows = topScores.map((r, i) => `
     <tr class="${i === 0 ? 'rank-1' : ''}">
       <td data-sort-value="${i + 1}">${i + 1}</td>
@@ -993,11 +1032,32 @@ function renderRecordsBody() {
     </tr>`).join('');
   const hasLiveEntry = topScores.some(r => r.live);
 
+  body.innerHTML = `
+    <h2 class="section-title">Top 10 Single-Week Scores</h2>
+    <table class="sortable">
+      <thead><tr>
+        <th data-sort-key="rank" data-sort-type="num">#</th>
+        <th data-sort-key="owner">Owner</th>
+        <th data-sort-key="points" data-sort-type="num">Points</th>
+        <th data-sort-key="when" data-sort-type="num">When</th>
+      </tr></thead>
+      <tbody>${scoreRows}</tbody>
+    </table>
+    ${hasLiveEntry ? `<p class="card-note" style="margin-top:8px;">* from the season in progress — provisional, since the year isn't archived yet.</p>` : ''}
+  `;
+  bindSortables(body);
+}
+
+function renderCareerBody() {
+  const body = document.getElementById('career-body');
+  if (!body) return;
+
   // Career totals (win-loss + PF/PA) come pre-computed from parse_history.py
   // for the archived (2022-2025) seasons, which already skips the flagged-
   // stale 2024 standings tab. The live season is merged in on top of that
-  // using the Sleeper-username-to-owner mapping, so this stays accurate
-  // as the current season progresses.
+  // using the Sleeper-username-to-owner mapping -- PF/PA come from Sleeper's
+  // own cumulative roster totals, so this is a genuine running total that's
+  // current as of whenever Force Update was last run, not a snapshot.
   const career = {};
   Object.entries(state.history.career_totals || {}).forEach(([owner, c]) => {
     career[owner] = { ...c };
@@ -1031,7 +1091,7 @@ function renderRecordsBody() {
 
   body.innerHTML = `
     <h2 class="section-title">All-Time (Career)</h2>
-    <p class="card-note" style="margin-bottom:12px;">Running totals across every archived season plus the live season in progress. Championships only count years where the final standings are verified accurate — see the Season Archive tab for which years qualify.</p>
+    <p class="card-note" style="margin-bottom:12px;">Running totals across every archived season plus the live season in progress — PF/PA update automatically each time Force Update runs. Championships only count years where the final standings are verified accurate — see the Season Archive tab for which years qualify.</p>
     <table class="sortable">
       <thead><tr>
         <th data-sort-key="owner">Owner</th>
@@ -1043,18 +1103,6 @@ function renderRecordsBody() {
       </tr></thead>
       <tbody>${careerRows}</tbody>
     </table>
-
-    <h2 class="section-title">Top 10 Single-Week Scores</h2>
-    <table class="sortable">
-      <thead><tr>
-        <th data-sort-key="rank" data-sort-type="num">#</th>
-        <th data-sort-key="owner">Owner</th>
-        <th data-sort-key="points" data-sort-type="num">Points</th>
-        <th data-sort-key="when" data-sort-type="num">When</th>
-      </tr></thead>
-      <tbody>${scoreRows}</tbody>
-    </table>
-    ${hasLiveEntry ? `<p class="card-note" style="margin-top:8px;">* from the season in progress — provisional, since the year isn't archived yet.</p>` : ''}
   `;
   bindSortables(body);
 }
@@ -1760,6 +1808,7 @@ function renderRockyAdmin(year, weeks) {
         value="${existing?.probability ?? ''}"
         style="width:150px; background:var(--felt); border:1px solid var(--felt-line); color:var(--chalk); border-radius:6px; padding:6px 10px; font-family:'IBM Plex Mono',monospace;">
       <button type="submit" class="update-btn">Save</button>
+      <span id="rocky-save-msg" class="card-note" style="align-self:center;"></span>
     </form>
   `;
 
@@ -1776,8 +1825,13 @@ function renderRockyAdmin(year, weeks) {
     const probability = e.target.querySelector('[name=probability]').value.trim();
     if (!winner || probability === '') return;
     saveManualAward(year, selectedAdminWeek, 'Rocky', { winner, probability: Number(probability) });
-    renderRockyAdmin(year, weeks);
     renderAwards();
+    const msg = document.getElementById('rocky-save-msg');
+    if (msg) {
+      msg.textContent = '✓ Saved';
+      msg.style.color = 'var(--win)';
+      setTimeout(() => { if (msg.textContent === '✓ Saved') msg.textContent = ''; }, 3000);
+    }
   });
 }
 
