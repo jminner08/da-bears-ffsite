@@ -29,6 +29,7 @@ async function loadData() {
 
   renderHeader();
   renderCurrent();
+  renderWeeklyPreview();
   renderArchive();
   renderAwards();
   renderBenchScores();
@@ -200,6 +201,7 @@ async function handleForceUpdate() {
     writeCache(data);
     renderHeader();
     renderCurrent();
+    renderWeeklyPreview();
     renderArchive();
     renderBestInShow();
     renderAwards();
@@ -461,10 +463,24 @@ function renderCurrent() {
       <tbody>${rows}</tbody>
     </table>
     ${matchupsHtml}
+  `;
+  bindSortables(el);
+}
+
+function renderWeeklyPreview() {
+  const el = document.getElementById('panel-preview');
+  if (!state.current) {
+    el.innerHTML = `
+      <div class="empty-state">
+        <div class="display">No live season pulled yet</div>
+        <p>Run the Sleeper import script (or Force Update on the Administration tab) to pull this season's data.</p>
+      </div>`;
+    return;
+  }
+  el.innerHTML = `
     <div id="power-rankings-section"></div>
     <div id="preview-section"></div>
   `;
-  bindSortables(el);
   renderPowerRankingsSection();
   renderPreviewSection();
 }
@@ -544,13 +560,82 @@ function computePowerRankings(maxWeek) {
   }).sort((a, b) => b.powerScore - a.powerScore);
 }
 
+/* Same algorithm as the live-season functions above, but for an archived
+   year, keyed by owner nickname instead of roster_id since past seasons
+   have no live roster data -- just the week-by-week head-to-head results
+   parsed from that year's Excel file (season.matchups). */
+function historicalPlayedWeeks(season) {
+  return Object.keys(season.matchups || {}).map(Number).sort((a, b) => a - b);
+}
+
+function computeHistoricalStandingsThroughWeek(season, maxWeek) {
+  const byOwner = {};
+  Object.keys(state.history.owner_registry || {}).forEach(o => { byOwner[o] = { wins: 0, losses: 0, ties: 0, scores: [] }; });
+
+  historicalPlayedWeeks(season).filter(w => w <= maxWeek).forEach(w => {
+    (season.matchups[String(w)] || []).forEach(m => {
+      const a = m.owner_a, b = m.owner_b;
+      if (!byOwner[a] || !byOwner[b]) return;
+      byOwner[a].scores.push(m.score_a);
+      byOwner[b].scores.push(m.score_b);
+      if (m.score_a > m.score_b) { byOwner[a].wins++; byOwner[b].losses++; }
+      else if (m.score_b > m.score_a) { byOwner[b].wins++; byOwner[a].losses++; }
+      else { byOwner[a].ties++; byOwner[b].ties++; }
+    });
+  });
+  return byOwner;
+}
+
+function computeHistoricalPowerRankings(season, maxWeek) {
+  const standings = computeHistoricalStandingsThroughWeek(season, maxWeek);
+  const list = Object.keys(state.history.owner_registry || {}).map(owner => {
+    const s = standings[owner] || { wins: 0, losses: 0, ties: 0, scores: [] };
+    const gamesPlayed = s.scores.length;
+    const winPct = s.wins / Math.max(1, s.wins + s.losses + s.ties);
+    const seasonAvg = gamesPlayed ? s.scores.reduce((a, b) => a + b, 0) / gamesPlayed : 0;
+    const recent = s.scores.slice(-3);
+    const recentAvg = recent.length ? recent.reduce((a, b) => a + b, 0) / recent.length : seasonAvg;
+    return { owner, wins: s.wins, losses: s.losses, ties: s.ties, gamesPlayed, winPct, seasonAvg, recentAvg };
+  });
+
+  if (!list.some(s => s.gamesPlayed > 0)) return null;
+
+  const n = list.length;
+  const rankScore = (key) => {
+    const sorted = [...list].sort((a, b) => b[key] - a[key]);
+    const scoreByOwner = new Map();
+    sorted.forEach((s, i) => scoreByOwner.set(s.owner, n > 1 ? (n - 1 - i) / (n - 1) * 100 : 100));
+    return scoreByOwner;
+  };
+  const winScores = rankScore('winPct');
+  const pfScores = rankScore('seasonAvg');
+  const recentScores = rankScore('recentAvg');
+
+  return list.map(s => {
+    const powerScore = 0.4 * winScores.get(s.owner) + 0.3 * pfScores.get(s.owner) + 0.3 * recentScores.get(s.owner);
+    return { ...s, powerScore };
+  }).sort((a, b) => b.powerScore - a.powerScore);
+}
+
+let selectedPowerYear = null;
 let selectedPowerWeek = null;
 
 function renderPowerRankingsSection() {
   const el = document.getElementById('power-rankings-section');
   if (!el) return;
 
-  const played = playedWeeksList();
+  const histYears = (state.history?.seasons || []).map(s => s.year).filter(Boolean);
+  const liveYear = state.current ? Number(state.current.season) : null;
+  const years = Array.from(new Set([...histYears, ...(liveYear ? [liveYear] : [])])).sort((a, b) => a - b);
+  if (!years.length) { el.innerHTML = ''; return; }
+
+  if (!selectedPowerYear || !years.includes(selectedPowerYear)) {
+    selectedPowerYear = liveYear || Math.max(...years);
+  }
+  const isLive = selectedPowerYear === liveYear;
+  const season = isLive ? null : state.history.seasons.find(s => s.year === selectedPowerYear);
+
+  const played = isLive ? playedWeeksList() : historicalPlayedWeeks(season);
   if (!played.length) { el.innerHTML = ''; return; }
 
   if (!selectedPowerWeek || !played.includes(selectedPowerWeek)) {
@@ -560,16 +645,19 @@ function renderPowerRankingsSection() {
   const weekIndex = played.indexOf(currentWeek);
   const previousWeek = weekIndex > 0 ? played[weekIndex - 1] : null;
 
-  const rankings = computePowerRankings(currentWeek);
+  const rankings = isLive ? computePowerRankings(currentWeek) : computeHistoricalPowerRankings(season, currentWeek);
   if (!rankings) { el.innerHTML = ''; return; }
 
-  const prevRankings = previousWeek ? computePowerRankings(previousWeek) : null;
-  const prevRankByRoster = new Map();
-  if (prevRankings) prevRankings.forEach((r, i) => prevRankByRoster.set(r.team.roster_id, i + 1));
+  const prevRankings = previousWeek
+    ? (isLive ? computePowerRankings(previousWeek) : computeHistoricalPowerRankings(season, previousWeek))
+    : null;
+  const idOf = (r) => isLive ? r.team.roster_id : r.owner;
+  const prevRankById = new Map();
+  if (prevRankings) prevRankings.forEach((r, i) => prevRankById.set(idOf(r), i + 1));
 
-  const movementCell = (rid, currentRank) => {
-    if (!prevRankByRoster.has(rid)) return `<span class="card-note">New</span>`;
-    const prevRank = prevRankByRoster.get(rid);
+  const movementCell = (id, currentRank) => {
+    if (!prevRankById.has(id)) return `<span class="card-note">New</span>`;
+    const prevRank = prevRankById.get(id);
     const delta = prevRank - currentRank; // positive = moved up
     if (delta === 0) return `<span class="card-note">–</span>`;
     const cls = delta > 0 ? 'move-up' : 'move-down';
@@ -578,12 +666,13 @@ function renderPowerRankingsSection() {
   };
 
   const rows = rankings.map((r, i) => {
-    const t = r.team;
+    const id = idOf(r);
     const rank = i + 1;
+    const label = isLive ? liveTeamLabel(r.team) : ownerTeamLabel(r.owner);
     return `<tr class="${i === 0 ? 'rank-1' : ''}">
       <td data-sort-value="${rank}">${rank}</td>
-      <td data-sort-value="${prevRankByRoster.has(t.roster_id) ? (prevRankByRoster.get(t.roster_id) - rank) : 999}">${movementCell(t.roster_id, rank)}</td>
-      <td class="name-cell">${liveTeamLabel(t)}</td>
+      <td data-sort-value="${prevRankById.has(id) ? (prevRankById.get(id) - rank) : 999}">${movementCell(id, rank)}</td>
+      <td class="name-cell">${label}</td>
       <td data-sort-value="${r.wins ?? 0}">${r.wins ?? 0}-${r.losses ?? 0}${r.ties ? `-${r.ties}` : ''}</td>
       <td data-sort-value="${r.seasonAvg}">${r.seasonAvg.toFixed(1)}</td>
       <td data-sort-value="${r.recentAvg}">${r.recentAvg.toFixed(1)}</td>
@@ -594,9 +683,12 @@ function renderPowerRankingsSection() {
   el.innerHTML = `
     <h2 class="section-title">Power Rankings</h2>
     <div class="year-select">
+      ${years.map(y => `<button data-year="${y}" class="${y === selectedPowerYear ? 'active' : ''}">${y}${y === liveYear ? ' (live)' : ''}</button>`).join('')}
+    </div>
+    <div class="year-select">
       ${played.map(w => `<button data-week="${w}" class="${w === currentWeek ? 'active' : ''}">Wk ${w}</button>`).join('')}
     </div>
-    <p class="card-note" style="margin:8px 0 12px;">Blends record (40%), season scoring average (30%), and last-3-week form (30%) into one score out of 100 as of Week ${currentWeek} — a team on a hot streak can outrank a better record here. Movement compares to Week ${previousWeek ?? '–'}.</p>
+    <p class="card-note" style="margin:8px 0 12px;">Blends record (40%), season scoring average (30%), and last-3-week form (30%) into one score out of 100 as of ${selectedPowerYear} Week ${currentWeek} — a team on a hot streak can outrank a better record here. Movement compares to Week ${previousWeek ?? '–'}.</p>
     <table class="sortable">
       <thead><tr>
         <th data-sort-key="rank" data-sort-type="num">#</th>
@@ -612,13 +704,21 @@ function renderPowerRankingsSection() {
   `;
   bindSortables(el);
 
-  el.querySelector('.year-select').addEventListener('click', (e) => {
+  el.querySelectorAll('.year-select')[0].addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-year]');
+    if (!btn) return;
+    selectedPowerYear = Number(btn.dataset.year);
+    selectedPowerWeek = null;
+    renderPowerRankingsSection();
+  });
+  el.querySelectorAll('.year-select')[1].addEventListener('click', (e) => {
     const btn = e.target.closest('button[data-week]');
     if (!btn) return;
     selectedPowerWeek = Number(btn.dataset.week);
     renderPowerRankingsSection();
   });
 }
+
 
 /* ---------------- Matchup Previews ----------------
    Projected scores + win probability for a chosen week, computed from each
