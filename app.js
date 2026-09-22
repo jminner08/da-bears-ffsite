@@ -544,14 +544,21 @@ function computePowerRankings(maxWeek) {
   }).sort((a, b) => b.powerScore - a.powerScore);
 }
 
+let selectedPowerWeek = null;
+
 function renderPowerRankingsSection() {
   const el = document.getElementById('power-rankings-section');
   if (!el) return;
 
   const played = playedWeeksList();
   if (!played.length) { el.innerHTML = ''; return; }
-  const currentWeek = played[played.length - 1];
-  const previousWeek = played.length > 1 ? played[played.length - 2] : null;
+
+  if (!selectedPowerWeek || !played.includes(selectedPowerWeek)) {
+    selectedPowerWeek = played[played.length - 1];
+  }
+  const currentWeek = selectedPowerWeek;
+  const weekIndex = played.indexOf(currentWeek);
+  const previousWeek = weekIndex > 0 ? played[weekIndex - 1] : null;
 
   const rankings = computePowerRankings(currentWeek);
   if (!rankings) { el.innerHTML = ''; return; }
@@ -586,7 +593,10 @@ function renderPowerRankingsSection() {
 
   el.innerHTML = `
     <h2 class="section-title">Power Rankings</h2>
-    <p class="card-note" style="margin-bottom:12px;">Blends record (40%), season scoring average (30%), and last-3-week form (30%) into one score out of 100 — a team on a hot streak can outrank a better record here. Movement compares to Week ${previousWeek ?? '–'}.</p>
+    <div class="year-select">
+      ${played.map(w => `<button data-week="${w}" class="${w === currentWeek ? 'active' : ''}">Wk ${w}</button>`).join('')}
+    </div>
+    <p class="card-note" style="margin:8px 0 12px;">Blends record (40%), season scoring average (30%), and last-3-week form (30%) into one score out of 100 as of Week ${currentWeek} — a team on a hot streak can outrank a better record here. Movement compares to Week ${previousWeek ?? '–'}.</p>
     <table class="sortable">
       <thead><tr>
         <th data-sort-key="rank" data-sort-type="num">#</th>
@@ -601,6 +611,13 @@ function renderPowerRankingsSection() {
     </table>
   `;
   bindSortables(el);
+
+  el.querySelector('.year-select').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-week]');
+    if (!btn) return;
+    selectedPowerWeek = Number(btn.dataset.week);
+    renderPowerRankingsSection();
+  });
 }
 
 /* ---------------- Matchup Previews ----------------
