@@ -366,6 +366,11 @@ def parse_past_history(ws):
     return results
 
 
+# Reverse lookup for the 2022-style standings tab, which only has the team
+# name (plus real name in parens), not the owner nickname directly.
+TEAM_NAME_TO_OWNER = {reg["team"]: nick for nick, reg in OWNER_REGISTRY.items()}
+
+
 def parse_standings_generic(ws):
     """Handles both the 2022-style (RK/TEAM/PF/PA...) and 2023+-style
     (owner short name + Regular Season/Final Standings/FP/PA/Waiver) tabs."""
@@ -436,7 +441,9 @@ def parse_standings_generic(ws):
                 # team cell looks like "Name  (Real Name)"
                 m = re.match(r"^(.*?)\s*\(([^)]+)\)\s*$", str(team).replace("\xa0", " ").strip())
                 team_name, real_name = (m.group(1).strip(), m.group(2).strip()) if m else (str(team).strip(), None)
+                owner = TEAM_NAME_TO_OWNER.get(team_name)
                 results.append({
+                    "owner": owner,
                     "rank": rk,
                     "team": team_name,
                     "real_name": real_name,
@@ -461,6 +468,60 @@ def parse_standings_generic(ws):
 TRUSTED_FINAL_STANDINGS_YEARS = {2025}
 
 
+# Season-end PF/PA verified directly by the commissioner, for years where
+# the Excel file can't supply it reliably:
+#   - 2024: the Standings tab is a byte-for-byte stale copy of 2023's (see
+#     standings_suspect_stale below), so its PF/PA numbers are simply wrong.
+#   - 2025: the "Standing and Waiver" tab's format changed entirely this
+#     year -- it no longer has FP/PA columns at all, just a different
+#     week-by-week ranking tracker, so there's nothing to parse.
+# 2023 is included too as a cross-check: it already matches what parsing
+# the Excel file directly produces, confirming these numbers are trustworthy
+# before they overwrite anything.
+VERIFIED_PF_PA = {
+    2023: {
+        "Austin": (1810.94, 1693.26), "Alex": (1780.57, 1667.63), "Cronk": (1711.99, 1605.2),
+        "Jason": (1423.3, 1632.18), "Moss": (1641.36, 1628.05), "Randy": (1774.71, 1661.99),
+        "Luke": (1697.04, 1704.84), "Micah": (1780.81, 1670.45), "Todd": (1697.57, 1731.27),
+        "Josh": (1498.87, 1822.28),
+    },
+    2024: {
+        "Austin": (2052.9, 2163.8), "Alex": (2293.75, 2245.05), "Cronk": (2344.3, 2097.8),
+        "Jason": (2154.9, 2020.65), "Moss": (2464.2, 2272.3), "Randy": (2175.6, 2250.7),
+        "Luke": (2288.2, 2132.45), "Micah": (2196.15, 2183.85), "Todd": (1784.05, 2325.45),
+        "Josh": (2157.75, 2219.75),
+    },
+    2025: {
+        "Austin": (2213.45, 2305.3), "Alex": (2197.6, 2130.7), "Cronk": (2303.25, 2135.5),
+        "Jason": (2064.3, 2201.2), "Moss": (2179.1, 2041.55), "Randy": (2179.65, 2138.25),
+        "Luke": (2145.65, 1983.35), "Micah": (2219.4, 2063.45), "Todd": (1891.1, 2280.35),
+        "Josh": (2175.9, 2289.75),
+    },
+}
+
+
+def apply_pf_pa_overrides(year, standings):
+    """Overwrites/fills in pf/pa on each standings row using VERIFIED_PF_PA,
+    for years where it's known Excel can't be trusted for this. Matches by
+    owner, updating existing rows or adding new ones if that owner had no
+    standings row at all (e.g. 2025, where the whole PF/PA concept is
+    missing from the source tab).
+    """
+    overrides = VERIFIED_PF_PA.get(year)
+    if not overrides:
+        return standings
+    by_owner = {s["owner"]: s for s in standings if s.get("owner")}
+    for owner, (pf, pa) in overrides.items():
+        if owner in by_owner:
+            by_owner[owner]["pf"] = pf
+            by_owner[owner]["pa"] = pa
+        else:
+            row = {"owner": owner, "pf": pf, "pa": pa}
+            standings.append(row)
+            by_owner[owner] = row
+    return standings
+
+
 def parse_file(path):
     wb = openpyxl.load_workbook(path, data_only=True)
     year = guess_year(Path(path).name)
@@ -477,7 +538,7 @@ def parse_file(path):
         "source_file": Path(path).name,
         "win_loss_records": parse_win_loss(win_loss_ws),
         "achievements": parse_achievements(achievements_ws),
-        "standings": parse_standings_generic(standings_ws),
+        "standings": apply_pf_pa_overrides(year, parse_standings_generic(standings_ws)),
         "weekly_awards": parse_weekly_awards(wb),
         "bench_scores": parse_bench_scores(wb),
         "matchups": parse_matchups(wb),

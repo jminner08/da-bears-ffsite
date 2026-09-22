@@ -431,6 +431,7 @@
       ],
       "standings": [
         {
+          "owner": "Moss",
           "rank": 1,
           "team": "MossEisley Troopers",
           "real_name": "Bobby Moss",
@@ -438,6 +439,7 @@
           "pa": 1458
         },
         {
+          "owner": "Luke",
           "rank": 2,
           "team": "Led Tasso",
           "real_name": "Luke Blanchette",
@@ -445,6 +447,7 @@
           "pa": 1356
         },
         {
+          "owner": "Josh",
           "rank": 3,
           "team": "Grizzly Gregoire",
           "real_name": "Josh Gregoire",
@@ -452,6 +455,7 @@
           "pa": 1417
         },
         {
+          "owner": "Randy",
           "rank": 4,
           "team": "Sir Mixon Lot",
           "real_name": "Randy Blanchette",
@@ -459,6 +463,7 @@
           "pa": 1477.5
         },
         {
+          "owner": "Micah",
           "rank": 5,
           "team": "The Purge",
           "real_name": "Micah Gentry",
@@ -466,6 +471,7 @@
           "pa": 1414.5
         },
         {
+          "owner": "Alex",
           "rank": 6,
           "team": "Bench Points",
           "real_name": "Alex Schodrof",
@@ -473,6 +479,7 @@
           "pa": 1487.5
         },
         {
+          "owner": "Todd",
           "rank": 7,
           "team": "Boba Feta Cheese",
           "real_name": "Todd Hoffman",
@@ -480,6 +487,7 @@
           "pa": 1357.5
         },
         {
+          "owner": "Cronk",
           "rank": 8,
           "team": "Baba Yaga",
           "real_name": "Dave Cronk",
@@ -487,6 +495,7 @@
           "pa": 1481.5
         },
         {
+          "owner": "Austin",
           "rank": 9,
           "team": "I Don't Know What I'm Doing",
           "real_name": "Austin Smith",
@@ -494,6 +503,7 @@
           "pa": 1524.5
         },
         {
+          "owner": "Jason",
           "rank": 10,
           "team": "K-Aaron Rodgers",
           "real_name": "Jason Minner",
@@ -2792,7 +2802,7 @@
           "owner": "Luke",
           "reg_season_div": 4,
           "final_standing": 1,
-          "pf": 1697.87,
+          "pf": 1697.04,
           "pa": 1704.84,
           "waiver_start": 1000,
           "waiver_remaining": 200,
@@ -5239,8 +5249,8 @@
           "owner": "Todd",
           "reg_season_div": 4,
           "final_standing": 10,
-          "pf": 1697.57,
-          "pa": 1731.27,
+          "pf": 1784.05,
+          "pa": 2325.45,
           "waiver_start": 1000,
           "waiver_remaining": 645,
           "waiver_spent": 355
@@ -5249,8 +5259,8 @@
           "owner": "Jason",
           "reg_season_div": 5,
           "final_standing": 9,
-          "pf": 1423.3,
-          "pa": 1632.18,
+          "pf": 2154.9,
+          "pa": 2020.65,
           "waiver_start": 1000,
           "waiver_remaining": 614,
           "waiver_spent": 386
@@ -5259,8 +5269,8 @@
           "owner": "Josh",
           "reg_season_div": 5,
           "final_standing": 8,
-          "pf": 1498.87,
-          "pa": 1822.28,
+          "pf": 2157.75,
+          "pa": 2219.75,
           "waiver_start": 1000,
           "waiver_remaining": 985,
           "waiver_spent": 15
@@ -5269,8 +5279,8 @@
           "owner": "Alex",
           "reg_season_div": 3,
           "final_standing": 7,
-          "pf": 1780.57,
-          "pa": 1667.63,
+          "pf": 2293.75,
+          "pa": 2245.05,
           "waiver_start": 1000,
           "waiver_remaining": 998,
           "waiver_spent": 2
@@ -5279,8 +5289,8 @@
           "owner": "Austin",
           "reg_season_div": 2,
           "final_standing": 6,
-          "pf": 1810.94,
-          "pa": 1693.26,
+          "pf": 2052.9,
+          "pa": 2163.8,
           "waiver_start": 1000,
           "waiver_remaining": 162,
           "waiver_spent": 838
@@ -5289,8 +5299,8 @@
           "owner": "Moss",
           "reg_season_div": 2,
           "final_standing": 5,
-          "pf": 1641.36,
-          "pa": 1628.05,
+          "pf": 2464.2,
+          "pa": 2272.3,
           "waiver_start": 1000,
           "waiver_remaining": 424,
           "waiver_spent": 576
@@ -5299,8 +5309,8 @@
           "owner": "Cronk",
           "reg_season_div": 1,
           "final_standing": 4,
-          "pf": 1711.99,
-          "pa": 1605.2,
+          "pf": 2344.3,
+          "pa": 2097.8,
           "waiver_start": 1000,
           "waiver_remaining": 525,
           "waiver_spent": 475
@@ -5309,8 +5319,8 @@
           "owner": "Randy",
           "reg_season_div": 3,
           "final_standing": 3,
-          "pf": 1774.71,
-          "pa": 1661.99,
+          "pf": 2175.6,
+          "pa": 2250.7,
           "waiver_start": 1000,
           "waiver_remaining": 52,
           "waiver_spent": 948
@@ -5319,8 +5329,8 @@
           "owner": "Micah",
           "reg_season_div": 1,
           "final_standing": 2,
-          "pf": 1780.81,
-          "pa": 1670.45,
+          "pf": 2196.15,
+          "pa": 2183.85,
           "waiver_start": 1000,
           "waiver_remaining": 575,
           "waiver_spent": 425
@@ -5329,8 +5339,8 @@
           "owner": "Luke",
           "reg_season_div": 4,
           "final_standing": 1,
-          "pf": 1697.87,
-          "pa": 1704.84,
+          "pf": 2288.2,
+          "pa": 2132.45,
           "waiver_start": 1000,
           "waiver_remaining": 200,
           "waiver_spent": 800
@@ -7283,8 +7293,7 @@
           }
         ]
       },
-      "final_standings_trusted": false,
-      "standings_suspect_stale": true
+      "final_standings_trusted": false
     },
     {
       "year": 2025,
@@ -7693,8 +7702,8 @@
           "owner": "Austin",
           "reg_season_div": null,
           "final_standing": null,
-          "pf": null,
-          "pa": null,
+          "pf": 2213.45,
+          "pa": 2305.3,
           "waiver_start": 1000,
           "waiver_remaining": 408,
           "waiver_spent": 592
@@ -7703,8 +7712,8 @@
           "owner": "Alex",
           "reg_season_div": null,
           "final_standing": null,
-          "pf": null,
-          "pa": null,
+          "pf": 2197.6,
+          "pa": 2130.7,
           "waiver_start": 1000,
           "waiver_remaining": 458,
           "waiver_spent": 542
@@ -7713,8 +7722,8 @@
           "owner": "Cronk",
           "reg_season_div": null,
           "final_standing": null,
-          "pf": null,
-          "pa": null,
+          "pf": 2303.25,
+          "pa": 2135.5,
           "waiver_start": 1000,
           "waiver_remaining": 520,
           "waiver_spent": 480
@@ -7723,8 +7732,8 @@
           "owner": "Jason",
           "reg_season_div": null,
           "final_standing": null,
-          "pf": null,
-          "pa": null,
+          "pf": 2064.3,
+          "pa": 2201.2,
           "waiver_start": 1000,
           "waiver_remaining": 633,
           "waiver_spent": 367
@@ -7733,8 +7742,8 @@
           "owner": "Moss",
           "reg_season_div": null,
           "final_standing": null,
-          "pf": null,
-          "pa": null,
+          "pf": 2179.1,
+          "pa": 2041.55,
           "waiver_start": 1000,
           "waiver_remaining": 667,
           "waiver_spent": 333
@@ -7743,8 +7752,8 @@
           "owner": "Randy",
           "reg_season_div": null,
           "final_standing": null,
-          "pf": null,
-          "pa": null,
+          "pf": 2179.65,
+          "pa": 2138.25,
           "waiver_start": 1000,
           "waiver_remaining": 815,
           "waiver_spent": 185
@@ -7753,8 +7762,8 @@
           "owner": "Luke",
           "reg_season_div": null,
           "final_standing": null,
-          "pf": null,
-          "pa": null,
+          "pf": 2145.65,
+          "pa": 1983.35,
           "waiver_start": 1000,
           "waiver_remaining": 851,
           "waiver_spent": 149
@@ -7763,8 +7772,8 @@
           "owner": "Micah",
           "reg_season_div": null,
           "final_standing": null,
-          "pf": null,
-          "pa": null,
+          "pf": 2219.4,
+          "pa": 2063.45,
           "waiver_start": 1000,
           "waiver_remaining": 868,
           "waiver_spent": 132
@@ -7773,8 +7782,8 @@
           "owner": "Todd",
           "reg_season_div": null,
           "final_standing": null,
-          "pf": null,
-          "pa": null,
+          "pf": 1891.1,
+          "pa": 2280.35,
           "waiver_start": 1000,
           "waiver_remaining": 930,
           "waiver_spent": 70
@@ -7783,8 +7792,8 @@
           "owner": "Josh",
           "reg_season_div": null,
           "final_standing": null,
-          "pf": null,
-          "pa": null,
+          "pf": 2175.9,
+          "pa": 2289.75,
           "waiver_start": 1000,
           "waiver_remaining": 937,
           "waiver_spent": 63
@@ -9971,8 +9980,8 @@
       "losses": 27,
       "ties": 0,
       "playoff_wins": 6,
-      "pf": 1641.36,
-      "pa": 1628.05,
+      "pf": 7873.16,
+      "pa": 7399.900000000001,
       "championships": 0
     },
     "Cronk": {
@@ -9980,8 +9989,8 @@
       "losses": 31,
       "ties": 0,
       "playoff_wins": 3,
-      "pf": 1711.99,
-      "pa": 1605.2,
+      "pf": 7686.04,
+      "pa": 7320.0,
       "championships": 0
     },
     "Randy": {
@@ -9989,8 +9998,8 @@
       "losses": 35,
       "ties": 0,
       "playoff_wins": 6,
-      "pf": 1774.71,
-      "pa": 1661.99,
+      "pf": 7574.959999999999,
+      "pa": 7528.44,
       "championships": 0
     },
     "Alex": {
@@ -9998,8 +10007,8 @@
       "losses": 36,
       "ties": 0,
       "playoff_wins": 4,
-      "pf": 1780.57,
-      "pa": 1667.63,
+      "pf": 7705.42,
+      "pa": 7530.88,
       "championships": 0
     },
     "Jason": {
@@ -10007,8 +10016,8 @@
       "losses": 48,
       "ties": 0,
       "playoff_wins": 2,
-      "pf": 1423.3,
-      "pa": 1632.18,
+      "pf": 7038.500000000001,
+      "pa": 7410.53,
       "championships": 0
     },
     "Todd": {
@@ -10016,8 +10025,8 @@
       "losses": 43,
       "ties": 1,
       "playoff_wins": 5,
-      "pf": 1697.57,
-      "pa": 1731.27,
+      "pf": 6657.219999999999,
+      "pa": 7694.57,
       "championships": 0
     },
     "Luke": {
@@ -10025,8 +10034,8 @@
       "losses": 25,
       "ties": 0,
       "playoff_wins": 9,
-      "pf": 1697.87,
-      "pa": 1704.84,
+      "pf": 7747.389999999999,
+      "pa": 7176.639999999999,
       "championships": 0
     },
     "Micah": {
@@ -10034,8 +10043,8 @@
       "losses": 27,
       "ties": 0,
       "playoff_wins": 6,
-      "pf": 1780.81,
-      "pa": 1670.45,
+      "pf": 7770.860000000001,
+      "pa": 7332.249999999999,
       "championships": 1
     },
     "Josh": {
@@ -10043,8 +10052,8 @@
       "losses": 36,
       "ties": 1,
       "playoff_wins": 5,
-      "pf": 1498.87,
-      "pa": 1822.28,
+      "pf": 7281.02,
+      "pa": 7748.78,
       "championships": 0
     },
     "Austin": {
@@ -10052,8 +10061,8 @@
       "losses": 42,
       "ties": 0,
       "playoff_wins": 1,
-      "pf": 1810.94,
-      "pa": 1693.26,
+      "pf": 7494.29,
+      "pa": 7686.860000000001,
       "championships": 0
     }
   }
