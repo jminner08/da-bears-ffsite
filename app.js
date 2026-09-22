@@ -1000,6 +1000,8 @@ function renderArchive() {
   el.querySelectorAll('.year-select button').forEach(btn => {
     btn.addEventListener('click', () => {
       selectedYear = Number(btn.dataset.year);
+      el.querySelectorAll('.year-select button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
       renderArchiveBody(liveYear);
     });
   });
@@ -1824,6 +1826,8 @@ function renderWaiversTrades() {
     const btn = e.target.closest('button[data-week]');
     if (!btn) return;
     selectedWaiverWeek = isNaN(Number(btn.dataset.week)) ? btn.dataset.week : Number(btn.dataset.week);
+    el.querySelectorAll('.year-select button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
     renderWaiversBody(teamByRoster);
   });
 
