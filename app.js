@@ -206,6 +206,11 @@ async function handleForceUpdate() {
     const data = await fetchSleeperLive(DEFAULT_LEAGUE_ID);
     state.current = data;
     writeCache(data);
+    // Reset these so a fresh pull shows the newest week by default, instead
+    // of silently staying on whatever week was last clicked before the
+    // update (which would otherwise look like "nothing updated").
+    selectedPowerWeek = null;
+    selectedPreviewWeek = null;
     renderHeader();
     renderCurrent();
     renderWeeklyPreview();
