@@ -692,6 +692,9 @@ function renderPowerRankingsSection() {
     </tr>`;
   }).join('');
 
+  const isLatestLiveWeek = isLive && currentWeek === played[played.length - 1];
+  const headingIntoNote = isLatestLiveWeek ? ` (heading into Week ${currentWeek + 1})` : '';
+
   el.innerHTML = `
     <h2 class="section-title">Power Rankings</h2>
     <div class="year-select">
@@ -700,7 +703,7 @@ function renderPowerRankingsSection() {
     <div class="year-select">
       ${played.map(w => `<button data-week="${w}" class="${w === currentWeek ? 'active' : ''}">Wk ${w}</button>`).join('')}
     </div>
-    <p class="card-note" style="margin:8px 0 12px;">Blends record (40%), season scoring average (30%), and last-3-week form (30%) into one score out of 100 as of ${selectedPowerYear} Week ${currentWeek} — a team on a hot streak can outrank a better record here. Movement compares to Week ${previousWeek ?? '–'}.</p>
+    <p class="card-note" style="margin:8px 0 12px;">Blends record (40%), season scoring average (30%), and last-3-week form (30%) into one score out of 100 as of ${selectedPowerYear} Week ${currentWeek}${headingIntoNote} — a team on a hot streak can outrank a better record here. Movement compares to Week ${previousWeek ?? '–'}.</p>
     <table class="sortable">
       <thead><tr>
         <th data-sort-key="rank" data-sort-type="num">#</th>
