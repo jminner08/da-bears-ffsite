@@ -1064,10 +1064,12 @@ function renderArchiveBody(liveYear) {
     const extra = standingsByOwner[t.owner];
     const pf = extra?.pf ?? extra?.fp;
     const pa = extra?.pa;
-    const isChamp = trusted && t.final_standing === 1;
-    return `<tr class="${isChamp ? 'rank-1' : ''}">
+    const isChamp = season.champion === t.owner;
+    const isRunnerUp = season.runner_up === t.owner;
+    const isLast = season.last_place === t.owner;
+    return `<tr>
       ${trusted ? `<td data-sort-value="${t.final_standing ?? 999}">${t.final_standing ?? '-'}</td>` : ''}
-      <td class="name-cell">${ownerTeamLabel(t.owner)}</td>
+      <td class="name-cell">${ownerTeamLabel(t.owner)}${isChamp ? ' 🏆' : ''}${isRunnerUp ? ' 🥈' : ''}${isLast ? ' 🚽' : ''}</td>
       <td data-sort-value="${t.wins ?? 0}">${t.wins}-${t.losses}${t.ties ? `-${t.ties}` : ''}</td>
       <td data-sort-value="${t.playoff_wins ?? 0}">${t.playoff_wins ?? 0}</td>
       <td data-sort-value="${pf ?? -1}">${pf ?? '-'}</td>
@@ -1075,12 +1077,16 @@ function renderArchiveBody(liveYear) {
     </tr>`;
   }).join('');
 
+  const champLine = season.champion
+    ? `<strong>${ownerTeamLabel(season.champion)}</strong> won the league${season.runner_up ? `, beating <strong>${ownerTeamLabel(season.runner_up)}</strong> in the final` : ''}.${season.last_place ? ` <strong>${ownerTeamLabel(season.last_place)}</strong> finished last 🚽.` : ''}`
+    : `This league's actual champion isn't tracked reliably in the source data for this year.`;
+
   body.innerHTML = `
     ${warn}
     <h2 class="section-title">${selectedYear} Win-Loss Records</h2>
     <p class="card-note" style="margin-bottom:12px;">${trusted
-      ? `Sorted by final standing — <strong>${ownerTeamLabel(wl[0]?.owner)}</strong> won the league. Click any column header to re-sort.`
-      : `Sorted by regular-season record by default — click any column header to re-sort. This league's actual final standings/champion aren't tracked reliably in the source data (see "Administration" tab), so no winner is crowned here.`}</p>
+      ? `Sorted by final standing. ${champLine} Click any column header to re-sort.`
+      : `Sorted by regular-season record by default (the full 1st-10th standings aren't reliable in the source data for this year — see "Administration" tab) — but the champion/runner-up shown below are verified. ${champLine} Click any column header to re-sort.`}</p>
     <table class="sortable">
       <thead><tr>
         ${trusted ? `<th data-sort-key="standing" data-sort-type="num">Standing</th>` : ''}
@@ -1200,7 +1206,7 @@ function renderCareerBody() {
     state.current.teams.forEach(t => {
       const owner = liveTeamOwner(t);
       if (!owner) return;
-      const c = career[owner] = career[owner] || { wins: 0, losses: 0, ties: 0, playoff_wins: 0, pf: 0, pa: 0, championships: 0 };
+      const c = career[owner] = career[owner] || { wins: 0, losses: 0, ties: 0, playoff_wins: 0, pf: 0, pa: 0, championships: 0, runner_ups: 0, last_places: 0 };
       c.wins += t.wins || 0;
       c.losses += t.losses || 0;
       c.ties += t.ties || 0;
@@ -1216,6 +1222,8 @@ function renderCareerBody() {
       <tr class="${(c.championships || 0) > 0 ? 'rank-1' : ''}">
         <td class="name-cell">${ownerLabel(owner)}</td>
         <td data-sort-value="${c.championships || 0}">${c.championships || 0}</td>
+        <td data-sort-value="${c.runner_ups || 0}">${c.runner_ups || 0}</td>
+        <td data-sort-value="${c.last_places || 0}">${c.last_places || 0}</td>
         <td data-sort-value="${c.wins}">${c.wins}-${c.losses}${c.ties ? `-${c.ties}` : ''}</td>
         <td data-sort-value="${pct}">${pct.toFixed(1)}%</td>
         <td data-sort-value="${c.pf ?? 0}">${(c.pf ?? 0).toFixed(1)}</td>
@@ -1225,11 +1233,13 @@ function renderCareerBody() {
 
   body.innerHTML = `
     <h2 class="section-title">All-Time (Career)</h2>
-    <p class="card-note" style="margin-bottom:12px;">Running totals across every archived season plus the live season in progress — PF/PA update automatically each time Force Update runs. Championships only count years where the final standings are verified accurate — see the Season Archive tab for which years qualify.</p>
+    <p class="card-note" style="margin-bottom:12px;">Running totals across every archived season plus the live season in progress — PF/PA update automatically each time Force Update runs. Championships, runner-ups, and last-place finishes are commissioner-verified for every year (2022-2025), cross-checked against each year's actual Week 17 results.</p>
     <table class="sortable">
       <thead><tr>
         <th data-sort-key="owner">Owner</th>
         <th data-sort-key="championships" data-sort-type="num">🏆</th>
+        <th data-sort-key="runnerups" data-sort-type="num">🥈</th>
+        <th data-sort-key="lastplace" data-sort-type="num">🚽</th>
         <th data-sort-key="record" data-sort-type="num">Record</th>
         <th data-sort-key="pct" data-sort-type="num">Win %</th>
         <th data-sort-key="pf" data-sort-type="num">PF</th>

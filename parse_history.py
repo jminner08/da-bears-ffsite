@@ -467,6 +467,32 @@ def parse_standings_generic(ws):
 # there.
 TRUSTED_FINAL_STANDINGS_YEARS = {2025}
 
+# Championship/runner-up, confirmed directly by the commissioner (cross-
+# checked against each year's actual Week 17 head-to-head results, which
+# all matched cleanly). This is tracked separately from
+# TRUSTED_FINAL_STANDINGS_YEARS above: knowing who won the championship
+# game doesn't require trusting the full 1-10 Final Standings column, which
+# is why 2022-2024 can have a verified champion here even though their
+# Final Standings columns are still the known-frozen/unreliable ones.
+VERIFIED_CHAMPIONS = {
+    2022: {"champion": "Moss", "runner_up": "Luke"},
+    2023: {"champion": "Luke", "runner_up": "Micah"},
+    2024: {"champion": "Luke", "runner_up": "Josh"},
+    2025: {"champion": "Micah", "runner_up": "Cronk"},
+}
+
+# Last place, commissioner-verified. Notably this does NOT always match
+# whoever had the worst regular-season record (e.g. 2023's worst record was
+# Jason at 5-12, but Todd finished last) -- confirms there's a placement/
+# "toilet bowl" bracket determining actual final place, separate from the
+# regular season standings, same as the championship bracket above.
+VERIFIED_LAST_PLACE = {
+    2022: "Jason",
+    2023: "Todd",
+    2024: "Austin",
+    2025: "Jason",
+}
+
 
 # Season-end PF/PA verified directly by the commissioner, for years where
 # the Excel file can't supply it reliably:
@@ -543,6 +569,9 @@ def parse_file(path):
         "bench_scores": parse_bench_scores(wb),
         "matchups": parse_matchups(wb),
         "final_standings_trusted": year in TRUSTED_FINAL_STANDINGS_YEARS,
+        "champion": VERIFIED_CHAMPIONS.get(year, {}).get("champion"),
+        "runner_up": VERIFIED_CHAMPIONS.get(year, {}).get("runner_up"),
+        "last_place": VERIFIED_LAST_PLACE.get(year),
     }
     return season, parse_past_history(past_history_ws)
 
@@ -599,13 +628,21 @@ def main(paths):
     for season in seasons:
         standings_by_owner = {s["owner"]: s for s in season.get("standings", []) if s.get("owner")}
         for t in season.get("win_loss_records", []):
-            c = career.setdefault(t["owner"], {"wins": 0, "losses": 0, "ties": 0, "playoff_wins": 0, "pf": 0, "pa": 0, "championships": 0})
+            c = career.setdefault(t["owner"], {"wins": 0, "losses": 0, "ties": 0, "playoff_wins": 0, "pf": 0, "pa": 0, "championships": 0, "runner_ups": 0, "last_places": 0})
             c["wins"] += t.get("wins") or 0
             c["losses"] += t.get("losses") or 0
             c["ties"] += t.get("ties") or 0
             c["playoff_wins"] += t.get("playoff_wins") or 0
-            if season.get("final_standings_trusted") and t.get("final_standing") == 1:
+            # Championship/runner-up counts come from VERIFIED_CHAMPIONS (see
+            # above), confirmed directly and checked against each year's real
+            # Week 17 results -- independent of whether the full Final
+            # Standings column (1st through 10th) is trustworthy for that year.
+            if season.get("champion") == t["owner"]:
                 c["championships"] += 1
+            if season.get("runner_up") == t["owner"]:
+                c["runner_ups"] += 1
+            if season.get("last_place") == t["owner"]:
+                c["last_places"] += 1
             if not season.get("standings_suspect_stale"):
                 st = standings_by_owner.get(t["owner"])
                 if st:
