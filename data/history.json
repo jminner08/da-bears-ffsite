@@ -2408,7 +2408,10 @@
           }
         ]
       },
-      "final_standings_trusted": false
+      "final_standings_trusted": false,
+      "champion": "Moss",
+      "runner_up": "Luke",
+      "last_place": "Jason"
     },
     {
       "year": 2023,
@@ -4855,7 +4858,10 @@
           }
         ]
       },
-      "final_standings_trusted": false
+      "final_standings_trusted": false,
+      "champion": "Luke",
+      "runner_up": "Micah",
+      "last_place": "Todd"
     },
     {
       "year": 2024,
@@ -7293,7 +7299,10 @@
           }
         ]
       },
-      "final_standings_trusted": false
+      "final_standings_trusted": false,
+      "champion": "Luke",
+      "runner_up": "Josh",
+      "last_place": "Austin"
     },
     {
       "year": 2025,
@@ -9822,7 +9831,10 @@
           }
         ]
       },
-      "final_standings_trusted": true
+      "final_standings_trusted": true,
+      "champion": "Micah",
+      "runner_up": "Cronk",
+      "last_place": "Jason"
     }
   ],
   "all_time_top_scores": [
@@ -9982,7 +9994,9 @@
       "playoff_wins": 6,
       "pf": 7873.16,
       "pa": 7399.900000000001,
-      "championships": 0
+      "championships": 1,
+      "runner_ups": 0,
+      "last_places": 0
     },
     "Cronk": {
       "wins": 37,
@@ -9991,7 +10005,9 @@
       "playoff_wins": 3,
       "pf": 7686.04,
       "pa": 7320.0,
-      "championships": 0
+      "championships": 0,
+      "runner_ups": 1,
+      "last_places": 0
     },
     "Randy": {
       "wins": 33,
@@ -10000,7 +10016,9 @@
       "playoff_wins": 6,
       "pf": 7574.959999999999,
       "pa": 7528.44,
-      "championships": 0
+      "championships": 0,
+      "runner_ups": 0,
+      "last_places": 0
     },
     "Alex": {
       "wins": 32,
@@ -10009,7 +10027,9 @@
       "playoff_wins": 4,
       "pf": 7705.42,
       "pa": 7530.88,
-      "championships": 0
+      "championships": 0,
+      "runner_ups": 0,
+      "last_places": 0
     },
     "Jason": {
       "wins": 20,
@@ -10018,7 +10038,9 @@
       "playoff_wins": 2,
       "pf": 7038.500000000001,
       "pa": 7410.53,
-      "championships": 0
+      "championships": 0,
+      "runner_ups": 0,
+      "last_places": 2
     },
     "Todd": {
       "wins": 24,
@@ -10027,7 +10049,9 @@
       "playoff_wins": 5,
       "pf": 6657.219999999999,
       "pa": 7694.57,
-      "championships": 0
+      "championships": 0,
+      "runner_ups": 0,
+      "last_places": 1
     },
     "Luke": {
       "wins": 42,
@@ -10036,7 +10060,9 @@
       "playoff_wins": 9,
       "pf": 7747.389999999999,
       "pa": 7176.639999999999,
-      "championships": 0
+      "championships": 2,
+      "runner_ups": 1,
+      "last_places": 0
     },
     "Micah": {
       "wins": 41,
@@ -10045,7 +10071,9 @@
       "playoff_wins": 6,
       "pf": 7770.860000000001,
       "pa": 7332.249999999999,
-      "championships": 1
+      "championships": 1,
+      "runner_ups": 1,
+      "last_places": 0
     },
     "Josh": {
       "wins": 30,
@@ -10054,7 +10082,9 @@
       "playoff_wins": 5,
       "pf": 7281.02,
       "pa": 7748.78,
-      "championships": 0
+      "championships": 0,
+      "runner_ups": 1,
+      "last_places": 0
     },
     "Austin": {
       "wins": 26,
@@ -10063,7 +10093,9 @@
       "playoff_wins": 1,
       "pf": 7494.29,
       "pa": 7686.860000000001,
-      "championships": 0
+      "championships": 0,
+      "runner_ups": 0,
+      "last_places": 1
     }
   }
 }
