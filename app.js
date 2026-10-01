@@ -958,13 +958,21 @@ function renderPreviewSection() {
 
     const liveYearNum = Number(state.current.season);
     const h2hWhen = h2h ? (h2h.year === liveYearNum ? `Week ${h2h.week}` : `${h2h.year}, Week ${h2h.week}`) : null;
+    let h2hBody = `<p class="card-note">Haven't played each other before.</p>`;
+    if (h2h) {
+      const aWon = h2h.scoreA > h2h.scoreB;
+      const winnerLabel = aWon ? p.teamA : p.teamB;
+      const loserLabel = aWon ? p.teamB : p.teamA;
+      const margin = Math.abs(h2h.scoreA - h2h.scoreB);
+      h2hBody = `
+        <div class="matchup-row"><span class="name">${winnerLabel}</span><span class="stat">W ${(aWon ? h2h.scoreA : h2h.scoreB).toFixed(1)}</span></div>
+        <div class="matchup-row"><span class="name">${loserLabel}</span><span class="stat">L ${(aWon ? h2h.scoreB : h2h.scoreA).toFixed(1)}</span></div>
+        <p class="card-note" style="margin-top:4px;">${h2hWhen} — won by ${margin.toFixed(1)}</p>
+      `;
+    }
     const h2hCard = `<div class="card matchup-card">
       <div class="card-label">Last Meeting</div>
-      ${h2h ? `
-        <div class="matchup-row"><span class="name">${p.teamA}</span><span class="stat">${h2h.scoreA.toFixed(1)}</span></div>
-        <div class="matchup-row"><span class="name">${p.teamB}</span><span class="stat">${h2h.scoreB.toFixed(1)}</span></div>
-        <p class="card-note" style="margin-top:4px;">${h2hWhen}</p>
-      ` : `<p class="card-note">Haven't played each other before.</p>`}
+      ${h2hBody}
     </div>`;
 
     return `<div class="matchup-pair">${projectionsCard}${h2hCard}</div>`;
