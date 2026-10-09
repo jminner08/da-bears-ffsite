@@ -133,6 +133,11 @@ async function fetchSleeperLive(leagueId) {
     } catch (e) { /* projections are best-effort; Eberflus just skips this week */ }
   }
 
+  // Current NFL week/season type, so Power Rankings can tell which weeks are
+  // actually FINAL (a week with games still in progress isn't final yet).
+  let nflState = null;
+  try { nflState = await getJson(`${base}/state/nfl`); } catch (e) { nflState = null; }
+
   // Draft + player names, for the "Best In Show" tab.
   let draft_picks = [];
   try {
@@ -186,6 +191,9 @@ async function fetchSleeperLive(leagueId) {
     draft_picks,
     transactions,
     players,
+    nfl_week: nflState ? nflState.week : null,
+    nfl_season_type: nflState ? nflState.season_type : null,
+    nfl_season: nflState ? nflState.season : null,
     fetched_at: new Date().toLocaleString(),
   };
 }
@@ -518,11 +526,28 @@ function playedWeeksList() {
     .sort((a, b) => a - b);
 }
 
+/* A week is only "complete" once its games are final. Sleeper's NFL state
+   gives the current week, so every week BEFORE it is final. (If that info
+   isn't available -- e.g. an older cached pull -- fall back to treating any
+   week with scores as complete, which is the old behavior.) Power Rankings
+   are built only from completed weeks, so a ranking never shifts because of
+   partial scores from games still in progress. */
+function completedWeeksList() {
+  const played = playedWeeksList();
+  const c = state.current;
+  const sameSeason = c.nfl_season == null || String(c.nfl_season) === String(c.season);
+  if (c.nfl_week != null && sameSeason) {
+    if (c.nfl_season_type === 'regular') return played.filter(w => w < c.nfl_week);
+    if (c.nfl_season_type === 'pre') return [];
+  }
+  return played;
+}
+
 function computeStandingsThroughWeek(maxWeek) {
   const byRoster = {};
   state.current.teams.forEach(t => { byRoster[t.roster_id] = { wins: 0, losses: 0, ties: 0, scores: [] }; });
 
-  playedWeeksList().filter(w => w <= maxWeek).forEach(w => {
+  completedWeeksList().filter(w => w <= maxWeek).forEach(w => {
     const wk = state.current.matchups_by_week[String(w)];
     const byMatchup = {};
     wk.forEach(m => { (byMatchup[m.matchup_id] = byMatchup[m.matchup_id] || []).push(m); });
@@ -647,21 +672,32 @@ function renderPowerRankingsSection() {
   const isLive = selectedPowerYear === liveYear;
   const season = isLive ? null : state.history.seasons.find(s => s.year === selectedPowerYear);
 
-  const played = isLive ? playedWeeksList() : historicalPlayedWeeks(season);
-  if (!played.length) { el.innerHTML = ''; return; }
+  // "Week N" = the ranking at the START of Week N, built from the completed
+  // results through Week N-1. Because completed weeks never change, a week's
+  // ranking is effectively locked once that week begins; it only gets set
+  // when the prior week's results become final.
+  const completed = isLive ? completedWeeksList() : historicalPlayedWeeks(season);
+  const maxWeekShown = isLive ? 17 : Math.max(0, ...completed);
+  const displayWeeks = completed.map(w => w + 1).filter(w => w <= maxWeekShown);
+  if (!displayWeeks.length) {
+    el.innerHTML = `
+      <h2 class="section-title">Power Rankings</h2>
+      <p class="card-note">Power rankings are set at the start of each week from the completed results before it, so the first ranking appears once Week 1 is final.</p>`;
+    return;
+  }
 
-  if (!selectedPowerWeek || !played.includes(selectedPowerWeek)) {
-    selectedPowerWeek = played[played.length - 1];
+  if (!selectedPowerWeek || !displayWeeks.includes(selectedPowerWeek)) {
+    selectedPowerWeek = displayWeeks[displayWeeks.length - 1];
   }
   const currentWeek = selectedPowerWeek;
-  const weekIndex = played.indexOf(currentWeek);
-  const previousWeek = weekIndex > 0 ? played[weekIndex - 1] : null;
+  const dataWeek = currentWeek - 1;                       // results used
+  const previousWeek = displayWeeks.includes(currentWeek - 1) ? currentWeek - 1 : null;
 
-  const rankings = isLive ? computePowerRankings(currentWeek) : computeHistoricalPowerRankings(season, currentWeek);
+  const rankings = isLive ? computePowerRankings(dataWeek) : computeHistoricalPowerRankings(season, dataWeek);
   if (!rankings) { el.innerHTML = ''; return; }
 
   const prevRankings = previousWeek
-    ? (isLive ? computePowerRankings(previousWeek) : computeHistoricalPowerRankings(season, previousWeek))
+    ? (isLive ? computePowerRankings(previousWeek - 1) : computeHistoricalPowerRankings(season, previousWeek - 1))
     : null;
   const idOf = (r) => isLive ? r.team.roster_id : r.owner;
   const prevRankById = new Map();
@@ -692,8 +728,6 @@ function renderPowerRankingsSection() {
     </tr>`;
   }).join('');
 
-  const isLatestLiveWeek = isLive && currentWeek === played[played.length - 1];
-  const headingIntoNote = isLatestLiveWeek ? ` (heading into Week ${currentWeek + 1})` : '';
 
   el.innerHTML = `
     <h2 class="section-title">Power Rankings</h2>
@@ -701,9 +735,9 @@ function renderPowerRankingsSection() {
       ${years.map(y => `<button data-year="${y}" class="${y === selectedPowerYear ? 'active' : ''}">${y}${y === liveYear ? ' (live)' : ''}</button>`).join('')}
     </div>
     <div class="year-select">
-      ${played.map(w => `<button data-week="${w}" class="${w === currentWeek ? 'active' : ''}">Wk ${w}</button>`).join('')}
+      ${displayWeeks.map(w => `<button data-week="${w}" class="${w === currentWeek ? 'active' : ''}">Wk ${w}</button>`).join('')}
     </div>
-    <p class="card-note" style="margin:8px 0 12px;">Blends record (40%), season scoring average (30%), and last-3-week form (30%) into one score out of 100 as of ${selectedPowerYear} Week ${currentWeek}${headingIntoNote} — a team on a hot streak can outrank a better record here. Movement compares to Week ${previousWeek ?? '–'}.</p>
+    <p class="card-note" style="margin:8px 0 12px;">${selectedPowerYear} Week ${currentWeek} rankings — set at the start of the week from completed results through Week ${dataWeek}, so they stay put while the week's games are played. Blends record (40%), season scoring average (30%), and last-3-week form (30%) into one score out of 100. Movement compares to the Week ${previousWeek ?? '–'} ranking.</p>
     <table class="sortable">
       <thead><tr>
         <th data-sort-key="rank" data-sort-type="num">#</th>

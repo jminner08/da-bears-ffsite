@@ -152,7 +152,15 @@ def fetch_league_data(league_id):
         except Exception:
             players = {}
 
+    try:
+        nfl_state = get(f"{BASE}/state/nfl")
+    except Exception:
+        nfl_state = {}
+
     return {
+        "nfl_week": nfl_state.get("week"),
+        "nfl_season_type": nfl_state.get("season_type"),
+        "nfl_season": nfl_state.get("season"),
         "league_id": league_id,
         "name": league.get("name"),
         "season": league.get("season"),
