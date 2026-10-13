@@ -224,6 +224,7 @@ async function handleForceUpdate() {
     // update (which would otherwise look like "nothing updated").
     selectedPowerWeek = null;
     selectedPreviewWeek = null;
+    const autoLockMsg = autoLockCurrentWeek();
     renderHeader();
     renderCurrent();
     renderWeeklyPreview();
@@ -232,8 +233,13 @@ async function handleForceUpdate() {
     renderAwards();
     renderBenchScores();
     renderWaiversTrades();
-    setUpdateMsg(`Updated from Sleeper at ${data.fetched_at}.`, 'ok');
     renderSetup();
+    let note = autoLockMsg ? ` · ${autoLockMsg}` : '';
+    setUpdateMsg(`Updated from Sleeper at ${data.fetched_at}.${note}`, 'ok');
+    if (autoLockMsg) {
+      const pub = await autoPublish();
+      if (pub) setUpdateMsg(`Updated from Sleeper at ${data.fetched_at}.${note} · ${pub}`, 'ok');
+    }
   } catch (err) {
     setUpdateMsg(
       "Couldn't reach Sleeper directly from this browser (likely blocked). " +
@@ -698,7 +704,7 @@ function renderPowerRankingsSection() {
   const dataWeek = currentWeek - 1;                       // results used
   const previousWeek = displayWeeks.includes(currentWeek - 1) ? currentWeek - 1 : null;
 
-  const lockedPow = isLive ? (getLockedPreview(currentWeek) || {}).power : null;
+  const lockedPow = isLive ? getLockedPower(currentWeek) : null;
   const rankings = lockedPow
     ? lockedPow.rankings.map(r => ({
         ...r,
@@ -714,6 +720,13 @@ function renderPowerRankingsSection() {
   const prevRankById = new Map();
   if (lockedPow) Object.entries(lockedPow.prevRanks || {}).forEach(([k, v]) => prevRankById.set(Number(k), v));
   else if (prevRankings) prevRankings.forEach((r, i) => prevRankById.set(idOf(r), i + 1));
+  // If last week's ranking was locked or hand-corrected, movement is measured
+  // against THAT ranking, so corrections carry forward.
+  const prevLockedPow = isLive ? getLockedPower(currentWeek - 1) : null;
+  if (prevLockedPow) {
+    prevRankById.clear();
+    prevLockedPow.rankings.forEach((r, i) => prevRankById.set(r.roster_id, i + 1));
+  }
 
   const movementCell = (id, currentRank) => {
     if (!prevRankById.has(id)) return `<span class="card-note">New</span>`;
@@ -749,7 +762,7 @@ function renderPowerRankingsSection() {
     <div class="year-select">
       ${displayWeeks.map(w => `<button data-week="${w}" class="${w === currentWeek ? 'active' : ''}">Wk ${w}</button>`).join('')}
     </div>
-    <p class="card-note" style="margin:8px 0 12px;">${selectedPowerYear} Week ${currentWeek} rankings — set at the start of the week from completed results through Week ${dataWeek}, so they stay put while the week's games are played. Blends record (40%), season scoring average (30%), and last-3-week form (30%) into one score out of 100. Movement compares to the Week ${previousWeek ?? '–'} ranking.${lockedPow ? ' 🔒 Locked with this week\'s matchup lock — these won\'t change.' : ''}</p>
+    <p class="card-note" style="margin:8px 0 12px;">${selectedPowerYear} Week ${currentWeek} rankings — set at the start of the week from completed results through Week ${dataWeek}, so they stay put while the week's games are played. Blends record (40%), season scoring average (30%), and last-3-week form (30%) into one score out of 100. Movement compares to the Week ${previousWeek ?? '–'} ranking.${lockedPow ? (lockedPow.edited ? ' 🔒 Locked (hand-corrected) — these won\'t change.' : ' 🔒 Locked — these won\'t change.') : ''}</p>
     <table class="sortable">
       <thead><tr>
         <th data-sort-key="rank" data-sort-type="num">#</th>
@@ -855,6 +868,24 @@ function saveLockedPreview(week, value) {
   try { localStorage.setItem(LOCKED_PREVIEWS_KEY, JSON.stringify(local)); } catch (e) { /* ignore */ }
 }
 
+function saveLockedKey(key, value) {
+  let local = {};
+  try { local = JSON.parse(localStorage.getItem(LOCKED_PREVIEWS_KEY) || '{}'); } catch (e) { local = {}; }
+  local[key] = value;
+  try { localStorage.setItem(LOCKED_PREVIEWS_KEY, JSON.stringify(local)); } catch (e) { /* ignore */ }
+}
+
+// Power rankings can be hand-corrected for a week. A correction is stored
+// under its own "<season>:<week>:power" key and wins over the snapshot taken
+// when the week was locked (and over the live calculation).
+function getLockedPower(week) {
+  if (!state.current) return null;
+  const all = loadLockedPreviews();
+  const season = state.current.season;
+  return all[`${season}:${week}:power`] || (all[`${season}:${week}`] || {}).power || null;
+}
+function saveLockedPower(week, value) { saveLockedKey(`${state.current.season}:${week}:power`, value); }
+
 function getLockedPreview(week) {
   if (!state.current) return null;
   return loadLockedPreviews()[`${state.current.season}:${week}`] || null;
@@ -879,6 +910,103 @@ function snapshotPowerRankings(week) {
     if (prev) prev.forEach((r, i) => { prevRanks[r.team.roster_id] = i + 1; });
   }
   return { rankings: rankings.map(strip), prevRanks, dataWeek: week - 1 };
+}
+
+/* ---- Auto-lock ----
+   On Force Update, lock the CURRENT NFL week's previews + power rankings if
+   they aren't locked yet (so you don't have to click Lock). Skips weeks you
+   unlocked on purpose, and tops up an existing lock with power rankings once
+   they become available. */
+function autoLockCurrentWeek() {
+  const c = state.current;
+  if (!c || c.nfl_season_type !== 'regular' || c.nfl_week == null) return null;
+  if (c.nfl_season != null && String(c.nfl_season) !== String(c.season)) return null;
+  const week = Number(c.nfl_week);
+  if (week < 1 || week > 17) return null;
+  const wk = (c.matchups_by_week || {})[String(week)];
+  if (!wk || !wk.length) return null;
+
+  let local = {};
+  try { local = JSON.parse(localStorage.getItem(LOCKED_PREVIEWS_KEY) || '{}'); } catch (e) { local = {}; }
+  if (`${c.season}:${week}` in local && local[`${c.season}:${week}`] === null) return null;  // unlocked on purpose
+
+  const existing = getLockedPreview(week);
+  if (existing) {
+    if (!existing.power && week >= 2) {
+      const power = snapshotPowerRankings(week);
+      if (power) { saveLockedPreview(week, { ...existing, power }); return `Week ${week} power rankings locked`; }
+    }
+    return null;
+  }
+
+  // No projections published yet -> the preview would just be season-average
+  // guesses, and locking it would freeze that instead of the real thing.
+  // Wait for a later Force Update that has them.
+  if (!Object.keys((c.projections_by_week || {})[String(week)] || {}).length) return null;
+  const previews = computeMatchupPreviews(week, true);
+  if (!previews.length) return null;
+  const started = wk.some(m => (m.points || 0) > 0);
+  saveLockedPreview(week, {
+    lockedAt: `${new Date().toLocaleString()} (auto${started ? ', after games had started' : ''})`,
+    previews,
+    gow: pickGameOfWeek(previews, week),
+    power: snapshotPowerRankings(week),
+  });
+  return `Week ${week} auto-locked${started ? ' (games had already started — double-check the scores)' : ''}`;
+}
+
+/* ---- One-click publish to GitHub ----
+   Saves data/locked_previews.json straight into the repo through GitHub's
+   API, so nobody has to download and upload the file. The token lives only
+   in this browser. */
+const GH_SETTINGS_KEY = 'ff_gh_publish';
+function ghSettings() { try { return JSON.parse(localStorage.getItem(GH_SETTINGS_KEY) || '{}'); } catch (e) { return {}; } }
+function saveGhSettings(o) { try { localStorage.setItem(GH_SETTINGS_KEY, JSON.stringify(o)); } catch (e) { /* ignore */ } }
+
+function guessRepo() {
+  if (!location.hostname.endsWith('.github.io')) return '';
+  const owner = location.hostname.split('.')[0];
+  const seg = location.pathname.split('/').filter(Boolean)[0];
+  return seg && !seg.includes('.') ? `${owner}/${seg}` : `${owner}/${owner}.github.io`;
+}
+
+async function publishLocks() {
+  const st = ghSettings();
+  if (!st.token || !st.repo) throw new Error('add your repo and token first');
+  const path = st.path || 'data/locked_previews.json';
+  const api = `https://api.github.com/repos/${st.repo}/contents/${path}`;
+  const headers = { Authorization: `Bearer ${st.token}`, Accept: 'application/vnd.github+json' };
+
+  // Read what's already in the repo so we merge into it instead of overwriting
+  // locks made from another browser.
+  let sha, existing = {};
+  const got = await fetch(api, { headers, cache: 'no-store' });
+  if (got.ok) {
+    const info = await got.json();
+    sha = info.sha;
+    try { existing = JSON.parse(decodeURIComponent(escape(atob((info.content || '').replace(/\n/g, ''))))) || {}; } catch (e) { existing = {}; }
+  } else if (got.status !== 404) {
+    throw new Error(`GitHub answered ${got.status} — check the repo name and token`);
+  }
+
+  let local = {};
+  try { local = JSON.parse(localStorage.getItem(LOCKED_PREVIEWS_KEY) || '{}'); } catch (e) { local = {}; }
+  const merged = Object.fromEntries(Object.entries({ ...existing, ...local }).filter(([, v]) => v));
+
+  const body = {
+    message: 'Update locked weekly previews',
+    content: btoa(unescape(encodeURIComponent(JSON.stringify(merged, null, 2)))),
+    ...(sha ? { sha } : {}),
+  };
+  const put = await fetch(api, { method: 'PUT', headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  if (!put.ok) throw new Error(`GitHub answered ${put.status}: ${(await put.text()).slice(0, 140)}`);
+}
+
+async function autoPublish() {
+  const st = ghSettings();
+  if (!st.token || !st.repo || st.autoPublish === false) return null;
+  try { await publishLocks(); return 'published to GitHub ✓ (live in about a minute)'; }
+  catch (e) { return `couldn't publish to GitHub: ${e.message}`; }
 }
 
 // The closest projected matchup, regular season only (weeks 1-14).
@@ -2023,6 +2151,17 @@ function renderSetup() {
     </div>
 
     <div class="card">
+      <strong>Edit power rankings</strong>
+      <p class="card-note">Overwrite a week's power rankings (rank order and score) if they've moved from what they should be. Saving locks that week's rankings as you set them, and later weeks' Move arrows compare against your corrected ranking.</p>
+      <div id="power-edit-admin-body"></div>
+    </div>
+
+    <div class="card">
+      <strong>Publish locks to GitHub</strong>
+      <div id="publish-admin-body"></div>
+    </div>
+
+    <div class="card">
       <strong>Other maintenance</strong>
       <p class="card-note">Re-parse Excel files: <span class="mono">python3 parse_history.py FF_2022.xlsx FF_2023.xlsx FF_2024.xlsx FF_2025.xlsx</span></p>
       <p class="card-note">Run locally: <span class="mono">cd site && python3 -m http.server 8000</span> then open <span class="mono">http://localhost:8000</span></p>
@@ -2046,6 +2185,9 @@ function renderSetup() {
     renderLockAdmin(weeks);
   }
 
+  renderPublishAdmin();
+  renderPowerEditAdmin();
+
   document.getElementById('export-locked-previews-btn').addEventListener('click', () => {
     const data = Object.fromEntries(Object.entries(loadLockedPreviews()).filter(([, v]) => v));
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -2066,6 +2208,123 @@ function renderSetup() {
     a.download = 'manual_awards.json';
     a.click();
     URL.revokeObjectURL(url);
+  });
+}
+
+function renderPublishAdmin(message) {
+  const body = document.getElementById('publish-admin-body');
+  if (!body) return;
+  const st = ghSettings();
+  const repo = (st.repo || guessRepo()).replace(/"/g, '');
+  const inputStyle = "background:var(--felt); border:1px solid var(--felt-line); color:var(--chalk); border-radius:6px; padding:6px 10px; font-family:'IBM Plex Mono',monospace;";
+  body.innerHTML = `
+    <p class="card-note">Saves your locks straight into the repo so you never have to download and upload <span class="mono">locked_previews.json</span>. The token stays in this browser only.</p>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <input id="gh-repo" type="text" placeholder="owner/repo" value="${repo}" style="flex:1; min-width:200px; ${inputStyle}">
+      <input id="gh-token" type="password" autocomplete="off" placeholder="${st.token ? 'token saved — type to replace' : 'GitHub access token'}" style="flex:1; min-width:220px; ${inputStyle}">
+    </div>
+    <label class="card-note" style="display:block; margin-top:8px;"><input type="checkbox" id="gh-auto" ${st.autoPublish !== false ? 'checked' : ''}> publish automatically after every lock</label>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; align-items:center;">
+      <button id="gh-save" class="update-btn">Save settings</button>
+      <button id="gh-publish" class="update-btn">Publish locks now</button>
+      <span id="gh-msg" class="card-note">${message || ''}</span>
+    </div>
+    <details class="card-note" style="margin-top:10px;">
+      <summary>How to create the token (one time)</summary>
+      <ol style="margin:8px 0 0 18px; padding:0;">
+        <li>On GitHub: your profile picture → Settings → Developer settings → Personal access tokens → <strong>Fine-grained tokens</strong> → Generate new token.</li>
+        <li>Repository access: <strong>Only select repositories</strong> → pick just this site's repo.</li>
+        <li>Permissions → Repository permissions → <strong>Contents: Read and write</strong> (nothing else).</li>
+        <li>Set an expiration, generate, copy the token, and paste it above.</li>
+      </ol>
+    </details>
+  `;
+  const read = () => ({
+    ...ghSettings(),
+    repo: document.getElementById('gh-repo').value.trim(),
+    token: document.getElementById('gh-token').value.trim() || ghSettings().token || '',
+    autoPublish: document.getElementById('gh-auto').checked,
+  });
+  document.getElementById('gh-save').addEventListener('click', () => {
+    saveGhSettings(read());
+    renderPublishAdmin('✓ Saved');
+  });
+  document.getElementById('gh-publish').addEventListener('click', async () => {
+    saveGhSettings(read());
+    const msg = document.getElementById('gh-msg');
+    msg.textContent = 'Publishing…';
+    try { await publishLocks(); renderPublishAdmin('✓ Published — live in about a minute'); }
+    catch (e) { renderPublishAdmin(`Couldn't publish: ${e.message}`); }
+  });
+}
+
+let selectedPowerEditWeek = null;
+
+function renderPowerEditAdmin(message) {
+  const body = document.getElementById('power-edit-admin-body');
+  if (!body) return;
+  if (!state.current) { body.innerHTML = `<p class="card-note">No live season data yet — pull a season above first.</p>`; return; }
+
+  const weeks = completedWeeksList().map(w => w + 1).filter(w => w <= 17);
+  if (!weeks.length) { body.innerHTML = `<p class="card-note">The first power ranking appears once Week 1 is final.</p>`; return; }
+  if (!selectedPowerEditWeek || !weeks.includes(selectedPowerEditWeek)) selectedPowerEditWeek = weeks[weeks.length - 1];
+  const week = selectedPowerEditWeek;
+
+  const power = getLockedPower(week) || snapshotPowerRankings(week);
+  if (!power) { body.innerHTML = `<p class="card-note">No ranking available for Week ${week} yet.</p>`; return; }
+  const isLocked = !!getLockedPower(week);
+  const teamOf = (rid) => state.current.teams.find(t => t.roster_id === rid) || { roster_id: rid, team_name: `Roster ${rid}` };
+  const inStyle = "width:80px; background:var(--felt); border:1px solid var(--felt-line); color:var(--chalk); border-radius:6px; padding:6px 8px; font-family:'IBM Plex Mono',monospace;";
+
+  body.innerHTML = `
+    <div class="year-select">
+      ${weeks.map(w => `<button data-pweek="${w}" class="${w === week ? 'active' : ''}">${getLockedPower(w) ? '🔒 ' : ''}Wk ${w}</button>`).join('')}
+    </div>
+    <p class="card-note" style="margin:10px 0;">${isLocked ? `🔒 Week ${week} rankings are locked${power.edited ? ' (hand-corrected)' : ''}.` : `Week ${week} rankings are calculated live from results — saving will lock them.`}</p>
+    ${power.rankings.map((r, i) => `
+      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:6px;">
+        <input type="number" min="1" max="${power.rankings.length}" step="1" data-prank="${r.roster_id}" value="${i + 1}" style="${inStyle} width:64px;" title="rank">
+        <span style="flex:1; min-width:200px;">${liveTeamLabel(teamOf(r.roster_id))}</span>
+        <span class="card-note">score</span>
+        <input type="number" step="0.1" data-pscore="${r.roster_id}" value="${Number(r.powerScore).toFixed(1)}" style="${inStyle}">
+      </div>`).join('')}
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; align-items:center;">
+      <button id="pe-save" class="update-btn">Save &amp; lock rankings</button>
+      <button id="pe-reset" class="update-btn">Re-calculate from results</button>
+      <span id="pe-msg" class="card-note">${message || ''}</span>
+    </div>
+  `;
+
+  const done = async (msg) => {
+    renderWeeklyPreview();
+    renderPowerEditAdmin(msg);
+    const pub = await autoPublish();
+    const el = document.getElementById('pe-msg');
+    if (pub && el) el.textContent = `${msg} · ${pub}`;
+  };
+
+  body.querySelectorAll('button[data-pweek]').forEach(btn => {
+    btn.addEventListener('click', () => { selectedPowerEditWeek = Number(btn.dataset.pweek); renderPowerEditAdmin(); });
+  });
+  document.getElementById('pe-save').addEventListener('click', () => {
+    const n = power.rankings.length;
+    const entered = power.rankings.map(r => ({
+      r,
+      rank: parseInt(body.querySelector(`[data-prank="${r.roster_id}"]`).value, 10),
+      score: parseFloat(body.querySelector(`[data-pscore="${r.roster_id}"]`).value),
+    }));
+    const ranks = entered.map(e => e.rank).sort((a, b) => a - b);
+    if (ranks.some((v, i) => v !== i + 1)) { renderPowerEditAdmin(`Ranks must use each number 1–${n} exactly once.`); return; }
+    const rankings = entered.sort((a, b) => a.rank - b.rank)
+      .map(e => ({ ...e.r, powerScore: isNaN(e.score) ? e.r.powerScore : e.score }));
+    saveLockedPower(week, { ...power, rankings, edited: true });
+    done(`✓ Week ${week} power rankings saved and locked`);
+  });
+  document.getElementById('pe-reset').addEventListener('click', () => {
+    const fresh = snapshotPowerRankings(week);
+    if (!fresh) { renderPowerEditAdmin(`Couldn't recalculate Week ${week} yet.`); return; }
+    saveLockedPower(week, fresh);
+    done(`✓ Week ${week} re-calculated from results and locked`);
   });
 }
 
@@ -2129,10 +2388,13 @@ function renderLockAdmin(weeks, message) {
     if (!sel || !sel.value) return null;
     return sel.value.split('-').map(Number);
   };
-  const refreshAll = (msg) => {
+  const refreshAll = async (msg) => {
     renderWeeklyPreview();
     renderCurrent();
     renderLockAdmin(weeks, msg);
+    const pub = await autoPublish();
+    const el = document.getElementById('lock-msg');
+    if (pub && el) el.textContent = `${msg} · ${pub}`;
   };
 
   body.querySelectorAll('button[data-lockweek]').forEach(btn => {
