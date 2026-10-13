@@ -698,15 +698,22 @@ function renderPowerRankingsSection() {
   const dataWeek = currentWeek - 1;                       // results used
   const previousWeek = displayWeeks.includes(currentWeek - 1) ? currentWeek - 1 : null;
 
-  const rankings = isLive ? computePowerRankings(dataWeek) : computeHistoricalPowerRankings(season, dataWeek);
+  const lockedPow = isLive ? (getLockedPreview(currentWeek) || {}).power : null;
+  const rankings = lockedPow
+    ? lockedPow.rankings.map(r => ({
+        ...r,
+        team: state.current.teams.find(t => t.roster_id === r.roster_id) || { roster_id: r.roster_id, team_name: `Roster ${r.roster_id}` },
+      }))
+    : (isLive ? computePowerRankings(dataWeek) : computeHistoricalPowerRankings(season, dataWeek));
   if (!rankings) { el.innerHTML = ''; return; }
 
-  const prevRankings = previousWeek
+  const prevRankings = (previousWeek && !lockedPow)
     ? (isLive ? computePowerRankings(previousWeek - 1) : computeHistoricalPowerRankings(season, previousWeek - 1))
     : null;
   const idOf = (r) => isLive ? r.team.roster_id : r.owner;
   const prevRankById = new Map();
-  if (prevRankings) prevRankings.forEach((r, i) => prevRankById.set(idOf(r), i + 1));
+  if (lockedPow) Object.entries(lockedPow.prevRanks || {}).forEach(([k, v]) => prevRankById.set(Number(k), v));
+  else if (prevRankings) prevRankings.forEach((r, i) => prevRankById.set(idOf(r), i + 1));
 
   const movementCell = (id, currentRank) => {
     if (!prevRankById.has(id)) return `<span class="card-note">New</span>`;
@@ -742,7 +749,7 @@ function renderPowerRankingsSection() {
     <div class="year-select">
       ${displayWeeks.map(w => `<button data-week="${w}" class="${w === currentWeek ? 'active' : ''}">Wk ${w}</button>`).join('')}
     </div>
-    <p class="card-note" style="margin:8px 0 12px;">${selectedPowerYear} Week ${currentWeek} rankings — set at the start of the week from completed results through Week ${dataWeek}, so they stay put while the week's games are played. Blends record (40%), season scoring average (30%), and last-3-week form (30%) into one score out of 100. Movement compares to the Week ${previousWeek ?? '–'} ranking.</p>
+    <p class="card-note" style="margin:8px 0 12px;">${selectedPowerYear} Week ${currentWeek} rankings — set at the start of the week from completed results through Week ${dataWeek}, so they stay put while the week's games are played. Blends record (40%), season scoring average (30%), and last-3-week form (30%) into one score out of 100. Movement compares to the Week ${previousWeek ?? '–'} ranking.${lockedPow ? ' 🔒 Locked with this week\'s matchup lock — these won\'t change.' : ''}</p>
     <table class="sortable">
       <thead><tr>
         <th data-sort-key="rank" data-sort-type="num">#</th>
@@ -851,6 +858,27 @@ function saveLockedPreview(week, value) {
 function getLockedPreview(week) {
   if (!state.current) return null;
   return loadLockedPreviews()[`${state.current.season}:${week}`] || null;
+}
+
+/* Frozen copy of the Week N power rankings (built from completed results
+   through Week N-1) plus the previous week's ranks for the Move column.
+   Returns null if that week's ranking isn't available yet. */
+function snapshotPowerRankings(week) {
+  if (!state.current) return null;
+  const completed = completedWeeksList();
+  if (!completed.includes(week - 1)) return null;
+  const rankings = computePowerRankings(week - 1);
+  if (!rankings) return null;
+  const strip = r => ({
+    roster_id: r.team.roster_id, wins: r.wins, losses: r.losses, ties: r.ties,
+    seasonAvg: r.seasonAvg, recentAvg: r.recentAvg, powerScore: r.powerScore,
+  });
+  const prevRanks = {};
+  if (completed.includes(week - 2)) {
+    const prev = computePowerRankings(week - 2);
+    if (prev) prev.forEach((r, i) => { prevRanks[r.team.roster_id] = i + 1; });
+  }
+  return { rankings: rankings.map(strip), prevRanks, dataWeek: week - 1 };
 }
 
 // The closest projected matchup, regular season only (weeks 1-14).
@@ -2062,7 +2090,7 @@ function renderLockAdmin(weeks, message) {
     <div class="year-select">
       ${weeks.map(w => `<button data-lockweek="${w}" class="${w === week ? 'active' : ''}">${getLockedPreview(w) ? '🔒 ' : ''}Wk ${w}</button>`).join('')}
     </div>
-    <p class="card-note" style="margin:10px 0;">${locked ? `🔒 Week ${week} locked ${locked.lockedAt}.` : `Week ${week} is not locked — its preview still updates with Sleeper's data.`}</p>
+    <p class="card-note" style="margin:10px 0;">${locked ? `🔒 Week ${week} locked ${locked.lockedAt} — power rankings ${locked.power ? 'locked too.' : 'NOT locked yet.'}` : `Week ${week} is not locked — its preview still updates with Sleeper's data.`}</p>
     ${week <= 14 && shown.length ? `
       <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
         <span class="card-note">Game of the Week:</span>
@@ -2087,7 +2115,8 @@ function renderLockAdmin(weeks, message) {
       </div>` : ''}
     <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; align-items:center;">
       ${locked
-        ? `<button id="lock-update-gow" class="update-btn">Update Game of the Week</button>
+        ? `${!locked.power && week >= 2 ? `<button id="lock-power" class="update-btn">Lock power rankings too</button>` : ''}
+           <button id="lock-update-gow" class="update-btn">Update Game of the Week</button>
            <button id="lock-relock" class="update-btn">Re-lock with current data</button>
            <button id="lock-unlock" class="update-btn">Unlock</button>`
         : `<button id="lock-lock" class="update-btn">🔒 Lock Week ${week}</button>`}
@@ -2110,9 +2139,18 @@ function renderLockAdmin(weeks, message) {
     btn.addEventListener('click', () => { selectedLockWeek = Number(btn.dataset.lockweek); renderLockAdmin(weeks); });
   });
   const doLock = () => {
-    saveLockedPreview(week, { lockedAt: new Date().toLocaleString(), previews: live, gow: readGow() });
-    refreshAll(`✓ Week ${week} locked`);
+    const power = snapshotPowerRankings(week);
+    saveLockedPreview(week, { lockedAt: new Date().toLocaleString(), previews: live, gow: readGow(), power });
+    refreshAll(week < 2 ? `✓ Week ${week} locked`
+      : power ? `✓ Week ${week} locked, including power rankings`
+      : `✓ Week ${week} locked — but Week ${week}'s power rankings aren't final yet (Week ${week - 1} still in progress). Use "Lock power rankings too" once Force Update shows them.`);
   };
+  document.getElementById('lock-power')?.addEventListener('click', () => {
+    const power = snapshotPowerRankings(week);
+    if (!power) { renderLockAdmin(weeks, `Week ${week}'s power rankings aren't final yet — run Force Update after Week ${week - 1} finishes, then try again.`); return; }
+    saveLockedPreview(week, { ...locked, power });
+    refreshAll(`✓ Power rankings locked for Week ${week}`);
+  });
   document.getElementById('lock-lock')?.addEventListener('click', doLock);
   document.getElementById('lock-relock')?.addEventListener('click', doLock);
   document.getElementById('lock-update-gow')?.addEventListener('click', () => {
