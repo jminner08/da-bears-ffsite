@@ -34,6 +34,11 @@ async function loadData() {
     state.manualAwardsFile = res.ok ? await res.json() : {};
   } catch (e) { state.manualAwardsFile = {}; }
 
+  try {
+    const res = await noCacheFetch('data/locked_previews.json');
+    state.lockedPreviewsFile = res.ok ? await res.json() : {};
+  } catch (e) { state.lockedPreviewsFile = {}; }
+
   renderHeader();
   renderCurrent();
   renderWeeklyPreview();
@@ -823,13 +828,45 @@ function lastResultLine(last) {
    Week -- computed once and shared between the Preview cards and the
    actual-results cards so both agree on the same game. Regular season only
    (weeks 1-14; playoffs run 15-17 for this league). */
-function computeGameOfWeekPair(week) {
-  if (week > 14) return null;
-  const previews = computeMatchupPreviews(week);
-  if (!previews.length) return null;
+/* ---- Locked weekly previews ----
+   Once a week is locked on the Administration tab, its matchup projections,
+   win %s, and Game of the Week are frozen from a saved snapshot instead of
+   being recomputed from Sleeper's live (and constantly shifting) data. */
+const LOCKED_PREVIEWS_KEY = 'ff_locked_previews';
+
+function loadLockedPreviews() {
+  const fromFile = state.lockedPreviewsFile || {};
+  let fromLocal = {};
+  try { fromLocal = JSON.parse(localStorage.getItem(LOCKED_PREVIEWS_KEY) || '{}'); } catch (e) { /* ignore */ }
+  return { ...fromFile, ...fromLocal };   // a null in local = "unlocked here"
+}
+
+function saveLockedPreview(week, value) {
+  let local = {};
+  try { local = JSON.parse(localStorage.getItem(LOCKED_PREVIEWS_KEY) || '{}'); } catch (e) { local = {}; }
+  local[`${state.current.season}:${week}`] = value;
+  try { localStorage.setItem(LOCKED_PREVIEWS_KEY, JSON.stringify(local)); } catch (e) { /* ignore */ }
+}
+
+function getLockedPreview(week) {
+  if (!state.current) return null;
+  return loadLockedPreviews()[`${state.current.season}:${week}`] || null;
+}
+
+// The closest projected matchup, regular season only (weeks 1-14).
+function pickGameOfWeek(previews, week) {
+  if (week > 14 || !previews.length) return null;
   let best = null;
   previews.forEach(p => { if (!best || p.margin < best.margin) best = p; });
-  return best ? new Set([best.rosterA, best.rosterB]) : null;
+  return best ? [best.rosterA, best.rosterB] : null;
+}
+
+function computeGameOfWeekPair(week) {
+  if (week > 14) return null;
+  const locked = getLockedPreview(week);
+  if (locked && locked.gow) return new Set(locked.gow);
+  const pair = pickGameOfWeek(computeMatchupPreviews(week), week);
+  return pair ? new Set(pair) : null;
 }
 
 /* The last time these two specific teams played each other, within the
@@ -888,7 +925,11 @@ function teamActualAverageSoFar(rosterId, beforeWeek) {
   return scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : null;
 }
 
-function computeMatchupPreviews(week) {
+function computeMatchupPreviews(week, ignoreLock = false) {
+  if (!ignoreLock) {
+    const locked = getLockedPreview(week);
+    if (locked && Array.isArray(locked.previews)) return locked.previews;
+  }
   const c = state.current;
   const wk = c && (c.matchups_by_week || {})[String(week)];
   if (!wk || !wk.length) return [];
@@ -971,6 +1012,8 @@ function renderPreviewSection() {
 
   const previews = computeMatchupPreviews(selectedPreviewWeek);
   const gowPair = computeGameOfWeekPair(selectedPreviewWeek);
+  const lockedInfo = getLockedPreview(selectedPreviewWeek);
+  const lockNote = lockedInfo ? ` 🔒 Locked ${lockedInfo.lockedAt} — projections and Game of the Week won't change.` : '';
 
   const cards = previews.map((p) => {
     const aFav = p.probA >= p.probB;
@@ -1017,7 +1060,7 @@ function renderPreviewSection() {
     <div class="year-select">
       ${weeks.map(w => `<button data-week="${w}" class="${w === selectedPreviewWeek ? 'active' : ''}">Wk ${w}</button>`).join('')}
     </div>
-    <p class="card-note" style="margin:8px 0 16px;">Win % and margins are estimates from Sleeper's player projections, not guarantees — treat close ones as coin flips. "Last Meeting" checks this season first, then past seasons where available.</p>
+    <p class="card-note" style="margin:8px 0 16px;">Win % and margins are estimates from Sleeper's player projections, not guarantees — treat close ones as coin flips. "Last Meeting" checks this season first, then past seasons where available.${lockNote}</p>
     <div class="preview-grid">${cards || '<p class="card-note">No matchup data for this week yet.</p>'}</div>
   `;
 
@@ -1945,11 +1988,19 @@ function renderSetup() {
     </div>
 
     <div class="card">
+      <strong>Lock weekly projections</strong>
+      <p class="card-note">Freezes a week's matchup projections, win %, and Game of the Week so they stop changing once games start. Lock before kickoff (the Game of the Week can be corrected afterward).</p>
+      ${liveYear && weeks.length ? `<div id="lock-admin-body"></div>` : `<p class="card-note">No live season data yet — pull a season above first.</p>`}
+    </div>
+
+    <div class="card">
       <strong>Other maintenance</strong>
       <p class="card-note">Re-parse Excel files: <span class="mono">python3 parse_history.py FF_2022.xlsx FF_2023.xlsx FF_2024.xlsx FF_2025.xlsx</span></p>
       <p class="card-note">Run locally: <span class="mono">cd site && python3 -m http.server 8000</span> then open <span class="mono">http://localhost:8000</span></p>
       <p class="card-note">Save Rocky entries permanently: download and save as <span class="mono">site/data/manual_awards.json</span>.</p>
       <button id="export-manual-awards-btn" class="update-btn">Download manual_awards.json</button>
+      <p class="card-note" style="margin-top:12px;">Make weekly locks permanent and visible to everyone: download and save as <span class="mono">data/locked_previews.json</span>.</p>
+      <button id="export-locked-previews-btn" class="update-btn">Download locked_previews.json</button>
     </div>
   `;
 
@@ -1963,7 +2014,19 @@ function renderSetup() {
       selectedAdminWeek = playedWeeks.length ? playedWeeks[playedWeeks.length - 1] : weeks[0];
     }
     renderRockyAdmin(liveYear, weeks);
+    renderLockAdmin(weeks);
   }
+
+  document.getElementById('export-locked-previews-btn').addEventListener('click', () => {
+    const data = Object.fromEntries(Object.entries(loadLockedPreviews()).filter(([, v]) => v));
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'locked_previews.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
 
   document.getElementById('export-manual-awards-btn').addEventListener('click', () => {
     const data = loadManualAwards();
@@ -1974,6 +2037,75 @@ function renderSetup() {
     a.download = 'manual_awards.json';
     a.click();
     URL.revokeObjectURL(url);
+  });
+}
+
+let selectedLockWeek = null;
+
+function renderLockAdmin(weeks, message) {
+  const body = document.getElementById('lock-admin-body');
+  if (!body) return;
+  if (!selectedLockWeek || !weeks.includes(selectedLockWeek)) {
+    const upcoming = weeks.find(w => (state.current.matchups_by_week[String(w)] || []).every(m => !m.points));
+    selectedLockWeek = upcoming ?? weeks[weeks.length - 1];
+  }
+  const week = selectedLockWeek;
+  const locked = getLockedPreview(week);
+  const live = computeMatchupPreviews(week, true);
+  const shown = locked ? locked.previews : live;
+  const gow = locked && locked.gow ? locked.gow : pickGameOfWeek(live, week);
+  const gowValue = gow ? `${gow[0]}-${gow[1]}` : '';
+  const selectStyle = "flex:1; min-width:220px; background:var(--felt); border:1px solid var(--felt-line); color:var(--chalk); border-radius:6px; padding:6px 10px; font-family:'IBM Plex Mono',monospace;";
+
+  body.innerHTML = `
+    <div class="year-select">
+      ${weeks.map(w => `<button data-lockweek="${w}" class="${w === week ? 'active' : ''}">${getLockedPreview(w) ? '🔒 ' : ''}Wk ${w}</button>`).join('')}
+    </div>
+    <p class="card-note" style="margin:10px 0;">${locked ? `🔒 Week ${week} locked ${locked.lockedAt}.` : `Week ${week} is not locked — its preview still updates with Sleeper's data.`}</p>
+    ${week <= 14 && shown.length ? `
+      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+        <span class="card-note">Game of the Week:</span>
+        <select id="lock-gow" style="${selectStyle}">
+          ${shown.map(p => `<option value="${p.rosterA}-${p.rosterB}" ${`${p.rosterA}-${p.rosterB}` === gowValue ? 'selected' : ''}>${p.teamA} vs ${p.teamB}</option>`).join('')}
+        </select>
+      </div>` : ''}
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; align-items:center;">
+      ${locked
+        ? `<button id="lock-update-gow" class="update-btn">Update Game of the Week</button>
+           <button id="lock-relock" class="update-btn">Re-lock with current data</button>
+           <button id="lock-unlock" class="update-btn">Unlock</button>`
+        : `<button id="lock-lock" class="update-btn">🔒 Lock Week ${week}</button>`}
+      <span id="lock-msg" class="card-note">${message || ''}</span>
+    </div>
+  `;
+
+  const readGow = () => {
+    const sel = document.getElementById('lock-gow');
+    if (!sel || !sel.value) return null;
+    return sel.value.split('-').map(Number);
+  };
+  const refreshAll = (msg) => {
+    renderWeeklyPreview();
+    renderCurrent();
+    renderLockAdmin(weeks, msg);
+  };
+
+  body.querySelectorAll('button[data-lockweek]').forEach(btn => {
+    btn.addEventListener('click', () => { selectedLockWeek = Number(btn.dataset.lockweek); renderLockAdmin(weeks); });
+  });
+  const doLock = () => {
+    saveLockedPreview(week, { lockedAt: new Date().toLocaleString(), previews: live, gow: readGow() });
+    refreshAll(`✓ Week ${week} locked`);
+  };
+  document.getElementById('lock-lock')?.addEventListener('click', doLock);
+  document.getElementById('lock-relock')?.addEventListener('click', doLock);
+  document.getElementById('lock-update-gow')?.addEventListener('click', () => {
+    saveLockedPreview(week, { ...locked, gow: readGow() });
+    refreshAll('✓ Game of the Week updated');
+  });
+  document.getElementById('lock-unlock')?.addEventListener('click', () => {
+    saveLockedPreview(week, null);
+    refreshAll(`Week ${week} unlocked`);
   });
 }
 
