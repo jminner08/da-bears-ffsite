@@ -991,6 +991,7 @@ function computeMatchupPreviews(week, ignoreLock = false) {
         margin: Math.abs(diff),
         fallbackA: pa.usedFallback,
         fallbackB: pb.usedFallback,
+        sd,
       };
     });
 }
@@ -2069,6 +2070,21 @@ function renderLockAdmin(weeks, message) {
           ${shown.map(p => `<option value="${p.rosterA}-${p.rosterB}" ${`${p.rosterA}-${p.rosterB}` === gowValue ? 'selected' : ''}>${p.teamA} vs ${p.teamB}</option>`).join('')}
         </select>
       </div>` : ''}
+    ${locked ? `
+      <div class="card-note" style="margin-top:14px;"><strong>Projected scores</strong> — edit any that have drifted from what you locked. Win % and margin recalculate when you save.</div>
+      ${locked.previews.map((p, i) => `
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:6px;">
+          <span style="flex:1; min-width:180px;">${p.teamA}</span>
+          <input type="number" step="0.1" data-lockproj="${i}A" value="${Number(p.projA).toFixed(1)}" style="width:90px; background:var(--felt); border:1px solid var(--felt-line); color:var(--chalk); border-radius:6px; padding:6px 8px; font-family:'IBM Plex Mono',monospace;">
+          <span class="card-note">vs</span>
+          <input type="number" step="0.1" data-lockproj="${i}B" value="${Number(p.projB).toFixed(1)}" style="width:90px; background:var(--felt); border:1px solid var(--felt-line); color:var(--chalk); border-radius:6px; padding:6px 8px; font-family:'IBM Plex Mono',monospace;">
+          <span style="flex:1; min-width:180px;">${p.teamB}</span>
+          <span class="card-note">${p.probA.toFixed(0)}% / ${p.probB.toFixed(0)}%</span>
+        </div>`).join('')}
+      <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-top:10px;">
+        <button id="lock-save-scores" class="update-btn">Save scores</button>
+        ${week <= 14 ? `<label class="card-note"><input type="checkbox" id="lock-repick-gow"> also re-pick Game of the Week as the closest matchup</label>` : ''}
+      </div>` : ''}
     <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; align-items:center;">
       ${locked
         ? `<button id="lock-update-gow" class="update-btn">Update Game of the Week</button>
@@ -2102,6 +2118,20 @@ function renderLockAdmin(weeks, message) {
   document.getElementById('lock-update-gow')?.addEventListener('click', () => {
     saveLockedPreview(week, { ...locked, gow: readGow() });
     refreshAll('✓ Game of the Week updated');
+  });
+  document.getElementById('lock-save-scores')?.addEventListener('click', () => {
+    const previews = locked.previews.map((p, i) => {
+      const a = parseFloat(body.querySelector(`[data-lockproj="${i}A"]`).value);
+      const b = parseFloat(body.querySelector(`[data-lockproj="${i}B"]`).value);
+      if (isNaN(a) || isNaN(b)) return p;
+      const sd = p.sd || 22.6;                     // typical spread if an older lock didn't store one
+      const probA = normCdf((a - b) / sd) * 100;
+      return { ...p, projA: a, projB: b, margin: Math.abs(a - b), probA, probB: 100 - probA, sd };
+    });
+    const repick = document.getElementById('lock-repick-gow')?.checked;
+    const gowNow = repick ? pickGameOfWeek(previews, week) : (locked.gow || null);
+    saveLockedPreview(week, { ...locked, previews, gow: gowNow });
+    refreshAll(`✓ Scores updated${repick ? ' and Game of the Week re-picked' : ''}`);
   });
   document.getElementById('lock-unlock')?.addEventListener('click', () => {
     saveLockedPreview(week, null);
