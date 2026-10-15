@@ -61,6 +61,7 @@ def fetch_league_data(league_id):
     # 19 if this league is ever configured for an 18-week season.
     matchups_by_week = {}
     projections_by_week = {}
+    projection_scoring = {}
     empty_streak = 0
     for week in range(1, 18):
         try:
@@ -83,14 +84,28 @@ def fetch_league_data(league_id):
         # rest of the import.
         proj_map = {}
         try:
+            scoring = league.get("scoring_settings") or {}
+            rows = []
             for pos in ("QB", "RB", "WR", "TE", "K", "DEF"):
                 url = f"https://api.sleeper.app/projections/nfl/{league.get('season')}/{week}?season_type=regular&position[]={pos}"
                 for entry in get(url) or []:
                     pid = entry.get("player_id") or (entry.get("player") or {}).get("player_id")
                     stats = entry.get("stats") or {}
-                    pts = stats.get("pts_ppr", stats.get("pts_half_ppr", stats.get("pts_std")))
-                    if pid and isinstance(pts, (int, float)):
-                        proj_map[str(pid)] = pts
+                    generic = stats.get("pts_ppr", stats.get("pts_half_ppr", stats.get("pts_std")))
+                    used = [(stats[k] * m) for k, m in scoring.items()
+                            if isinstance(stats.get(k), (int, float)) and isinstance(m, (int, float))]
+                    if pid:
+                        rows.append((str(pid), generic if isinstance(generic, (int, float)) else None,
+                                     sum(used) if used else None))
+            # Apply the league's own scoring to the raw projected stats, with a
+            # sanity check that falls back to the generic PPR number.
+            ratios = sorted(l / g for _, g, l in rows if g and g > 5 and l is not None)
+            use_league = len(ratios) >= 20 and 0.7 <= ratios[len(ratios) // 2] <= 1.4
+            for pid, g, l in rows:
+                v = l if (use_league and l is not None) else g
+                if v is not None:
+                    proj_map[pid] = v
+            projection_scoring[str(week)] = "league" if use_league else "generic"
         except Exception:
             proj_map = {}
         if proj_map:
@@ -168,6 +183,7 @@ def fetch_league_data(league_id):
         "teams": teams,
         "matchups_by_week": matchups_by_week,
         "projections_by_week": projections_by_week,
+        "projection_scoring": projection_scoring,
         "transactions": transactions,
         "draft_picks": draft_picks,
         "players": players,

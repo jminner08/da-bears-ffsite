@@ -64,6 +64,45 @@ function writeCache(data) {
 /* Pulls straight from Sleeper's public API in the browser. Sleeper's API is
    read-only and generally reachable cross-origin; if a browser/network
    blocks it, we fall back to telling the user to run the Python script. */
+/* Sleeper's projections feed gives each player's raw projected stats plus a
+   generic "pts_ppr" total. That generic total ignores your league's custom
+   scoring (6-pt pass TDs, bonuses, etc.), so it runs low. When the league's
+   scoring settings are available we apply THEM to the raw stats instead, with
+   a sanity check that falls back to the generic number if the result looks
+   off (e.g. the stat names didn't line up). */
+const PREVIEW_DIFF_SD = 50;   // spread (pts) of the gap between two teams' scores; calibrated to match Sleeper's displayed win %
+
+function leagueScoredPoints(stats, scoring) {
+  if (!stats || !scoring) return null;
+  let total = 0, used = 0;
+  Object.entries(scoring).forEach(([k, mult]) => {
+    const v = stats[k];
+    if (typeof v === 'number' && typeof mult === 'number') { total += v * mult; used++; }
+  });
+  return used ? total : null;
+}
+
+function buildProjectionMap(entries, scoring) {
+  const rows = entries.map(p => {
+    const pid = p.player_id || (p.player && p.player.player_id);
+    const st = p.stats || {};
+    const generic = st.pts_ppr ?? st.pts_half_ppr ?? st.pts_std;
+    return { pid: pid ? String(pid) : null, generic: typeof generic === 'number' ? generic : null, league: leagueScoredPoints(st, scoring) };
+  }).filter(r => r.pid);
+
+  // Sanity check: league-scored vs generic should be in the same ballpark.
+  const ratios = rows.filter(r => r.generic > 5 && r.league != null).map(r => r.league / r.generic).sort((a, b) => a - b);
+  const median = ratios.length ? ratios[Math.floor(ratios.length / 2)] : null;
+  const useLeague = ratios.length >= 20 && median >= 0.7 && median <= 1.4;
+
+  const map = {};
+  rows.forEach(r => {
+    const v = useLeague && r.league != null ? r.league : r.generic;
+    if (typeof v === 'number') map[r.pid] = v;
+  });
+  return { map, source: useLeague ? 'league' : 'generic' };
+}
+
 async function fetchSleeperLive(leagueId) {
   const base = 'https://api.sleeper.app/v1';
   const getJson = async (url) => {
@@ -99,6 +138,7 @@ async function fetchSleeperLive(leagueId) {
 
   const matchups_by_week = {};
   const projections_by_week = {};
+  const projection_scoring = {};
   let emptyStreak = 0;
   // Most fantasy leagues (including this one) play a 17-week season even
   // though the NFL itself now has 18 weeks -- Week 18 lineups are unreliable
@@ -128,13 +168,9 @@ async function fetchSleeperLive(leagueId) {
           .then(r => r.ok ? r.json() : [])
           .catch(() => [])
       ));
-      const projMap = {};
-      projLists.flat().forEach(p => {
-        const pid = p.player_id || (p.player && p.player.player_id);
-        const pts = p.stats && (p.stats.pts_ppr ?? p.stats.pts_half_ppr ?? p.stats.pts_std);
-        if (pid && typeof pts === 'number') projMap[String(pid)] = pts;
-      });
-      projections_by_week[String(week)] = projMap;
+      const built = buildProjectionMap(projLists.flat(), league.scoring_settings);
+      projections_by_week[String(week)] = built.map;
+      projection_scoring[String(week)] = built.source;
     } catch (e) { /* projections are best-effort; Eberflus just skips this week */ }
   }
 
@@ -193,6 +229,7 @@ async function fetchSleeperLive(leagueId) {
     teams,
     matchups_by_week,
     projections_by_week,
+    projection_scoring,
     draft_picks,
     transactions,
     players,
@@ -1133,7 +1170,7 @@ function computeMatchupPreviews(week, ignoreLock = false) {
       const pa = teamProjection(a);
       const pb = teamProjection(b);
       const diff = pa.total - pb.total;
-      const sd = Math.sqrt(pa.variance + pb.variance) || 1;
+      const sd = PREVIEW_DIFF_SD;
       const probA = normCdf(diff / sd);
       return {
         teamA: teamByRoster[a.roster_id] || a.roster_id,
@@ -1170,6 +1207,9 @@ function renderPreviewSection() {
   const previews = computeMatchupPreviews(selectedPreviewWeek);
   const gowPair = computeGameOfWeekPair(selectedPreviewWeek);
   const lockedInfo = getLockedPreview(selectedPreviewWeek);
+  const scoringSrc = (state.current.projection_scoring || {})[String(selectedPreviewWeek)];
+  const scoringNote = scoringSrc === 'league' ? ' Projected scores use your league\'s scoring settings.'
+    : scoringSrc === 'generic' ? ' Projected scores use Sleeper\'s generic PPR points (league scoring couldn\'t be applied).' : '';
   const lockNote = lockedInfo ? ` 🔒 Locked ${lockedInfo.lockedAt} — projections and Game of the Week won't change.` : '';
 
   const cards = previews.map((p) => {
@@ -1217,7 +1257,7 @@ function renderPreviewSection() {
     <div class="year-select">
       ${weeks.map(w => `<button data-week="${w}" class="${w === selectedPreviewWeek ? 'active' : ''}">Wk ${w}</button>`).join('')}
     </div>
-    <p class="card-note" style="margin:8px 0 16px;">Win % and margins are estimates from Sleeper's player projections, not guarantees — treat close ones as coin flips. "Last Meeting" checks this season first, then past seasons where available.${lockNote}</p>
+    <p class="card-note" style="margin:8px 0 16px;">Win % and margins are estimates from Sleeper's player projections, not guarantees — treat close ones as coin flips. "Last Meeting" checks this season first, then past seasons where available.${scoringNote}${lockNote}</p>
     <div class="preview-grid">${cards || '<p class="card-note">No matchup data for this week yet.</p>'}</div>
   `;
 
@@ -2424,7 +2464,7 @@ function renderLockAdmin(weeks, message) {
       const a = parseFloat(body.querySelector(`[data-lockproj="${i}A"]`).value);
       const b = parseFloat(body.querySelector(`[data-lockproj="${i}B"]`).value);
       if (isNaN(a) || isNaN(b)) return p;
-      const sd = p.sd || 22.6;                     // typical spread if an older lock didn't store one
+      const sd = PREVIEW_DIFF_SD;
       const probA = normCdf((a - b) / sd) * 100;
       return { ...p, projA: a, projB: b, margin: Math.abs(a - b), probA, probB: 100 - probA, sd };
     });
