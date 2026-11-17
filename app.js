@@ -17,17 +17,18 @@ async function loadData() {
     state.history = res.ok ? await res.json() : null;
   } catch (e) { state.history = null; }
 
-  // Prefer a cached "Force Update" pull (from this browser) over the file
-  // written by the Python import script, since it's more likely to be fresher.
+  // Two possible sources for the live season: this browser's own Force
+  // Update, and the snapshot the commissioner publishes to the repo
+  // (data/current_season.json). Use whichever was pulled more recently, so
+  // leaguemates see the published data and an old Force Update sitting in
+  // someone's browser doesn't hide newer published data forever.
   const cached = readCache();
-  if (cached) {
-    state.current = cached;
-  } else {
-    try {
-      const res = await noCacheFetch('data/current_season.json');
-      state.current = res.ok ? await res.json() : null;
-    } catch (e) { state.current = null; }
-  }
+  let published = null;
+  try {
+    const res = await noCacheFetch('data/current_season.json');
+    published = res.ok ? await res.json() : null;
+  } catch (e) { published = null; }
+  state.current = newerSeasonData(cached, published);
 
   try {
     const res = await noCacheFetch('data/manual_awards.json');
@@ -48,6 +49,15 @@ async function loadData() {
   renderBestInShow();
   renderWaiversTrades();
   renderSetup();
+}
+
+// Pulls made before this change have no fetched_ts; a timestamped pull beats
+// an untimestamped one, and on a tie this browser's own pull wins.
+function newerSeasonData(cached, published) {
+  if (!cached) return published || null;
+  if (!published) return cached;
+  const ct = cached.fetched_ts || 0, pt = published.fetched_ts || 0;
+  return pt > ct ? published : cached;
 }
 
 function readCache() {
@@ -237,6 +247,7 @@ async function fetchSleeperLive(leagueId) {
     nfl_season_type: nflState ? nflState.season_type : null,
     nfl_season: nflState ? nflState.season : null,
     fetched_at: new Date().toLocaleString(),
+    fetched_ts: Date.now(),
   };
 }
 
@@ -272,11 +283,14 @@ async function handleForceUpdate() {
     renderWaiversTrades();
     renderSetup();
     let note = autoLockMsg ? ` · ${autoLockMsg}` : '';
-    setUpdateMsg(`Updated from Sleeper at ${data.fetched_at}.${note}`, 'ok');
+    setUpdateMsg(`Updated from Sleeper at ${data.fetched_at}.${note} · publishing…`, 'ok');
+    const snapMsg = await autoPublishSnapshot(data);
+    note += ` · ${snapMsg}`;
     if (autoLockMsg) {
       const pub = await autoPublish();
-      if (pub) setUpdateMsg(`Updated from Sleeper at ${data.fetched_at}.${note} · ${pub}`, 'ok');
+      if (pub) note += ` · locks ${pub}`;
     }
+    setUpdateMsg(`Updated from Sleeper at ${data.fetched_at}.${note}`, snapMsg.includes('✓') ? 'ok' : 'error');
   } catch (err) {
     setUpdateMsg(
       "Couldn't reach Sleeper directly from this browser (likely blocked). " +
@@ -1050,6 +1064,47 @@ async function publishLocks() {
   };
   const put = await fetch(api, { method: 'PUT', headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   if (!put.ok) throw new Error(`GitHub answered ${put.status}: ${(await put.text()).slice(0, 140)}`);
+}
+
+// The file's current sha, read from its folder listing (works at any file
+// size, unlike reading the file itself). undefined = file doesn't exist yet.
+async function ghShaOf(st, path, headers) {
+  const dir = path.includes('/') ? path.slice(0, path.lastIndexOf('/')) : '';
+  const name = path.split('/').pop();
+  const res = await fetch(`https://api.github.com/repos/${st.repo}/contents/${dir}`, { headers, cache: 'no-store' });
+  if (res.status === 404) return undefined;
+  if (!res.ok) throw new Error(`GitHub answered ${res.status} — check the repo name and token`);
+  const list = await res.json();
+  const hit = Array.isArray(list) ? list.find(f => f.name === name) : null;
+  return hit ? hit.sha : undefined;
+}
+
+// Saves the live-season pull as data/current_season.json in the repo, so
+// everyone visiting the site sees it -- not just the browser that pulled it.
+async function publishSnapshot(data) {
+  const st = ghSettings();
+  if (!st.token || !st.repo) throw new Error('add your repo and token first');
+  if (!data) throw new Error('no season data to publish — run Force Update first');
+  const path = st.snapshotPath || 'data/current_season.json';
+  const headers = { Authorization: `Bearer ${st.token}`, Accept: 'application/vnd.github+json' };
+  const sha = await ghShaOf(st, path, headers);
+  const json = JSON.stringify(data);
+  const body = {
+    message: `Update season data (${data.fetched_at || 'Force Update'})`,
+    content: btoa(unescape(encodeURIComponent(json))),
+    ...(sha ? { sha } : {}),
+  };
+  const put = await fetch(`https://api.github.com/repos/${st.repo}/contents/${path}`, { method: 'PUT', headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  if (!put.ok) throw new Error(`GitHub answered ${put.status}: ${(await put.text()).slice(0, 140)}`);
+  return Math.round(json.length / 1024);
+}
+
+async function autoPublishSnapshot(data) {
+  const st = ghSettings();
+  if (!st.token || !st.repo) return 'not published — GitHub publish isn\'t set up, so only this browser has it';
+  if (st.autoPublish === false) return 'not published — auto-publish is off (use "Publish season data now")';
+  try { const kb = await publishSnapshot(data); return `season data published ✓ (${kb} KB, live for everyone in about a minute)`; }
+  catch (e) { return `season data NOT published: ${e.message}`; }
 }
 
 async function autoPublish() {
@@ -2220,7 +2275,7 @@ function renderSetup() {
 
     <div class="card">
       <strong>Pull live data from Sleeper</strong>
-      <p class="card-note">Saved in this browser only. If blocked, run <span class="mono">python3 import_sleeper.py YOUR_LEAGUE_ID</span> from <span class="mono">scripts/</span> instead.</p>
+      <p class="card-note">Saved in this browser, then published to the site for everyone when GitHub publish (below) is set up. If blocked, run <span class="mono">python3 import_sleeper.py YOUR_LEAGUE_ID</span> from <span class="mono">scripts/</span> instead.</p>
       <button id="force-update-btn" class="update-btn mono">Force Update</button>
       <div id="update-msg" class="update-msg mono" style="padding:8px 0 0;"></div>
     </div>
@@ -2252,7 +2307,7 @@ function renderSetup() {
     </div>
 
     <div class="card">
-      <strong>Publish locks to GitHub</strong>
+      <strong>Publish to GitHub</strong>
       <div id="publish-admin-body"></div>
     </div>
 
@@ -2314,15 +2369,16 @@ function renderPublishAdmin(message) {
   const repo = (st.repo || guessRepo()).replace(/"/g, '');
   const inputStyle = "background:var(--felt); border:1px solid var(--felt-line); color:var(--chalk); border-radius:6px; padding:6px 10px; font-family:'IBM Plex Mono',monospace;";
   body.innerHTML = `
-    <p class="card-note">Saves your locks straight into the repo so you never have to download and upload <span class="mono">locked_previews.json</span>. The token stays in this browser only.</p>
+    <p class="card-note">Saves your season data (<span class="mono">current_season.json</span>), locks and Eberflus overrides (<span class="mono">locked_previews.json</span>) straight into the repo, so everyone sees them. The token stays in this browser only.</p>
     <div style="display:flex; gap:8px; flex-wrap:wrap;">
       <input id="gh-repo" type="text" placeholder="owner/repo" value="${repo}" style="flex:1; min-width:200px; ${inputStyle}">
       <input id="gh-token" type="password" autocomplete="off" placeholder="${st.token ? 'token saved — type to replace' : 'GitHub access token'}" style="flex:1; min-width:220px; ${inputStyle}">
     </div>
-    <label class="card-note" style="display:block; margin-top:8px;"><input type="checkbox" id="gh-auto" ${st.autoPublish !== false ? 'checked' : ''}> publish automatically after every lock</label>
+    <label class="card-note" style="display:block; margin-top:8px;"><input type="checkbox" id="gh-auto" ${st.autoPublish !== false ? 'checked' : ''}> publish automatically (after every Force Update, lock, and override)</label>
     <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; align-items:center;">
       <button id="gh-save" class="update-btn">Save settings</button>
       <button id="gh-publish" class="update-btn">Publish locks now</button>
+      <button id="gh-publish-season" class="update-btn">Publish season data now</button>
       <span id="gh-msg" class="card-note">${message || ''}</span>
     </div>
     <details class="card-note" style="margin-top:10px;">
@@ -2351,6 +2407,16 @@ function renderPublishAdmin(message) {
     msg.textContent = 'Publishing…';
     try { await publishLocks(); renderPublishAdmin('✓ Published — live in about a minute'); }
     catch (e) { renderPublishAdmin(`Couldn't publish: ${e.message}`); }
+  });
+  document.getElementById('gh-publish-season').addEventListener('click', async () => {
+    saveGhSettings(read());
+    if (!state.current || !state.current.fetched_ts) {
+      renderPublishAdmin('Run Force Update first — this pull is from before season publishing existed and has no timestamp.');
+      return;
+    }
+    document.getElementById('gh-msg').textContent = 'Publishing season data…';
+    try { const kb = await publishSnapshot(state.current); renderPublishAdmin(`✓ Season data published (${kb} KB) — live in about a minute`); }
+    catch (e) { renderPublishAdmin(`Couldn't publish season data: ${e.message}`); }
   });
 }
 
