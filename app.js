@@ -354,6 +354,12 @@ function ownerFirstName(owner) {
   return ownerDisplayName(owner);
 }
 
+// ESPN-era seasons (2012-2021) only have season totals -- no weekly
+// matchups, awards or bench scores -- so tabs built on weekly data skip them.
+function weeklyDataSeasons() {
+  return (state.history?.seasons || []).filter(s => !s.summary_only);
+}
+
 function ownerLabel(owner) {
   const reg = state.history?.owner_registry?.[owner];
   if (!reg) return owner;
@@ -723,7 +729,7 @@ function renderPowerRankingsSection() {
   const el = document.getElementById('power-rankings-section');
   if (!el) return;
 
-  const histYears = (state.history?.seasons || []).map(s => s.year).filter(Boolean);
+  const histYears = weeklyDataSeasons().map(s => s.year).filter(Boolean);
   const liveYear = state.current ? Number(state.current.season) : null;
   const years = Array.from(new Set([...histYears, ...(liveYear ? [liveYear] : [])])).sort((a, b) => a - b);
   if (!years.length) { el.innerHTML = ''; return; }
@@ -1353,7 +1359,10 @@ function renderArchive() {
 
   el.innerHTML = `
     <div class="year-select">
-      ${years.map(y => `<button data-year="${y}" class="${y === selectedYear ? 'active' : ''}">${y}${y === liveYear ? ' (live)' : ''}</button>`).join('')}
+      ${years.map(y => {
+        const hs = (state.history?.seasons || []).find(s => s.year === y);
+        return `<button data-year="${y}" class="${y === selectedYear ? 'active' : ''}">${y}${hs && hs.note ? '*' : ''}${y === liveYear ? ' (live)' : ''}</button>`;
+      }).join('')}
     </div>
     <div class="two-col">
       <div id="archive-body"></div>
@@ -1398,6 +1407,7 @@ function renderArchiveBody(liveYear) {
   // (see TRUSTED_FINAL_STANDINGS_YEARS in parse_history.py), where it's the
   // real final result and we sort by it and crown the champion.
   const trusted = !!season.final_standings_trusted;
+  const legacy = !!season.summary_only;   // ESPN era: totals only, no playoff W
   const wl = [...season.win_loss_records].sort((a, b) => {
     if (trusted) {
       const sa = a.final_standing ?? 999, sb = b.final_standing ?? 999;
@@ -1419,16 +1429,19 @@ function renderArchiveBody(liveYear) {
     const isLast = season.last_place === t.owner;
     return `<tr>
       ${trusted ? `<td data-sort-value="${t.final_standing ?? 999}">${t.final_standing ?? '-'}</td>` : ''}
-      <td class="name-cell">${ownerTeamLabel(t.owner)}${isChamp ? ' 🏆' : ''}${isRunnerUp ? ' 🥈' : ''}${isLast ? ' 🚽' : ''}</td>
+      <td class="name-cell">${legacy ? ownerLabel(t.owner) : ownerTeamLabel(t.owner)}${isChamp ? ' 🏆' : ''}${isRunnerUp ? ' 🥈' : ''}${isLast ? ' 🚽' : ''}</td>
       <td data-sort-value="${t.wins ?? 0}">${t.wins}-${t.losses}${t.ties ? `-${t.ties}` : ''}</td>
-      <td data-sort-value="${t.playoff_wins ?? 0}">${t.playoff_wins ?? 0}</td>
+      ${legacy ? '' : `<td data-sort-value="${t.playoff_wins ?? 0}">${t.playoff_wins ?? 0}</td>`}
       <td data-sort-value="${pf ?? -1}">${pf ?? '-'}</td>
       <td data-sort-value="${pa ?? -1}">${pa ?? '-'}</td>
     </tr>`;
   }).join('');
 
+  // ESPN-era years have no team names on record, so show the owner only
+  // (the registry's team names are from 2022 and would be wrong there).
+  const lbl = o => legacy ? ownerLabel(o) : ownerTeamLabel(o);
   const champLine = season.champion
-    ? `<strong>${ownerTeamLabel(season.champion)}</strong> won the league${season.runner_up ? `, beating <strong>${ownerTeamLabel(season.runner_up)}</strong> in the final` : ''}.${season.last_place ? ` <strong>${ownerTeamLabel(season.last_place)}</strong> finished last 🚽.` : ''}`
+    ? `<strong>${lbl(season.champion)}</strong> won the league${season.runner_up ? `, beating <strong>${lbl(season.runner_up)}</strong> in the final` : ''}.${season.last_place ? ` <strong>${lbl(season.last_place)}</strong> finished last 🚽.` : ''}`
     : `This league's actual champion isn't tracked reliably in the source data for this year.`;
 
   body.innerHTML = `
@@ -1442,12 +1455,14 @@ function renderArchiveBody(liveYear) {
         ${trusted ? `<th data-sort-key="standing" data-sort-type="num">Standing</th>` : ''}
         <th data-sort-key="team">Team</th>
         <th data-sort-key="record" data-sort-type="num">Record</th>
-        <th data-sort-key="playoff" data-sort-type="num">Playoff W</th>
+        ${legacy ? '' : `<th data-sort-key="playoff" data-sort-type="num">Playoff W</th>`}
         <th data-sort-key="pf" data-sort-type="num">PF</th>
         <th data-sort-key="pa" data-sort-type="num">PA</th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>
+    ${legacy ? `<p class="card-note" style="margin-top:10px;">ESPN era (2012–2021): season totals only, from the commissioner's records. No weekly scores, awards, or playoff records for these years.</p>` : ''}
+    ${season.note ? `<p class="card-note" style="margin-top:6px;">* ${season.note}</p>` : ''}
   `;
   bindSortables(body);
 }
@@ -1538,9 +1553,17 @@ function renderTop10Body() {
   bindSortables(body);
 }
 
+let selectedCareerEra = 'all';   // 'all' = 2012-present, 'sleeper' = 2022-present
+
 function renderCareerBody() {
   const body = document.getElementById('career-body');
   if (!body) return;
+  const hasSleeperSplit = !!state.history?.career_totals_sleeper;
+  if (!hasSleeperSplit) selectedCareerEra = 'all';
+  const careerSource = selectedCareerEra === 'sleeper' ? state.history.career_totals_sleeper : state.history.career_totals;
+  const seasonYears = (state.history?.seasons || [])
+    .filter(s => selectedCareerEra === 'all' || s.era !== 'espn').map(s => s.year);
+  const firstYear = seasonYears.length ? Math.min(...seasonYears) : null;
 
   // Career totals (win-loss + PF/PA) come pre-computed from parse_history.py
   // for the archived (2022-2025) seasons, which already skips the flagged-
@@ -1549,7 +1572,7 @@ function renderCareerBody() {
   // own cumulative roster totals, so this is a genuine running total that's
   // current as of whenever Force Update was last run, not a snapshot.
   const career = {};
-  Object.entries(state.history.career_totals || {}).forEach(([owner, c]) => {
+  Object.entries(careerSource || {}).forEach(([owner, c]) => {
     career[owner] = { ...c };
   });
   if (state.current) {
@@ -1583,7 +1606,11 @@ function renderCareerBody() {
 
   body.innerHTML = `
     <h2 class="section-title">All-Time (Career)</h2>
-    <p class="card-note" style="margin-bottom:12px;">Running totals across every archived season plus the live season in progress — PF/PA update automatically each time Force Update runs. Championships, runner-ups, and last-place finishes are commissioner-verified for every year (2022-2025), cross-checked against each year's actual Week 17 results.</p>
+    ${hasSleeperSplit ? `<div class="year-select" id="career-era">
+      <button data-era="all" class="${selectedCareerEra === 'all' ? 'active' : ''}">All-time (2012–)</button>
+      <button data-era="sleeper" class="${selectedCareerEra === 'sleeper' ? 'active' : ''}">Sleeper era (2022–)</button>
+    </div>` : ''}
+    <p class="card-note" style="margin-bottom:12px;">Running totals ${firstYear ? `from ${firstYear}` : 'across every archived season'} plus the live season in progress — PF/PA update automatically each time Force Update runs. Championships, runner-ups, and last-place finishes are commissioner-verified for every year.${selectedCareerEra === 'all' && hasSleeperSplit ? ' Playoff records aren\'t included for 2012–2021, and 2012\'s records carry a known discrepancy (see that season).' : ''}</p>
     <table class="sortable">
       <thead><tr>
         <th data-sort-key="owner">Owner</th>
@@ -1599,6 +1626,9 @@ function renderCareerBody() {
     </table>
   `;
   bindSortables(body);
+  body.querySelectorAll('#career-era button').forEach(btn => {
+    btn.addEventListener('click', () => { selectedCareerEra = btn.dataset.era; renderCareerBody(); });
+  });
 }
 
 /* ---------------- Awards ----------------
@@ -1723,7 +1753,7 @@ function computeLiveWeeklyAwards(week) {
 
 function renderAwards() {
   const el = document.getElementById('panel-awards');
-  const histYears = (state.history?.seasons || []).map(s => s.year).filter(Boolean);
+  const histYears = weeklyDataSeasons().map(s => s.year).filter(Boolean);
   const liveYear = state.current ? Number(state.current.season) : null;
   const years = Array.from(new Set([...histYears, ...(liveYear ? [liveYear] : [])])).sort((a, b) => a - b);
 
@@ -1911,7 +1941,7 @@ function computeLiveBenchForWeek(week) {
 
 function renderBenchScores() {
   const el = document.getElementById('panel-bench');
-  const histYears = (state.history?.seasons || []).map(s => s.year).filter(Boolean);
+  const histYears = weeklyDataSeasons().map(s => s.year).filter(Boolean);
   const liveYear = state.current ? Number(state.current.season) : null;
   const years = Array.from(new Set([...histYears, ...(liveYear ? [liveYear] : [])])).sort((a, b) => a - b);
 

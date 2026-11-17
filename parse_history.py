@@ -3,7 +3,12 @@ Parses the commissioner's historical FF_info_<year>.xlsx files into one
 consolidated data/history.json that the website reads.
 
 Usage:
-    python3 parse_history.py /path/to/FF_Info_2022.xlsx /path/to/FF_info_2023_.xlsx ...
+    python3 parse_history.py FFYTD.xlsx FF_Info_2022.xlsx FF_info_2023_.xlsx FF_info_2024.xlsx FF_info_2025.xlsx
+
+FFYTD.xlsx is the legacy ESPN-era workbook (2012-2021). It's detected
+automatically by its "Complete" tab and parsed as season-totals-only years
+(record, PF/PA, regular-season and final rank) -- it has no weekly data, so
+those years have no awards, bench scores, matchups or single-game records.
 
 Notes on data quality (read this before trusting numbers blindly):
 - Each file's "Win-Loss-Records", "Achievements", and "Past history" tabs are
@@ -51,6 +56,7 @@ OWNER_REGISTRY = {
 # a different label for an existing owner.
 OWNER_ALIASES = {
     "Dave": "Cronk",
+    "Bobby": "Moss",   # legacy FFYTD.xlsx uses first names for these two
 }
 
 
@@ -475,6 +481,20 @@ TRUSTED_FINAL_STANDINGS_YEARS = {2025}
 # is why 2022-2024 can have a verified champion here even though their
 # Final Standings columns are still the known-frozen/unreliable ones.
 VERIFIED_CHAMPIONS = {
+    # ESPN era (FFYTD.xlsx). 2012-2019 and 2021 come straight from the
+    # workbook's Final column. 2020: the Final column says Moss, but Moss
+    # went 0-2 in the playoffs and Todd 3-0 -- the commissioner confirmed
+    # Todd won. Josh (Final 2, playoff 1-1) kept as runner-up.
+    2012: {"champion": "Luke", "runner_up": "Cronk"},
+    2013: {"champion": "Randy", "runner_up": "Micah"},
+    2014: {"champion": "Randy", "runner_up": "Josh"},
+    2015: {"champion": "Luke", "runner_up": "Moss"},
+    2016: {"champion": "Alex", "runner_up": "Todd"},
+    2017: {"champion": "Micah", "runner_up": "Moss"},
+    2018: {"champion": "Luke", "runner_up": "Randy"},
+    2019: {"champion": "Josh", "runner_up": "Jason"},
+    2020: {"champion": "Todd", "runner_up": "Josh"},
+    2021: {"champion": "Micah", "runner_up": "Randy"},
     2022: {"champion": "Moss", "runner_up": "Luke"},
     2023: {"champion": "Luke", "runner_up": "Micah"},
     2024: {"champion": "Luke", "runner_up": "Josh"},
@@ -487,6 +507,8 @@ VERIFIED_CHAMPIONS = {
 # "toilet bowl" bracket determining actual final place, separate from the
 # regular season standings, same as the championship bracket above.
 VERIFIED_LAST_PLACE = {
+    2012: "Josh", 2013: "Josh", 2014: "Luke", 2015: "Micah", 2016: "Cronk",
+    2017: "Alex", 2018: "Micah", 2019: "Moss", 2020: "Alex", 2021: "Cronk",
     2022: "Jason",
     2023: "Todd",
     2024: "Austin",
@@ -548,8 +570,86 @@ def apply_pf_pa_overrides(year, standings):
     return standings
 
 
+# ---- Legacy ESPN-era workbook (FFYTD.xlsx, 2012-2021) ----
+# "Complete" tab: row 1 has the year over each 9-column block, row 2 the
+# headers (PF, PA, Reg, Final, W, L, T, WP, LP), rows 3-12 one owner each.
+# The career columns at the far right of that tab had broken formulas in
+# earlier revisions, so they're ignored -- career totals are recomputed from
+# the per-year blocks like every other season.
+LEGACY_FIELDS = ["pf", "pa", "reg", "final", "w", "l", "t", "wp", "lp"]
+
+# Final 1-10 order is shown for ESPN-era years where it's internally
+# consistent with the verified champion. 2020 is excluded: its Final column
+# has Moss 1st / Todd 3rd, which the commissioner confirmed is wrong.
+LEGACY_UNTRUSTED_FINAL = {2020}
+
+# Shown on the site under that season's table.
+SEASON_NOTES = {
+    2012: "2012 records are shown as recorded, but they don't balance: 66 total wins against "
+          "62 losses (plus 2 ties). The original ESPN league is no longer accessible to correct it.",
+}
+
+
+def is_legacy_workbook(wb):
+    ws = find_sheet(wb, "Complete")
+    return ws is not None and ws.cell(1, 2).value == 2012
+
+
+def parse_legacy_workbook(wb, source_name):
+    ws = find_sheet(wb, "Complete")
+    seasons = []
+    col = 2
+    while isinstance(ws.cell(1, col).value, int):
+        year = ws.cell(1, col).value
+        headers = [str(ws.cell(2, col + k).value or "").strip().lower() for k in range(9)]
+        if headers != ["pf", "pa", "reg", "final", "w", "l", "t", "wp", "lp"]:
+            raise ValueError(f"{source_name}: unexpected headers for {year}: {headers}")
+        win_loss, standings = [], []
+        for r in range(3, ws.max_row + 1):
+            owner = canonical_owner(ws.cell(r, 1).value)
+            if not owner:
+                continue
+            d = {f: ws.cell(r, col + k).value for k, f in enumerate(LEGACY_FIELDS)}
+            win_loss.append({
+                "owner": owner,
+                "wins": int(d["w"] or 0),
+                "losses": int(d["l"] or 0),
+                "ties": int(d["t"] or 0),   # blank ties (2017-2018) = 0
+                # WP/LP don't balance in 2013/2017, so playoff wins aren't
+                # published for these years until they're verified.
+                "playoff_wins": None,
+                "regular_season_rank": d["reg"],
+                "final_standing": None if year in LEGACY_UNTRUSTED_FINAL else d["final"],
+            })
+            standings.append({"owner": owner, "pf": d["pf"], "pa": d["pa"], "rank": d["reg"]})
+        if len(win_loss) != 10:
+            raise ValueError(f"{source_name}: expected 10 owners for {year}, found {len(win_loss)}")
+        seasons.append({
+            "year": year,
+            "source_file": source_name,
+            "era": "espn",
+            "summary_only": True,
+            "win_loss_records": win_loss,
+            "achievements": [],
+            "standings": standings,
+            "weekly_awards": {},
+            "bench_scores": {},
+            "matchups": {},
+            "final_standings_trusted": year not in LEGACY_UNTRUSTED_FINAL,
+            "champion": VERIFIED_CHAMPIONS.get(year, {}).get("champion"),
+            "runner_up": VERIFIED_CHAMPIONS.get(year, {}).get("runner_up"),
+            "last_place": VERIFIED_LAST_PLACE.get(year),
+            **({"note": SEASON_NOTES[year]} if year in SEASON_NOTES else {}),
+        })
+        col += 9
+    return seasons
+
+
 def parse_file(path):
+    """Returns (list_of_seasons, single_game_records)."""
     wb = openpyxl.load_workbook(path, data_only=True)
+    if is_legacy_workbook(wb):
+        return parse_legacy_workbook(wb, Path(path).name), []
     year = guess_year(Path(path).name)
 
     win_loss_ws = find_sheet(wb, "Win-Loss-Records")
@@ -572,17 +672,24 @@ def parse_file(path):
         "champion": VERIFIED_CHAMPIONS.get(year, {}).get("champion"),
         "runner_up": VERIFIED_CHAMPIONS.get(year, {}).get("runner_up"),
         "last_place": VERIFIED_LAST_PLACE.get(year),
+        "era": "sleeper",
     }
-    return season, parse_past_history(past_history_ws)
+    if year in SEASON_NOTES:
+        season["note"] = SEASON_NOTES[year]
+    return [season], parse_past_history(past_history_ws)
 
 
 def main(paths):
     seasons = []
     all_history_records = []
     for p in paths:
-        season, hist = parse_file(p)
-        seasons.append(season)
+        parsed, hist = parse_file(p)
+        seasons.extend(parsed)
         all_history_records.extend(hist)
+    years = [s["year"] for s in seasons]
+    dupes = sorted({y for y in years if years.count(y) > 1})
+    if dupes:
+        raise SystemExit(f"Same season supplied twice: {dupes}")
 
     # Flag the known stale duplicate: FF_info_2024.xlsx Standings tab ==
     # FF_info_2023 Standings tab.
@@ -624,6 +731,22 @@ def main(paths):
     # Career totals across every parsed season: win-loss plus PF/PA (PF/PA
     # pulled from each season's standings tab, skipping the one flagged as a
     # stale copy-paste so it doesn't double up or distort the career total).
+    def career_for(season_list):
+        return _career_totals(season_list)
+
+    output = {
+        "owner_registry": OWNER_REGISTRY,
+        "seasons": seasons,
+        "all_time_top_scores": dedup_history[:25],
+        # Every season (ESPN era + Sleeper era) ...
+        "career_totals": career_for(seasons),
+        # ... and Sleeper era only (2022+), for the site's era toggle.
+        "career_totals_sleeper": career_for([s for s in seasons if s.get("era") != "espn"]),
+    }
+    _write_output(output, seasons)
+
+
+def _career_totals(seasons):
     career = {}
     for season in seasons:
         standings_by_owner = {s["owner"]: s for s in season.get("standings", []) if s.get("owner")}
@@ -648,14 +771,13 @@ def main(paths):
                 if st:
                     c["pf"] += st.get("pf") or 0
                     c["pa"] += st.get("pa") or 0
+    for c in career.values():
+        c["pf"] = round(c["pf"], 2)
+        c["pa"] = round(c["pa"], 2)
+    return career
 
-    output = {
-        "owner_registry": OWNER_REGISTRY,
-        "seasons": seasons,
-        "all_time_top_scores": dedup_history[:25],
-        "career_totals": career,
-    }
 
+def _write_output(output, seasons):
     out_path = Path(__file__).resolve().parent.parent / "site" / "data" / "history.json"
     out_path.write_text(json.dumps(output, indent=2, default=str))
     print(f"Wrote {out_path}")
