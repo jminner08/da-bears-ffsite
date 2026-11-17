@@ -903,6 +903,7 @@ function saveLockedPreview(week, value) {
   try { local = JSON.parse(localStorage.getItem(LOCKED_PREVIEWS_KEY) || '{}'); } catch (e) { local = {}; }
   local[`${state.current.season}:${week}`] = value;
   try { localStorage.setItem(LOCKED_PREVIEWS_KEY, JSON.stringify(local)); } catch (e) { /* ignore */ }
+  clearLiveAwardsCache();   // Eberflus reads the lock
 }
 
 function saveLockedKey(key, value) {
@@ -910,6 +911,7 @@ function saveLockedKey(key, value) {
   try { local = JSON.parse(localStorage.getItem(LOCKED_PREVIEWS_KEY) || '{}'); } catch (e) { local = {}; }
   local[key] = value;
   try { localStorage.setItem(LOCKED_PREVIEWS_KEY, JSON.stringify(local)); } catch (e) { /* ignore */ }
+  clearLiveAwardsCache();
 }
 
 // Power rankings can be hand-corrected for a week. A correction is stored
@@ -922,6 +924,17 @@ function getLockedPower(week) {
   return all[`${season}:${week}:power`] || (all[`${season}:${week}`] || {}).power || null;
 }
 function saveLockedPower(week, value) { saveLockedKey(`${state.current.season}:${week}:power`, value); }
+
+// Eberflus override for a week, stored beside the locks under
+// "<season>:<week>:eberflus" so it publishes to GitHub with them.
+//   { mode: 'none' }               -> nobody gets Eberflus that week
+//   { mode: 'team', roster_id: N } -> that team gets it
+//   no key / null                  -> Auto (computed)
+function getEberflusOverride(week) {
+  if (!state.current) return null;
+  return loadLockedPreviews()[`${state.current.season}:${week}:eberflus`] || null;
+}
+function saveEberflusOverride(week, value) { saveLockedKey(`${state.current.season}:${week}:eberflus`, value); }
 
 function getLockedPreview(week) {
   if (!state.current) return null;
@@ -1568,6 +1581,7 @@ function getManualAward(year, week, award) {
    directly from Sleeper matchup + projections data. Cached per week since
    it's re-derived from raw data each render. */
 const _liveAwardsCache = {};
+function clearLiveAwardsCache() { Object.keys(_liveAwardsCache).forEach(k => delete _liveAwardsCache[k]); }
 
 function computeLiveWeeklyAwards(week) {
   if (_liveAwardsCache[week] !== undefined) return _liveAwardsCache[week];
@@ -1580,6 +1594,9 @@ function computeLiveWeeklyAwards(week) {
   c.teams.forEach(t => { teamByRoster[t.roster_id] = liveTeamLabel(t); });
 
   let kbz = null, instagib = null, gameover = null, pine = null, horseshoe = null, eberflus = null;
+  const lockedPrev = getLockedPreview(week);
+  let eberflusSource = null;
+  const lossMargin = {};
   const byMatchup = {};
   wk.forEach(m => { (byMatchup[m.matchup_id] = byMatchup[m.matchup_id] || []).push(m); });
 
@@ -1602,21 +1619,50 @@ function computeLiveWeeklyAwards(week) {
     if (!kbz || margin > kbz.value) kbz = { roster_id: winner.roster_id, value: margin };
     if (!horseshoe || margin < horseshoe.value) horseshoe = { roster_id: loser.roster_id, value: margin };
 
-    const projScore = (m2) => (m2.starters || []).reduce((sum, pid) => sum + (proj[String(pid)] || 0), 0);
-    const favorite = projScore(a) >= projScore(b) ? a : b;
-    if (favorite.roster_id !== winner.roster_id) {
-      if (!eberflus || margin > eberflus.value) eberflus = { roster_id: favorite.roster_id, value: margin };
+    // Eberflus: the projected favorite who lost, by the biggest margin.
+    // A locked week uses the locked preview (what the league saw); an
+    // unlocked week falls back to Sleeper's live projections. An exact
+    // projection tie has no favorite, so it can't be an upset.
+    let favId = null;
+    const lp = lockedPrev && (lockedPrev.previews || []).find(x =>
+      (x.rosterA === a.roster_id && x.rosterB === b.roster_id) ||
+      (x.rosterA === b.roster_id && x.rosterB === a.roster_id));
+    if (lp) {
+      eberflusSource = 'locked';
+      if (lp.projA !== lp.projB) favId = lp.projA > lp.projB ? lp.rosterA : lp.rosterB;
+    } else {
+      if (eberflusSource !== 'locked') eberflusSource = 'live';
+      const projScore = (m2) => (m2.starters || []).reduce((sum, pid) => sum + (proj[String(pid)] || 0), 0);
+      const pa = projScore(a), pb = projScore(b);
+      if (pa !== pb) favId = pa > pb ? a.roster_id : b.roster_id;
     }
+    if (favId !== null && favId !== winner.roster_id) {
+      if (!eberflus || margin > eberflus.value) eberflus = { roster_id: favId, value: margin };
+    }
+    if (aScore !== bScore) lossMargin[loser.roster_id] = margin;
   });
 
   const label = (x) => x ? { team_name: teamByRoster[x.roster_id], value: x.value } : null;
+
+  // Commissioner override wins over the computed result.
+  const auto = label(eberflus);
+  const ov = getEberflusOverride(week);
+  let eberResult = auto;
+  if (ov && ov.mode === 'none') eberResult = null;
+  else if (ov && ov.mode === 'team' && teamByRoster[ov.roster_id]) {
+    eberResult = { team_name: teamByRoster[ov.roster_id], value: lossMargin[ov.roster_id] ?? null, override: true };
+  }
+
   return (_liveAwardsCache[week] = {
+    _eberflusAuto: auto,
+    _eberflusSource: eberflusSource,
+    _eberflusOverride: ov && (ov.mode === 'none' || ov.mode === 'team') ? ov : null,
     KBZ: label(kbz),
     Instagib: label(instagib),
     GameOver: label(gameover),
     'Riding the Pine': label(pine),
     Horseshoe: label(horseshoe),
-    Eberbluis: label(eberflus),
+    Eberbluis: eberResult,
   });
 }
 
@@ -1739,11 +1785,14 @@ function renderAwardsBodyWeekly(body, seasonsInScope, week, liveYear) {
 
     if (liveYear && award !== 'Rocky') {
       const c = liveComputed && liveComputed[award];
+      const overridden = award === 'Eberbluis' && liveComputed && liveComputed._eberflusOverride;
       if (c) {
         const yearPrefix = selectedAwardsYear === 'All-Time' ? `${liveYear}: ` : '';
-        items.push(`<li>${yearPrefix}${c.team_name}<span class="n">${c.value.toFixed(1)}</span></li>`);
+        const num = typeof c.value === 'number' ? `<span class="n">${c.value.toFixed(1)}</span>` : '';
+        items.push(`<li>${yearPrefix}${c.team_name}${num}</li>`);
+        if (overridden && selectedAwardsYear === liveYear) items.push(`<li class="card-note">Set by commissioner</li>`);
       } else if (selectedAwardsYear === liveYear) {
-        items.push(`<li class="card-note">${award === 'Eberbluis' ? 'No upset this week' : 'No data yet'}</li>`);
+        items.push(`<li class="card-note">${award === 'Eberbluis' ? `No upset this week${overridden ? ' (set by commissioner)' : ''}` : 'No data yet'}</li>`);
       }
     }
 
@@ -2185,6 +2234,12 @@ function renderSetup() {
     </div>
 
     <div class="card">
+      <strong>Eberflus — weekly override</strong>
+      <p class="card-note">Auto uses the week's locked preview (or live projections if the week was never locked). Override it when the auto result is wrong. Overrides publish to GitHub along with the locks.</p>
+      ${liveYear && weeks.length ? `<div id="eberflus-admin-body"></div>` : `<p class="card-note">No live season data yet — pull a season above first.</p>`}
+    </div>
+
+    <div class="card">
       <strong>Lock weekly projections</strong>
       <p class="card-note">Freezes a week's matchup projections, win %, and Game of the Week so they stop changing once games start. Lock before kickoff (the Game of the Week can be corrected afterward).</p>
       ${liveYear && weeks.length ? `<div id="lock-admin-body"></div>` : `<p class="card-note">No live season data yet — pull a season above first.</p>`}
@@ -2222,6 +2277,7 @@ function renderSetup() {
       selectedAdminWeek = playedWeeks.length ? playedWeeks[playedWeeks.length - 1] : weeks[0];
     }
     renderRockyAdmin(liveYear, weeks);
+    renderEberflusAdmin(weeks);
     renderLockAdmin(weeks);
   }
 
@@ -2476,6 +2532,53 @@ function renderLockAdmin(weeks, message) {
   document.getElementById('lock-unlock')?.addEventListener('click', () => {
     saveLockedPreview(week, null);
     refreshAll(`Week ${week} unlocked`);
+  });
+}
+
+let selectedEberflusWeek = null;
+function renderEberflusAdmin(weeks, message) {
+  const body = document.getElementById('eberflus-admin-body');
+  if (!body) return;
+  if (!selectedEberflusWeek || !weeks.includes(selectedEberflusWeek)) selectedEberflusWeek = selectedAdminWeek || weeks[0];
+  const week = selectedEberflusWeek;
+  const teams = (state.current?.teams || []).map(t => ({ id: t.roster_id, label: liveTeamLabel(t) })).sort((a, b) => a.label.localeCompare(b.label));
+  const ov = getEberflusOverride(week);
+  const current = !ov ? 'auto' : ov.mode === 'none' ? 'none' : `team:${ov.roster_id}`;
+  const res = computeLiveWeeklyAwards(week);
+  const auto = res && res._eberflusAuto;
+  const src = res && res._eberflusSource;
+  const autoText = !res ? 'no results yet'
+    : `${auto ? `${auto.team_name} (${auto.value.toFixed(1)})` : 'no one'} — from ${src === 'locked' ? 'the locked preview' : 'live projections (week not locked)'}`;
+  const sel = "flex:1; min-width:200px; background:var(--felt); border:1px solid var(--felt-line); color:var(--chalk); border-radius:6px; padding:6px 10px; font-family:'IBM Plex Mono',monospace;";
+
+  body.innerHTML = `
+    <div class="year-select">
+      ${weeks.map(w => `<button data-week="${w}" class="${w === week ? 'active' : ''}">Wk ${w}</button>`).join('')}
+    </div>
+    <p class="card-note" style="margin-top:10px;">Auto result for Wk ${week}: ${autoText}</p>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; align-items:center;">
+      <select id="eberflus-choice" style="${sel}">
+        <option value="auto" ${current === 'auto' ? 'selected' : ''}>Auto</option>
+        <option value="none" ${current === 'none' ? 'selected' : ''}>No one</option>
+        ${teams.map(t => `<option value="team:${t.id}" ${current === `team:${t.id}` ? 'selected' : ''}>${t.label}</option>`).join('')}
+      </select>
+      <button id="eberflus-save" class="update-btn">Save</button>
+      <span id="eberflus-msg" class="card-note">${message || ''}</span>
+    </div>
+  `;
+
+  body.querySelectorAll('.year-select button').forEach(btn => {
+    btn.addEventListener('click', () => { selectedEberflusWeek = Number(btn.dataset.week); renderEberflusAdmin(weeks); });
+  });
+  body.querySelector('#eberflus-save').addEventListener('click', async () => {
+    const v = body.querySelector('#eberflus-choice').value;
+    const value = v === 'auto' ? null : v === 'none' ? { mode: 'none' } : { mode: 'team', roster_id: Number(v.slice(5)) };
+    saveEberflusOverride(week, value);
+    clearLiveAwardsCache();
+    renderAwards();
+    renderEberflusAdmin(weeks, '✓ Saved — publishing…');
+    const pub = await autoPublish();
+    renderEberflusAdmin(weeks, `✓ Saved${pub ? ` — ${pub}` : ' in this browser (GitHub publish not set up or turned off)'}`);
   });
 }
 
